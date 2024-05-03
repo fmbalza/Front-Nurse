@@ -19,7 +19,7 @@ const PacienteSignUp = () => {
          <LinearGradient
         colors={['#FFFFFF', '#D6FFE9']}
         style={{
-           height:1200
+           height:1300
             }} 
         >
         

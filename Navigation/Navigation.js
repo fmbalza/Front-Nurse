@@ -27,12 +27,12 @@ const Stack = createStackNavigator();
 function MyStack() {
     return (
       <Stack.Navigator initialRouteName='StartPage'>
-        <Stack.Screen name="StartPage" component={StartPage} options={{headerShown:false}}/>
-        <Stack.Screen name="MedicoSignUp" component={MedicoSignUp} options={{headerShown:false}}/>
-        <Stack.Screen name="PacienteSignUp" component={PacienteSignUp} options={{headerShown:false}}/>
-        <Stack.Screen name="WelcomePage" component={WelcomePage} options={{headerShown:false}}/>
-        <Stack.Screen name="MedicoFoto" component={MedicoFoto} options={{headerShown:false}}/>
-        <Stack.Screen name="MedicoValidation" component={MedicoValidation} options={{headerShown:false}}/>
+        <Stack.Screen name="StartPage" component={StartPage} options={{ headerBackTitleVisible: false, headerTitleStyle:{display: 'none'} , headerTitleStyle:{display: 'none'}  }}/>
+        <Stack.Screen name="WelcomePage" component={WelcomePage} options={{headerTintColor:'#FFFFFF',  headerBackTitleVisible: false,  headerTitleStyle:{display: 'none'} , headerTitleStyle:{display: 'none'}}}/>
+        <Stack.Screen name="PacienteSignUp" component={PacienteSignUp} options={{headerTintColor:'#FFFFFF',  headerBackTitleVisible: false,headerStyle:{backgroundColor:'#006150'} , headerTitleStyle:{display: 'none'}}}/>
+        <Stack.Screen name="MedicoSignUp" component={MedicoSignUp} options={{headerStyle:{backgroundColor:'#006150'} ,headerTintColor:'#FFFFFF',  headerBackTitleVisible: false,  headerTitleStyle:{display: 'none'} , headerTitleStyle:{display: 'none'}}}/>
+        <Stack.Screen name="MedicoFoto" component={MedicoFoto} options={{headerStyle:{backgroundColor:'#006150'} ,headerTintColor:'#FFFFFF',  headerBackTitleVisible: false,  headerTitleStyle:{display: 'none'} , headerTitleStyle:{display: 'none'}}}/>
+        <Stack.Screen name="MedicoValidation" component={MedicoValidation} options={{headerStyle:{backgroundColor:'#006150'} ,headerTintColor:'#FFFFFF',  headerBackTitleVisible: false,  headerTitleStyle:{display: 'none'} , headerTitleStyle:{display: 'none'}}}/>
       </Stack.Navigator>
     );
   }
