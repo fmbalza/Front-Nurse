@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const MedicoValidation = () => {
+const Menu = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Medico Foto</Text>
+      <Text style={styles.text}>Menu</Text>
     </View>
   );
 };
@@ -21,4 +21,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MedicoValidation
+export default Menu;

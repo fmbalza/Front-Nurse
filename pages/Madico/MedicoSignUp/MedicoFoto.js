@@ -107,7 +107,7 @@ const PacienteSignUp = () => {
              
 
              <TouchableOpacity
-                onPress={() => navigation.navigate("MedicoValidation")}
+                onPress={() => navigation.navigate("MedicoLogin")}
                    style={SignUpStyles.btnAceptar}>
                     <Text
                     style={{

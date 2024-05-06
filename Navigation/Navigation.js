@@ -9,7 +9,9 @@ import MedicoSignUp from '../pages/Madico/MedicoSignUp/MedicoSignUp';
 import PacienteSignUp from '../pages/Paciente/PacienteSignUp';
 import WelcomePage from '../pages/WelcomePage';
 import MedicoFoto from '../pages/Madico/MedicoSignUp/MedicoFoto';
-import MedicoValidation from '../pages/Madico/MedicoSignUp/MedicoValidation'
+import HomeMedico from '../pages/Madico/Home/HomeMedico'
+import PacienteLogin from '../pages/Paciente/PacienteLogin';
+import MedicoLogin from '../pages/Madico/MedicoLogIn';
 
 
 const Stack = createStackNavigator();
@@ -27,19 +29,21 @@ const Stack = createStackNavigator();
 function MyStack() {
     return (
       <Stack.Navigator initialRouteName='StartPage'>
-        <Stack.Screen name="StartPage" component={StartPage} options={{ headerBackTitleVisible: false, headerTitleStyle:{display: 'none'} , headerTitleStyle:{display: 'none'}  }}/>
-        <Stack.Screen name="WelcomePage" component={WelcomePage} options={{headerTintColor:'#FFFFFF',  headerBackTitleVisible: false,  headerTitleStyle:{display: 'none'} , headerTitleStyle:{display: 'none'}}}/>
+        <Stack.Screen name="StartPage" component={StartPage} options={{ headerShown:false }}/>
+        <Stack.Screen name="WelcomePage" component={WelcomePage} options={{headerShown:false}}/>
+        <Stack.Screen name="PacienteLogin" component={PacienteLogin} options={{headerShown:false}}/>
+        <Stack.Screen name="MedicoLogin" component={MedicoLogin} options={{headerShown:false}}/>
         <Stack.Screen name="PacienteSignUp" component={PacienteSignUp} options={{headerTintColor:'#FFFFFF',  headerBackTitleVisible: false,headerStyle:{backgroundColor:'#006150'} , headerTitleStyle:{display: 'none'}}}/>
         <Stack.Screen name="MedicoSignUp" component={MedicoSignUp} options={{headerStyle:{backgroundColor:'#006150'} ,headerTintColor:'#FFFFFF',  headerBackTitleVisible: false,  headerTitleStyle:{display: 'none'} , headerTitleStyle:{display: 'none'}}}/>
         <Stack.Screen name="MedicoFoto" component={MedicoFoto} options={{headerStyle:{backgroundColor:'#006150'} ,headerTintColor:'#FFFFFF',  headerBackTitleVisible: false,  headerTitleStyle:{display: 'none'} , headerTitleStyle:{display: 'none'}}}/>
-        <Stack.Screen name="MedicoValidation" component={MedicoValidation} options={{headerStyle:{backgroundColor:'#006150'} ,headerTintColor:'#FFFFFF',  headerBackTitleVisible: false,  headerTitleStyle:{display: 'none'} , headerTitleStyle:{display: 'none'}}}/>
+        <Stack.Screen name="HomeMedico" component={HomeMedico} options={{headerShown:false}}/>
       </Stack.Navigator>
     );
   }
 
 export default function Navigation() {
     return(
-        <NavigationContainer>
+        <NavigationContainer independent={true}>
             <MyStack/>
         </NavigationContainer>
     );
