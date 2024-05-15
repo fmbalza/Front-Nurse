@@ -3,6 +3,9 @@ import { View, TextInput, TouchableOpacity, StyleSheet, Text, Image } from 'reac
 import { LinearGradient } from 'expo-linear-gradient';
 import globalStyles, { LoginStyles } from '../../styles/globalStyles'
 import { useNavigation } from '@react-navigation/native';
+
+
+
 const PacienteLogin = () => {
   const navigation = useNavigation();
   const [cedula, setCedula] = useState('');
@@ -41,9 +44,16 @@ const PacienteLogin = () => {
           onChangeText={handleCedulaChange}
         />
       </View>
+
+      <Text style={styles.registerText}>
+        ¿No tienes una cuenta?{' '}
+        <Text style={styles.registerLink} onPress={() => navigation.navigate("PacienteSignUp")}>
+          Regístrate aquí
+        </Text>
+      </Text>
       
       <TouchableOpacity
-                onPress={() => navigation.navigate("PacienteLogin")}
+                onPress={() => navigation.navigate("HomePaciente")}
                    style={LoginStyles.btnAceptar}>
                     <Text
                     style={{

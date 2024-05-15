@@ -12,6 +12,7 @@ import MedicoFoto from '../pages/Madico/MedicoSignUp/MedicoFoto';
 import HomeMedico from '../pages/Madico/Home/HomeMedico'
 import PacienteLogin from '../pages/Paciente/PacienteLogin';
 import MedicoLogin from '../pages/Madico/MedicoLogIn';
+import HomePaciente from '../pages/Paciente/Home/HomePaciente'
 
 
 const Stack = createStackNavigator();
@@ -37,6 +38,7 @@ function MyStack() {
         <Stack.Screen name="MedicoSignUp" component={MedicoSignUp} options={{headerStyle:{backgroundColor:'#006150'} ,headerTintColor:'#FFFFFF',  headerBackTitleVisible: false,  headerTitleStyle:{display: 'none'} , headerTitleStyle:{display: 'none'}}}/>
         <Stack.Screen name="MedicoFoto" component={MedicoFoto} options={{headerStyle:{backgroundColor:'#006150'} ,headerTintColor:'#FFFFFF',  headerBackTitleVisible: false,  headerTitleStyle:{display: 'none'} , headerTitleStyle:{display: 'none'}}}/>
         <Stack.Screen name="HomeMedico" component={HomeMedico} options={{headerShown:false}}/>
+        <Stack.Screen name="HomePaciente" component={HomePaciente} options={{headerShown:false}}/>
       </Stack.Navigator>
     );
   }

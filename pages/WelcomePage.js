@@ -47,7 +47,7 @@ const StartPage = () => {
             </Text>
 
                 <TouchableOpacity
-                onPress={() => navigation.navigate("MedicoSignUp")}
+                onPress={() => navigation.navigate("MedicoLogin")}
                    style={{
                     width:"90%",
                     marginTop:120,
@@ -71,7 +71,7 @@ const StartPage = () => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                onPress={() => navigation.navigate("PacienteSignUp")}
+                onPress={() => navigation.navigate("PacienteLogin")}
                    style={{
                     width:"90%",
                     marginTop:40,

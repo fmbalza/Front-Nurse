@@ -49,6 +49,14 @@ const MedicoLogin = () => {
           onChangeText={handleCedulaChange}
         />
       </View>
+
+      <Text style={styles.registerText}>
+        ¿No tienes una cuenta?{' '}
+        <Text style={styles.registerLink} onPress={() => navigation.navigate("MedicoSignUp")}>
+          Regístrate aquí
+        </Text>
+      </Text>
+    
       
       <TouchableOpacity
                 onPress={() => navigation.navigate("HomeMedico")}
