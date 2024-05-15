@@ -3,7 +3,7 @@ import { Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { View, Text, TouchableOpacity} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-
+// import RFValue from '@react-native-responsive-fontsize'
 const StartPage = () => {
     const navigation = useNavigation();
     return(

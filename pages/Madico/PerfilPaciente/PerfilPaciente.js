@@ -31,7 +31,7 @@ const PerfilPaciente = () => {
             <Text style={styles.cardTitle}>Consulta 3</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.card}>
-            <Text style={styles.cardTitle}>Sexo 4</Text>
+            <Text style={styles.cardTitle}>Consulta 4</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.card}>
             <Text style={styles.cardTitle}>Consulta 5</Text>
