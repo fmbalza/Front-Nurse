@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { View, TextInput, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import  {useState}  from 'react';
-
+import { useNavigation } from '@react-navigation/native';
 
 const BuscarPaciente = ({ onSearch }) => {
   const [searchText, setSearchText] = useState('');
+  const navigation = useNavigation();
 
   const handleSearch = () => {
     onSearch(searchText);
@@ -23,7 +24,7 @@ const BuscarPaciente = ({ onSearch }) => {
         />
       </View>
 
-      <TouchableOpacity style={styles.containerr}>
+      <TouchableOpacity style={styles.containerr} onPress={() => navigation.navigate("PerfilPaciente")}>
         <View style={styles.photo}></View>
         <View style={styles.detailsContainer}>
           <Text style={styles.name}>Pedro Nolasco</Text>
@@ -39,6 +40,7 @@ const BuscarPaciente = ({ onSearch }) => {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop:50,
     backgroundColor: '#F5F5F5',
     padding: 10
   },
