@@ -12,7 +12,7 @@ const StartPage = () => {
         <LinearGradient
         colors={['#FFFFFF', '#D6FFE9']}
         style={{
-           height:900
+           height:'100%'
             }} 
         >
         

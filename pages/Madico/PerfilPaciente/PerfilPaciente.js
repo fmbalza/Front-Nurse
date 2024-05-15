@@ -5,11 +5,14 @@ const PerfilPaciente = () => {
   return (
     <View style={styles.container}>
       <View style={styles.profileInfo}>
-        <Text style={styles.username}>Nombre de usuario</Text>
-        <Text style={styles.bio}>Descripción del perfil</Text>
+      <View style={styles.photo}></View>
+      <View style={styles.detailsContainer}>
+          <Text style={styles.name}>Jesus de Arimatea</Text>
+          <Text style={styles.cedula}>1.896.098</Text>
       </View>
-      <ScrollView horizontal>
-        <View style={styles.cardsContainer}>
+      </View>
+    <ScrollView verical>
+      <View style={styles.cardsContainer}>
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Consulta 1</Text>
           </View>
@@ -19,8 +22,20 @@ const PerfilPaciente = () => {
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Consulta 3</Text>
           </View>
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Consulta 4</Text>
+          </View>
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Consulta 5</Text>
+          </View>
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Consulta 6</Text>
+          </View>
         </View>
-      </ScrollView>
+
+    </ScrollView>
+ 
+      
     </View>
   );
 };
@@ -29,6 +44,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+  },
+  photo: {
+    width: 50,
+    height: 50,
+    borderRadius:25,
+    marginLeft:10,
+    marginRight: 10,
+    backgroundColor: '#00826B'
+  },
+  detailsContainer: {
+
+    justifyContent: 'center',
+  },
+  name: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,
+    color:'#00826B'
+  },
+  cedula: {
+    fontSize: 14,
   },
   profileInfo: {
     marginBottom: 20,
@@ -43,16 +79,17 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   cardsContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
   },
   card: {
-    width: 150,
-    height: 200,
+    width: 350,
+    height: 150,
     backgroundColor: '#ECECEC',
     borderRadius: 10,
     marginRight: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop:10,
   },
   cardTitle: {
     fontSize: 18,

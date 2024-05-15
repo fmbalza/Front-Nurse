@@ -16,7 +16,7 @@ export const SignUpStyles = StyleSheet.create({
     fontSize:17
   },
   btnAceptar: {
-    width:"80%",
+    width:"90%",
     marginTop:40,
     height:"10%",
     borderRadius:50,

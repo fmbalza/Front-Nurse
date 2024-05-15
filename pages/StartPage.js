@@ -12,7 +12,7 @@ const StartPage = () => {
         <LinearGradient
         colors={['#FFFFFF', '#D6FFE9']}
         style={{
-           height:900
+           height:'100%'
             }} 
         >
         
@@ -31,11 +31,11 @@ const StartPage = () => {
           
             
 
-            <Image source={require('../assets/nurse_logo.png')} style={{width: 200, height: 230}}/>
+            <Image source={require('../assets/nurse_logo.png')} style={{width: '51%', height: '35.3%'}}/>
 
             <Text
                 style={{
-                    fontSize:95,
+                    fontSize: 95,
                     textAlign: "center",
                  
                     color:'#00826B',
