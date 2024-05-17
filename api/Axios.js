@@ -1,29 +1,23 @@
-import axios from 'axios';
-import { useAuthStore } from '../store/useAuthStore';
-
-export const authApi = axios.create({
-	baseURL: import.meta.env.VITE_AUTH_API_URL,
-	headers: {
-		'Content-Type': 'application/json',
-	},
-});
+import axios from "axios";
 
 export const api = axios.create({
-	baseURL: import.meta.env.VITE_API_URL,
-	headers: {
-		'Content-Type': 'application/json',
-	},
+  baseURL: process.env.EXPO_PUBLIC_API_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-api.interceptors.request.use(
-	async (config) => {
-		const { token } = useAuthStore.getState();
+// api.interceptors.request.use(
+// 	async (config) => {
+// 		const { token } = useAuthStore.getState();
 
-		if (config?.headers && token) {
-			config.headers.authorization = `Bearer ${token}`;
-		}
+// 		if (config?.headers && token) {
+// 			config.headers.authorization = `Bearer ${token}`;
+// 		}
 
-		return config;
-	},
-	(error) => Promise.reject(error)
-);
+// 		return config;
+// 	},
+// 	(error) => Promise.reject(error)
+// );
+
+export default api;
