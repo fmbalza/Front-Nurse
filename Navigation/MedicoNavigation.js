@@ -69,12 +69,34 @@ function MyTabs() {
         </Tab.Screen>
 
 
-            <Tab.Screen name="BuscarPaciente" component={BuscarPaciente}
-             options={{
-                tabBarIcon: ({ color, size }) => (<MaterialCommunityIcons name="account-search-outline" size={24} color="#00826B" />), 
-                tabBarActiveTintColor: '#00826B',
-            }}
-            />
+
+
+        <Tab.Screen
+                    name="BuscarPaciente"
+                    options={{ headerShown:false,
+                    tabBarIcon: ({ color, size }) => (
+                        <MaterialCommunityIcons name="account-injury-outline" size={24} color="#00826B" />
+                    ),
+                    tabBarActiveTintColor: '#00826B',
+                    }}
+
+                    listeners={({ navigation }) => ({
+                    tabPress: (event) => {
+                        event.preventDefault();
+                        navigation.navigate('BuscarPaciente');
+                    },
+                    })}
+                >
+                    {() => (
+                    <Stack.Navigator>
+                        <Stack.Screen name="BuscarPaciente" component={BuscarPaciente} options={{ headerShown:false }}/>
+                        <Stack.Screen name="PerfilPaciente" component={PerfilPaciente} />
+                    </Stack.Navigator>
+                    )}
+        </Tab.Screen>
+
+
+         
             <Tab.Screen name="Testing" component={Testing
 
             }

@@ -3,7 +3,7 @@ import { Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { View, Text, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-
+// import RFValue from '@react-native-responsive-fontsize'
 const StartPage = () => {
   const navigation = useNavigation();
   return (
@@ -22,7 +22,7 @@ const StartPage = () => {
       >
         <Image
           source={require("../assets/nurse_logo.png")}
-          style={{ width: 200, height: 230 }}
+          style={{ width: "51%", height: "35.3%" }}
         />
 
         <Text
