@@ -7,6 +7,8 @@ import {
   Text,
   Image,
   Alert,
+  Modal,
+  Button,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import globalStyles, { LoginStyles } from "../../styles/globalStyles";
@@ -14,6 +16,7 @@ import { useNavigation } from "@react-navigation/native";
 // ---------------------------------------------------------------------
 import { useForm, Controller } from "react-hook-form";
 import { usePacienteLogin, useVerifyPaciente } from "../../hooks/paciente/auth";
+import { doVerify } from "../../api/paciente/auth.js";
 
 const PacienteLogin = () => {
   const {
@@ -21,31 +24,29 @@ const PacienteLogin = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const loginMutation = usePacienteLogin();
+  const verifyQuery = useVerifyPaciente();
   const navigation = useNavigation();
-  const mutation = usePacienteLogin();
-  const { data, isError, error, isLoading, isSuccess } = useVerifyPaciente();
 
   const handleLogIn = (values) => {
-    mutation.reset();
-
-    try {
-      mutation.mutate(values);
-
-      if (mutation.isError) {
-        Alert.alert("Cédula incorrecta");
-      }
-
-      if (mutation.isSuccess) {
-        console.log("Login exitoso");
-        // navigation.navigate("PacienteHome");
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    loginMutation.mutate(values);
   };
+
+  useEffect(() => {
+    if (verifyQuery.isSuccess) {
+      navigation.navigate("HomePaciente");
+    }
+  }, [verifyQuery.isSuccess]);
 
   return (
     <LinearGradient colors={["#FFFFFF", "#D6FFE9"]} style={styles.container}>
+      {/* {loginMutation.isError && (
+        <View>
+          <Text>Error: {loginMutation.error.message}</Text>
+          <Button title="Close" onPress={() => loginMutation.reset()} />
+        </View>
+      )} */}
+
       <Image
         source={require("../../assets/nurse_logo.png")}
         style={{ width: 200, height: 230 }}
@@ -80,7 +81,7 @@ const PacienteLogin = () => {
           rules={{ required: true }}
           defaultValue={""}
         />
-        {errors.cedula_paciente && Alert.alert("Cédula requerida")}
+        {/* {errors.cedula_paciente && Alert.alert("Cédula requerida")} */}
       </View>
 
       <Text style={styles.registerText}>

@@ -1,8 +1,29 @@
 import api from "../Axios";
 
-export const doLogin = async (values) => {
+export const doLogin = async (data) => {
   try {
-    const response = await api.post("/paciente/login", values);
+    // console.log("aqui", data);
+    const response = await api.post("/paciente/login", data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const doVerify = async () => {
+  try {
+    const response = await api.get("/verify");
+    // console.log("response", response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const doRegister = async (data) => {
+  try {
+    const response = await api.post("/paciente", data);
+    // console.log("response", response.data);
     return response.data;
   } catch (error) {
     throw new Error(error);

@@ -1,4 +1,5 @@
 import axios from "axios";
+import useAuthStore from "../storage/auth";
 
 export const api = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_URL,
@@ -7,17 +8,19 @@ export const api = axios.create({
   },
 });
 
-// api.interceptors.request.use(
-// 	async (config) => {
-// 		const { token } = useAuthStore.getState();
+api.interceptors.request.use(
+  async (config) => {
+    const { token } = useAuthStore.getState();
 
-// 		if (config?.headers && token) {
-// 			config.headers.authorization = `Bearer ${token}`;
-// 		}
+    // console.log("aqui", token);
 
-// 		return config;
-// 	},
-// 	(error) => Promise.reject(error)
-// );
+    if (config?.headers && token) {
+      config.headers.authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export default api;
