@@ -125,9 +125,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
-    width: 200,
-    height: 40,
+    width: "100%",
+    height: "100%",
     zIndex: 8,
+    borderRadius: 10,
+    backgroundColor: "white",
+    color: "#00826B",
+    fontSize: 18,
+    paddingHorizontal: 10,
   },
 });
 

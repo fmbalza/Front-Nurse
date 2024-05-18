@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   View,
@@ -8,20 +8,37 @@ import {
   StyleSheet,
   ScrollView,
   Switch,
+  ActivityIndicator,
 } from "react-native";
 import { SignUpStyles } from "../../styles/globalStyles";
-import { useState } from "react";
 import DatePicker from "../../components/DatePicker";
 import GenderPicker from "../../components/GenderPicker";
 import { useNavigation } from "@react-navigation/native";
+// ---------------------------------------------------------------------
+import { useForm, Controller } from "react-hook-form";
+import { useRegisterPaciente } from "../../hooks/paciente/auth";
+import { doRegister } from "../../api/paciente/auth.js";
 
 const PacienteSignUp = () => {
-  const navigation = useNavigation();
-  const [isFamiliar, setIsFamiliar] = useState(false);
+  // const navigation = useNavigation();
+  // const [isFamiliar, setIsFamiliar] = useState(false);
 
-  const handleSwitchToggle = (value) => {
-    setIsFamiliar(value);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const registerMutation = useRegisterPaciente();
+
+  const handleRegister = (values) => {
+    // console.log(values);
+    registerMutation.mutate(values);
   };
+
+  // const handleSwitchToggle = (value) => {
+  //   setIsFamiliar(value);
+  // };
 
   return (
     <ScrollView>
@@ -49,6 +66,7 @@ const PacienteSignUp = () => {
               marginBottom: 40,
             }}
           >
+            {/* Este texto se deforma en mi telefono (•_•) */}
             <Text
               style={{
                 fontSize: 45,
@@ -69,76 +87,145 @@ const PacienteSignUp = () => {
               height: "70%",
             }}
           >
-            <TextInput
-              style={SignUpStyles.inputs}
-              placeholderTextColor="#00826B"
-              placeholder="Nombre"
+            <Controller
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  style={SignUpStyles.inputs}
+                  placeholderTextColor="#00826B"
+                  placeholder="Nombre"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+              name="no_paciente"
+              rules={{ required: true }}
+              defaultValue={""}
+            />
+            {/* {errors.no_paciente && <Text style={{ color: 'red' }}>Nombre requerido</Text> */}
+
+            <Controller
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  style={SignUpStyles.inputs}
+                  placeholderTextColor="#00826B"
+                  placeholder="Apellido"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+              name="ap_paciente"
+              rules={{ required: true }}
+              defaultValue={""}
+            />
+            {/* {errors.ap_paciente && <Text style={{ color: 'red' }}>Apellido requerido</Text> */}
+
+            <Controller
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  style={SignUpStyles.inputs}
+                  placeholderTextColor="#00826B"
+                  placeholder="Cedula"
+                  keyboardType="numeric"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+              name="cedula_paciente"
+              rules={{ required: true }}
+              defaultValue={""}
+            />
+            {/* {errors.cedula_paciente && <Text style={{ color: 'red' }}>Cedula requerida</Text>} */}
+
+            <Controller
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  style={SignUpStyles.inputs}
+                  placeholderTextColor="#00826B"
+                  placeholder="Telefono"
+                  keyboardType="numeric"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+              name="telefono"
+              rules={{ required: true }}
+              defaultValue={""}
+            />
+            {/* {errors.telefono && <Text style={{ color: 'red' }}>Telefono requerido</Text>} */}
+
+            <Controller
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <View style={styles.componentt}>
+                  <GenderPicker onGenderChange={onChange} value={value} />
+                </View>
+              )}
+              name="genero"
+              rules={{ required: true }}
             />
 
-            <TextInput
-              style={SignUpStyles.inputs}
-              placeholderTextColor="#00826B"
-              placeholder="Apellido"
+            <Controller
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <View style={styles.componentt}>
+                  <DatePicker onDateChange={onChange} value={value} />
+                </View>
+              )}
+              name="fecha_nacimiento"
+              defaultValue={new Date().toISOString().split("T")[0]}
+              // rules={{ required: true }} // siempre tiene algo asignado por defecto
             />
 
-            <TextInput
-              style={SignUpStyles.inputs}
-              placeholderTextColor="#00826B"
-              placeholder="Cedula"
-              keyboardType="numeric"
-            />
+            {/* 
+              Fran, el mensaje hay que moverlo a un componente que se muestre al presionar ⓘ
+              un tooltip basicamente
+            */}
+            {/* 
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: 10,
+                  marginBottom: 15,
+                }}
+              >
+                <Text style={{ fontSize: 20, color: "#00826B" }}>Familiar</Text>
+                <Switch
+                  value={isFamiliar}
+                  onValueChange={handleSwitchToggle}
+                  trackColor={{ false: "#767577", true: "#A4D4BB" }}
+                  thumbColor={isFamiliar ? "#00826B" : "#A4D4BB"}
+                  ios_backgroundColor="#3e3e3e"
+                  style={styles.switch}
+                />
+              </View>
 
-            <TextInput
-              style={SignUpStyles.inputs}
-              placeholderTextColor="#00826B"
-              placeholder="Telefono"
-              keyboardType="numeric"
-            />
-
-            <View style={styles.componentt}>
-              <GenderPicker />
-            </View>
-
-            <View style={styles.componentt}>
-              <DatePicker />
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginTop: 10,
-                marginBottom: 15,
-              }}
-            >
-              <Text style={{ fontSize: 20, color: "#00826B" }}>Familiar</Text>
-              <Switch
-                value={isFamiliar}
-                onValueChange={handleSwitchToggle}
-                trackColor={{ false: "#767577", true: "#A4D4BB" }}
-                thumbColor={isFamiliar ? "#00826B" : "#A4D4BB"}
-                ios_backgroundColor="#3e3e3e"
-                style={styles.switch}
-              />
-            </View>
-
-            <Text
-              style={{
-                marginLeft: 20,
-                marginRight: 20,
-                fontSize: 15,
-                color: "#00826B",
-              }}
-            >
-              Activar la funcionalidad de "Familiar" te permitiria poder acceder
-              a los registros de tratamientos en uso de los usuarios que te lo
-              permitan. En caso de tener un miembro mayor de tu familia en la
-              aplicacion Nurse, te permitira ver su tratamiento en tiempo real,
-              y hacerle seguimiento{" "}
-            </Text>
+              <Text
+                style={{
+                  marginLeft: 20,
+                  marginRight: 20,
+                  fontSize: 15,
+                  color: "#00826B",
+                }}
+              >
+                Activar la funcionalidad de "Familiar" te permitiria poder acceder
+                a los registros de tratamientos en uso de los usuarios que te lo
+                permitan. En caso de tener un miembro mayor de tu familia en la
+                aplicacion Nurse, te permitira ver su tratamiento en tiempo real,
+                y hacerle seguimiento{" "}
+              </Text> 
+            */}
 
             <TouchableOpacity
-              onPress={() => navigation.navigate("PacienteLogin")}
+              onPress={handleSubmit((data) => handleRegister(data))}
               style={SignUpStyles.btnAceptar}
             >
               <Text
@@ -153,6 +240,22 @@ const PacienteSignUp = () => {
             </TouchableOpacity>
           </View>
         </View>
+
+        {registerMutation.isPending && (
+          <View
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 10,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            }}
+          >
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        )}
       </LinearGradient>
     </ScrollView>
   );

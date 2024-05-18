@@ -31,7 +31,9 @@ export const useRegisterPaciente = () => {
     onSuccess: (data) => {
       console.log("aqui", data);
       // queryClient.invalidateQueries("paciente");
-      navigation.navigate("PacienteLogin");
+      if (data === "Paciente creado exitosamente") {
+        navigation.navigate("PacienteLogin");
+      }
     },
     onError: (error) => {
       console.log(error);
