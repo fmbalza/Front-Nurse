@@ -1,8 +1,28 @@
-import React from 'react';
+import React, {useState}from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import BtnAgregar from '../../../components/BtnAgregar';
+import AgendarModal from '../../../components/Modals/AgendarModal';
+
 
 const PerfilPaciente = () => {
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [eventDate, setEventDate] = useState('');
+  const [eventTime, setEventTime] = useState('');
+
+  const handleOpenModal = () => {
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
+
+  const handleSaveEvent = (date, time) => {
+    setEventDate(date);
+    setEventTime(time);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.profileInfo}>
@@ -42,7 +62,18 @@ const PerfilPaciente = () => {
         </View>
 
     </ScrollView>
-    <TouchableOpacity style={styles.agendar}>
+    <TouchableOpacity style={styles.agendar}  onPress={handleOpenModal}>
+    <AgendarModal
+        visible={modalVisible}
+        onClose={handleCloseModal}
+        onSave={handleSaveEvent}
+      />
+      {eventDate && eventTime && (
+        <View>
+          <Text>Event Date: {eventDate}</Text>
+          <Text>Event Time: {eventTime}</Text>
+        </View>
+      )}
       <Text style={{color:'#FFFFFF'}}>
         Agendar Consulta
       </Text>

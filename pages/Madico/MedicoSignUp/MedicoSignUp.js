@@ -1,15 +1,27 @@
-import * as React from 'react';
+import React,  { useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView} from 'react-native';
 import {SignUpStyles} from '../../../styles/globalStyles'
 import { useNavigation } from '@react-navigation/native';
 import GenderPicker from '../../../components/GenderPicker';
 import SpecialtyPicker from '../../../components/SpecialtyPicker';
-
+import FotoModal from '../../../components/Modals/FotoModal';
 
 const MedicoSignUp = () => {
-    const navigation = useNavigation();
-
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedImageUri, setSelectedImageUri] = useState(null);
+  
+    const openModal = () => {
+      setIsModalVisible(true);
+    };
+  
+    const closeModal = () => {
+      setIsModalVisible(false);
+    };
+  
+    const handleImagePicked = (imageUri) => {
+      setSelectedImageUri(imageUri);
+    };
     return(
        <ScrollView>
          <LinearGradient
@@ -121,7 +133,7 @@ const MedicoSignUp = () => {
             </View>
           
             
-            <TouchableOpacity
+            <TouchableOpacity onPress={openModal}
                 
                    style={SignUpStyles.btnCert}>
                     <Text
@@ -130,12 +142,24 @@ const MedicoSignUp = () => {
                         fontSize:20,
                         fontWeight:'300'
                     }}>
-                        Agregar Certificado Medico
+                        Subir Foto de perfil
                     </Text>
+
+
                 </TouchableOpacity>
+                
+      {selectedImageUri && (
+        <Image source={{ uri: selectedImageUri }} style={{ width: 300, height: 300 }} />
+      )}
+
+      <FotoModal
+        isVisible={isModalVisible}
+        onClose={closeModal}
+        onImagePicked={handleImagePicked}
+      />
 
              <TouchableOpacity
-                onPress={() => navigation.navigate("MedicoFoto")}
+                onPress={() => navigation.navigate("HomeMedico")}
                    style={SignUpStyles.btnAceptar}>
                     <Text
                     style={{

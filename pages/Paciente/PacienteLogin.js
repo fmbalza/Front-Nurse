@@ -71,6 +71,7 @@ const PacienteLogin = () => {
             <TextInput
               style={styles.input}
               placeholder="Cédula"
+              placeholderTextColor="#00826B"
               onChangeText={(value) => onChange(value)}
               onBlur={onBlur}
               value={value}
@@ -130,8 +131,8 @@ const styles = StyleSheet.create({
     zIndex: 8,
     borderRadius: 10,
     backgroundColor: "white",
-    color: "#00826B",
-    fontSize: 18,
+
+    fontSize: 15,
     paddingHorizontal: 10,
   },
 });

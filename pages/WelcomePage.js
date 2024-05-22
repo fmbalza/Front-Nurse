@@ -17,7 +17,7 @@ const StartPage = () => {
         style={{
           justifyContent: "center",
 
-          marginTop: 50,
+
           marginLeft: 10,
         }}
       >

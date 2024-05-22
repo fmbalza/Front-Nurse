@@ -1,4 +1,5 @@
-import React from 'react';
+  
+  import React from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 
 const ValidationModal = ({ visible, onClose }) => {

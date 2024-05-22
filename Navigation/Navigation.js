@@ -8,7 +8,7 @@ import StartPage from "../pages/StartPage";
 import MedicoSignUp from "../pages/Madico/MedicoSignUp/MedicoSignUp";
 import PacienteSignUp from "../pages/Paciente/PacienteSignUp";
 import WelcomePage from "../pages/WelcomePage";
-import MedicoFoto from "../pages/Madico/MedicoSignUp/MedicoFoto";
+
 import HomeMedico from "../pages/Madico/Home/HomeMedico";
 import PacienteLogin from "../pages/Paciente/PacienteLogin";
 import MedicoLogin from "../pages/Madico/MedicoLogIn";
@@ -27,17 +27,26 @@ function MyStack() {
       <Stack.Screen
         name="WelcomePage"
         component={WelcomePage}
-        options={{ headerShown: false }}
+        options={{           headerTintColor: "#006150",
+        headerBackTitleVisible: false,
+        headerTitleStyle: { display: "none" },
+        headerTitleStyle: { display: "none" }, }}
       />
       <Stack.Screen
         name="PacienteLogin"
         component={PacienteLogin}
-        options={{ headerShown: false }}
+        options={{ headerTintColor: "#006150",
+        headerBackTitleVisible: false,
+        headerTitleStyle: { display: "none" },
+        headerTitleStyle: { display: "none" },  }}
       />
       <Stack.Screen
         name="MedicoLogin"
         component={MedicoLogin}
-        options={{ headerShown: false }}
+        options={{ headerTintColor: "#006150",
+        headerBackTitleVisible: false,
+        headerTitleStyle: { display: "none" },
+        headerTitleStyle: { display: "none" }, }}
       />
       <Stack.Screen
         name="PacienteSignUp"
@@ -60,17 +69,7 @@ function MyStack() {
           headerTitleStyle: { display: "none" },
         }}
       />
-      <Stack.Screen
-        name="MedicoFoto"
-        component={MedicoFoto}
-        options={{
-          headerStyle: { backgroundColor: "#006150" },
-          headerTintColor: "#FFFFFF",
-          headerBackTitleVisible: false,
-          headerTitleStyle: { display: "none" },
-          headerTitleStyle: { display: "none" },
-        }}
-      />
+
       <Stack.Screen
         name="HomeMedico"
         component={HomeMedico}

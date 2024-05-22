@@ -1,20 +1,42 @@
-import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet, Text, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { 
+  View, 
+  TextInput, 
+  TouchableOpacity, 
+  StyleSheet, 
+  Text, 
+  Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import globalStyles, { LoginStyles } from '../../styles/globalStyles'
 import { useNavigation } from '@react-navigation/native';
+//---------------------------------------------------------------------
+import { useForm, Controller } from "react-hook-form";
+import { useMedicoLogin, useVerifyMedico } from '../../hooks/medico/auth';
+import { doVerify } from "../../api/paciente/auth.js";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 const MedicoLogin = () => {
-    const navigation = useNavigation();
-  const [cedula, setCedula] = useState('');
 
-  const handleCedulaChange = (text) => {
-    setCedula(text);
+  const [showPassword, setShowPassword] = useState(false);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const loginMutation = useMedicoLogin();
+  const verifyQuery = useVerifyMedico();
+  const navigation = useNavigation();
+
+  const handleLogIn = (values) => {
+    console.log(values)
+    loginMutation.mutate(values);
   };
 
-  const handleLogIn = () => {
-    // Lógica para iniciar sesión
-    console.log('Cédula:', cedula);
-  };
+  useEffect(() => {
+    if (verifyQuery.isSuccess) {
+      navigation.navigate("HomeMedico");
+    }
+  }, [verifyQuery.isSuccess]);
 
   return (
     <LinearGradient colors={['#FFFFFF', '#D6FFE9']} style={styles.container}>
@@ -33,20 +55,54 @@ const MedicoLogin = () => {
                 }}>
                 Nurse
             </Text>
+
+
       <View style={LoginStyles.inputs}>
-        <TextInput
-          style={styles.input}
-          placeholder="Cédula"
-          value={cedula}
-          onChangeText={handleCedulaChange}
+      <Controller
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={styles.input}
+              placeholder="Cédula"
+              placeholderTextColor="#00826B"
+              onChangeText={(value) => onChange(value)}
+              onBlur={onBlur}
+              value={value}
+              inputMode="numeric"
+            />
+          )}
+          name="cedula_medico"
+          rules={{ required: true }}
+          defaultValue={""}
         />
       </View>
+
+
       <View style={LoginStyles.inputs}>
-        <TextInput
-          style={styles.input}
-          placeholder="Contraseña"
-          value={cedula}
-          onChangeText={handleCedulaChange}
+      <Controller
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <View style={styles.passwordInputContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="Contraseña"
+                placeholderTextColor="#00826B"
+                onChangeText={(value) => onChange(value)}
+                onBlur={onBlur}
+                value={value}
+                secureTextEntry={!showPassword}
+              />
+              <TouchableOpacity
+                onPress={() => setShowPassword(!showPassword)}
+                style={styles.passwordToggleButton}
+              >
+                <MaterialCommunityIcons name={showPassword ? 'eye-off' : 'eye'} size={24} color="#00826B" />
+              </TouchableOpacity>
+            </View>
+          )}
+          name="contrasena"
+          rules={{ required: true }}
+          defaultValue={""}
         />
       </View>
 
@@ -59,7 +115,9 @@ const MedicoLogin = () => {
     
       
       <TouchableOpacity
-                onPress={() => navigation.navigate("HomeMedico")}
+                onPress={handleSubmit((data) => handleLogIn(data))
+                  
+                }
                    style={LoginStyles.btnAceptar}>
                     <Text
                     style={{
@@ -87,9 +145,20 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
-    width: 200,
+    width: '100%',
     height: 40,
+    marginLeft: 10,
+    marginTop:10,
+    fontSize:15
+  
+  
   },
+
+  passwordToggleButton: {
+    left:'90%',
+    bottom:'40%'
+  },
+
 });
 
 export default MedicoLogin;
