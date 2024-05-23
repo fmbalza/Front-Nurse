@@ -9,6 +9,7 @@ import {
   Alert,
   Modal,
   Button,
+  ActivityIndicator
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import globalStyles, { LoginStyles } from "../../styles/globalStyles";
@@ -109,6 +110,22 @@ const PacienteLogin = () => {
           Aceptar
         </Text>
       </TouchableOpacity>
+
+      {loginMutation.isPending && (
+          <View
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 10,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            }}
+          >
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        )}
     </LinearGradient>
   );
 };

@@ -7,108 +7,70 @@ import {
   View,
   Text,
   TouchableOpacity,
+  ScrollView
 } from 'react-native';
 import moment from 'moment';
-import Swiper from 'react-native-swiper';
+import DatePicker from 'react-native-modern-datepicker';
+import { getToday, getFormatedDate } from 'react-native-modern-datepicker';
+
 
 const { width } = Dimensions.get('window');
 
 export default function Example() {
-  const swiper = useRef();
-  const [value, setValue] = useState(new Date());
-  const [week, setWeek] = useState(0);
 
-  const weeks = React.useMemo(() => {
-    const start = moment().add(week, 'weeks').startOf('week');
+  const [date, setDate] = useState('12/12/2023');
+  const [selectedDate, setSelectedDate] = useState(null);
+  const today = new Date();
 
-    return [-1, 0, 1].map(adj => {
-      return Array.from({ length: 7 }).map((_, index) => {
-        const date = moment(start).add(adj, 'week').add(index, 'day');
+ 
 
-        return {
-          weekday: date.format('ddd'),
-          date: date.toDate(),
-        };
-      });
-    });
-  }, [week]);
+
+  function handleDateChange(date) {
+    setSelectedDate(date);
+    setDate(date);
+   
+  }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <ScrollView>
+    <SafeAreaView style={{ flex: 1, backgroundColor:'#FFFFFF' }}>
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Mis Consultas</Text>
         </View>
 
         <View style={styles.picker}>
-          <Swiper
-            index={1}
-            ref={swiper}
-            loop={false}
-            showsPagination={false}
-            onIndexChanged={ind => {
-              if (ind === 1) {
-                return;
-              }
-              setTimeout(() => {
-                const newIndex = ind - 1;
-                const newWeek = week + newIndex;
-                setWeek(newWeek);
-                setValue(moment(value).add(newIndex, 'week').toDate());
-                swiper.current.scrollTo(1, false);
-              }, 100);
-            }}>
-            {weeks.map((dates, index) => (
-              <View style={styles.itemRow} key={index}>
-                {dates.map((item, dateIndex) => {
-                  const isActive =
-                    value.toDateString() === item.date.toDateString();
-                  return (
-                    <TouchableWithoutFeedback
-                      key={dateIndex}
-                      onPress={() => setValue(item.date)}>
-                      <View
-                        style={[
-                          styles.item,
-                          isActive && {
-                            backgroundColor: '#00826B',
-                            borderColor: '#00826B',
-                          },
-                        ]}>
-                        <Text
-                          style={[
-                            styles.itemWeekday,
-                            isActive && { color: '#fff' },
-                          ]}>
-                          {item.weekday}
-                        </Text>
-                        <Text
-                          style={[
-                            styles.itemDate,
-                            isActive && { color: '#fff' },
-                          ]}>
-                          {item.date.getDate()}
-                        </Text>
-                      </View>
-                    </TouchableWithoutFeedback>
-                  );
-                })}
-              </View>
-            ))}
-          </Swiper>
+        <DatePicker
+          options={{
+            backgroundColor: '#FFFFFF',
+            textHeaderColor: '#00826B',
+            textDefaultColor: '#00826B',
+            selectedTextColor: '#FFFFFF',
+            mainColor: '#00826B',
+            textSecondaryColor: '#1E212B',
+            borderColor: 'rgba(122, 146, 165, 0.1)',
+          }}
+       
+          selected={date}
+          mode="calendar"
+          minuteInterval={30}
+          style={{ borderRadius: 10 }}
+          onDateChange={handleDateChange}
+        />
         </View>
 
-        <View style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 24 }}>
-          <Text style={styles.subtitle}>{value.toDateString()}</Text>
+        <View style={{ marginTop: 150, flex: 1, paddingHorizontal: 16, paddingVertical: 24 }}>
+          {selectedDate && (
+            <Text style={styles.subtitle}>{date}</Text>
+          )}
           <View style={styles.placeholder}>
             <View style={styles.placeholderInset}>
-            {[1, 2, 3].map((index) => (
-  <TouchableOpacity key={index} style={styles.eventContainer}>
-    <Text style={styles.eventTitle}>Consulta {index}</Text>
-    
-    <Text style={styles.eventTime}>{index}:00 AM</Text>
-  </TouchableOpacity>
-))}
+              {[1, 2, 3].map((index) => (
+                <TouchableOpacity key={index} style={styles.eventContainer}>
+                  <Text style={styles.eventTitle}>Consulta {index}</Text>
+                  <Text style={styles.eventTime}>{index}:00 AM</Text>
+                </TouchableOpacity>
+              ))}
             </View>
           </View>
         </View>
@@ -116,9 +78,9 @@ export default function Example() {
   
       </View>
     </SafeAreaView>
+    </ScrollView>
   );
 }
-
 const styles = StyleSheet.create({
 
   eventContainer: {
@@ -145,7 +107,9 @@ const styles = StyleSheet.create({
   },
 
 
+
   container: {
+    marginTop:'10%',
     flex: 1,
     paddingVertical: 24,
   },
@@ -164,6 +128,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop:150
   },
   subtitle: {
     fontSize: 17,
@@ -178,7 +143,7 @@ const styles = StyleSheet.create({
   /** Item */
   item: {
     flex: 1,
-    height: 50,
+    height: 80,
     marginHorizontal: 4,
     paddingVertical: 6,
     paddingHorizontal: 4,
@@ -194,6 +159,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'space-between',
     paddingHorizontal: 5,
+    height:1000
   
     
   },

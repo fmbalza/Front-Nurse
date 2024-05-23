@@ -32,6 +32,7 @@ function MyTabs() {
         <Tab.Navigator initialRouteName='Menu'>
             <Tab.Screen name="Menu" component={Menu} 
             options={{
+                 headerShown:false,
                 tabBarIcon: ({ color, size }) => (<MaterialCommunityIcons name="home-outline" size={24} color="#00826B" />), 
                 tabBarActiveTintColor: '#00826B',
             }}/>

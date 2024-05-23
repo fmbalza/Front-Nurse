@@ -5,7 +5,8 @@ import {
   TouchableOpacity, 
   StyleSheet, 
   Text, 
-  Image } from 'react-native';
+  Image,
+ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import globalStyles, { LoginStyles } from '../../styles/globalStyles'
 import { useNavigation } from '@react-navigation/native';
@@ -128,6 +129,22 @@ const MedicoLogin = () => {
                         Aceptar
                     </Text>
                 </TouchableOpacity>
+                
+                {loginMutation.isPending && (
+          <View
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 10,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            }}
+          >
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        )}
     </LinearGradient>
   );
 };

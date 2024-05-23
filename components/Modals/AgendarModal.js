@@ -1,15 +1,29 @@
 import React, { useState } from 'react';
-import { View, Modal, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, Modal, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
 import DatePicker from 'react-native-modern-datepicker';
 
 const AgendarModal = ({ visible, onClose, onSave }) => {
   const [selectedDate, setSelectedDate] = useState('');
 
-
-
   const handleSave = () => {
-    onSave(selectedDate);
-    onClose();
+    Alert.alert(
+      'Confirmar Consulta',
+      `Fecha y hora seleccionada: ${selectedDate}`,
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirmar',
+          onPress: () => {
+            onSave(selectedDate);
+            onClose();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   return (
@@ -18,14 +32,14 @@ const AgendarModal = ({ visible, onClose, onSave }) => {
         <View style={styles.modalContent}>
           <Text style={styles.title}>Seleccione Fecha y Hora de la consulta</Text>
           <View style={styles.dateTimeContainer}>
-          <DatePicker
-            onSelectedChange={date => setSelectedDate(date)}
-            options={{
-                textHeaderColor: "#00826B",
-                textDefaultColor: "#00826B",
-                textSecondaryColor: "#00826B",
+            <DatePicker
+              onSelectedChange={(date) => setSelectedDate(date)}
+              options={{
+                textHeaderColor: '#00826B',
+                textDefaultColor: '#00826B',
+                textSecondaryColor: '#00826B',
                 mainColor: '#00826B',
-            }}
+              }}
             />
           </View>
           <View style={styles.buttonContainer}>
@@ -41,7 +55,6 @@ const AgendarModal = ({ visible, onClose, onSave }) => {
     </Modal>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
