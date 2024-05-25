@@ -14,7 +14,11 @@ export const useMedicoLogin = () => {
     onSuccess: (data) => {
       // console.log("aqui", data);
       login(data.jwt, jwtDecode(data.jwt));
-      navigation.navigate("HomeMedico");
+      // navigation.navigate("HomeMedico"); //metodo por defecto
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "HomeMedico" }],
+      });
     },
     onError: (error) => {
       console.log(error);
@@ -47,7 +51,6 @@ export const useVerifyMedico = () => {
 
   return useQuery({
     queryKey: ["verifyMedico"],
-    //Verificar con eduardo si es asi
     queryFn: () => doVerify(),
     // enabled: false,
   });

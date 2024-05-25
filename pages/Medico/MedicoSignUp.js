@@ -7,21 +7,24 @@ import {
   TextInput,
   StyleSheet,
   ScrollView,
-  Switch,
+  Image,
   ActivityIndicator,
 } from "react-native";
 import { SignUpStyles } from "../../styles/globalStyles";
-import DatePicker from "../../components/DatePicker";
-import GenderPicker from "../../components/GenderPicker";
 import { useNavigation } from "@react-navigation/native";
+import GenderPicker from "../../components/GenderPicker";
+import SpecialtyPicker from "../../components/SpecialtyPicker";
+import FotoModal from "../../components/Modals/FotoModal";
 // ---------------------------------------------------------------------
 import { useForm, Controller } from "react-hook-form";
-import { useRegisterPaciente } from "../../utils/hooks/paciente/auth.js";
-// import { doRegister } from "../../utils/api/paciente/auth.js";
+import { useRegisterMedico } from "../../utils/hooks/medico/auth.js";
+import { useEspecialidades } from "../../utils/hooks/medico/especialidades";
+import { doRegister } from "../../utils/api/paciente/auth.js";
 
-const PacienteSignUp = () => {
-  // const navigation = useNavigation();
-  // const [isFamiliar, setIsFamiliar] = useState(false);
+const MedicoSignUp = () => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedImageUri, setSelectedImageUri] = useState(null);
+  const specialties = [];
 
   const {
     control,
@@ -29,23 +32,57 @@ const PacienteSignUp = () => {
     formState: { errors },
   } = useForm();
 
-  const registerMutation = useRegisterPaciente();
+  const registerMutation = useRegisterMedico();
+  const { isPending, isError, data, error } = useEspecialidades();
+
+  if (isError) {
+    return <Text>{error.message}</Text>;
+  }
+
+  if (isPending) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  if (data) {
+    // [{ label: "Cardiologia", value: "1", color: "00826B" }]
+    const format = data.map((specialty) => {
+      return {
+        label: specialty.de_especialidad,
+        value: specialty.id_especialidad.toString(),
+        color: "#00826B",
+      };
+    });
+    specialties.push(...format);
+  }
 
   const handleRegister = (values) => {
-    // console.log(values);
+    console.log(values);
     registerMutation.mutate(values);
   };
 
-  // const handleSwitchToggle = (value) => {
-  //   setIsFamiliar(value);
-  // };
+  const openModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleImagePicked = (imageUri) => {
+    setSelectedImageUri(imageUri);
+    // console.log(selectedImageUri);
+  };
 
   return (
     <ScrollView>
       <LinearGradient
         colors={["#FFFFFF", "#D6FFE9"]}
         style={{
-          height: 1000,
+          height: 1300,
         }}
       >
         <View
@@ -66,7 +103,6 @@ const PacienteSignUp = () => {
               marginBottom: 40,
             }}
           >
-            {/* Este texto se deforma en mi telefono (•_•) */}
             <Text
               style={{
                 fontSize: 45,
@@ -99,11 +135,11 @@ const PacienteSignUp = () => {
                   value={value}
                 />
               )}
-              name="no_paciente"
+              name="no_medico"
               rules={{ required: true }}
               defaultValue={""}
             />
-            {/* {errors.no_paciente && <Text style={{ color: 'red' }}>Nombre requerido</Text> */}
+            {/* {errors.no_medico && <Text style={{ color: 'red' }}>Nombre requerido</Text> */}
 
             <Controller
               control={control}
@@ -117,11 +153,11 @@ const PacienteSignUp = () => {
                   value={value}
                 />
               )}
-              name="ap_paciente"
+              name="ap_medico"
               rules={{ required: true }}
               defaultValue={""}
             />
-            {/* {errors.ap_paciente && <Text style={{ color: 'red' }}>Apellido requerido</Text> */}
+            {/* {errors.ap_medico && <Text style={{ color: 'red' }}>Apellido requerido</Text> */}
 
             <Controller
               control={control}
@@ -129,18 +165,17 @@ const PacienteSignUp = () => {
                 <TextInput
                   style={SignUpStyles.inputs}
                   placeholderTextColor="#00826B"
-                  placeholder="Cedula"
-                  keyboardType="numeric"
+                  placeholder="Contraseña"
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
                 />
               )}
-              name="cedula_paciente"
+              name="contrasena"
               rules={{ required: true }}
               defaultValue={""}
             />
-            {/* {errors.cedula_paciente && <Text style={{ color: 'red' }}>Cedula requerida</Text>} */}
+            {/* {errors. && <Text style={{ color: 'red' }}> requerido</Text> */}
 
             <Controller
               control={control}
@@ -148,18 +183,55 @@ const PacienteSignUp = () => {
                 <TextInput
                   style={SignUpStyles.inputs}
                   placeholderTextColor="#00826B"
-                  placeholder="Telefono"
-                  keyboardType="numeric"
+                  placeholder="Ej: 29560310"
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
+                  keyboardType="numeric"
+                />
+              )}
+              name="cedula_medico"
+              rules={{ required: true }}
+              defaultValue={""}
+            />
+            {/* {errors. && <Text style={{ color: 'red' }}> requerido</Text> */}
+
+            <Controller
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  style={SignUpStyles.inputs}
+                  placeholderTextColor="#00826B"
+                  placeholder="Ej: 0123-1234567"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  keyboardType="numeric"
                 />
               )}
               name="telefono"
               rules={{ required: true }}
               defaultValue={""}
             />
-            {/* {errors.telefono && <Text style={{ color: 'red' }}>Telefono requerido</Text>} */}
+            {/* {errors. && <Text style={{ color: 'red' }}> requerido</Text> */}
+
+            <Controller
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  style={SignUpStyles.inputs}
+                  placeholderTextColor="#00826B"
+                  placeholder="Correo"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+              name="email"
+              rules={{ required: true }}
+              defaultValue={""}
+            />
+            {/* {errors. && <Text style={{ color: 'red' }}> requerido</Text> */}
 
             <Controller
               control={control}
@@ -176,53 +248,50 @@ const PacienteSignUp = () => {
               control={control}
               render={({ field: { onChange, value } }) => (
                 <View style={styles.componentt}>
-                  <DatePicker onDateChange={onChange} value={value} />
+                  <SpecialtyPicker
+                    onSpecialtyChange={onChange}
+                    value={value}
+                    specialties={specialties || []}
+                  />
                 </View>
               )}
-              name="fecha_nacimiento"
-              defaultValue={new Date().toISOString().split("T")[0]}
-              // rules={{ required: true }} // siempre tiene algo asignado por defecto
+              name="id_especialidad"
+              rules={{ required: true }}
             />
 
-            {/* 
-              Fran, el mensaje hay que moverlo a un componente que se muestre al presionar ⓘ
-              un tooltip basicamente
-            */}
-            {/* 
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginTop: 10,
-                  marginBottom: 15,
-                }}
-              >
-                <Text style={{ fontSize: 20, color: "#00826B" }}>Familiar</Text>
-                <Switch
-                  value={isFamiliar}
-                  onValueChange={handleSwitchToggle}
-                  trackColor={{ false: "#767577", true: "#A4D4BB" }}
-                  thumbColor={isFamiliar ? "#00826B" : "#A4D4BB"}
-                  ios_backgroundColor="#3e3e3e"
-                  style={styles.switch}
-                />
-              </View>
-
+            <TouchableOpacity onPress={openModal} style={SignUpStyles.btnCert}>
               <Text
                 style={{
-                  marginLeft: 20,
-                  marginRight: 20,
-                  fontSize: 15,
-                  color: "#00826B",
+                  color: "white",
+                  fontSize: 20,
+                  fontWeight: "300",
                 }}
               >
-                Activar la funcionalidad de "Familiar" te permitiria poder acceder
-                a los registros de tratamientos en uso de los usuarios que te lo
-                permitan. En caso de tener un miembro mayor de tu familia en la
-                aplicacion Nurse, te permitira ver su tratamiento en tiempo real,
-                y hacerle seguimiento{" "}
-              </Text> 
-            */}
+                Subir Foto de perfil
+              </Text>
+            </TouchableOpacity>
+
+            {/* no funciona como deberia */}
+            {/* {selectedImageUri && (
+              <Image
+                source={{ uri: selectedImageUri }}
+                style={{ width: 300, height: 300 }}
+              />
+            )} */}
+
+            <Controller
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <FotoModal
+                  isVisible={isModalVisible}
+                  onClose={closeModal}
+                  onImagePicked={handleImagePicked}
+                  onChange={onChange}
+                  value={value}
+                />
+              )}
+              name="foto_perfil"
+            />
 
             <TouchableOpacity
               onPress={handleSubmit((data) => handleRegister(data))}
@@ -285,4 +354,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PacienteSignUp;
+export default MedicoSignUp;

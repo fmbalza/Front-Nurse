@@ -5,13 +5,13 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 //pages
 import StartPage from "../pages/StartPage";
-import MedicoSignUp from "../pages/Madico/MedicoSignUp/MedicoSignUp";
+import MedicoSignUp from "../pages/Medico/MedicoSignUp";
 import PacienteSignUp from "../pages/Paciente/PacienteSignUp";
 import WelcomePage from "../pages/WelcomePage";
 
-import HomeMedico from "../pages/Madico/Home/HomeMedico";
+import HomeMedico from "../pages/Medico/Home/HomeMedico";
 import PacienteLogin from "../pages/Paciente/PacienteLogin";
-import MedicoLogin from "../pages/Madico/MedicoLogIn";
+import MedicoLogin from "../pages/Medico/MedicoLogIn";
 import HomePaciente from "../pages/Paciente/Home/HomePaciente";
 
 const Stack = createStackNavigator();
@@ -27,26 +27,32 @@ function MyStack() {
       <Stack.Screen
         name="WelcomePage"
         component={WelcomePage}
-        options={{           headerTintColor: "#006150",
-        headerBackTitleVisible: false,
-        headerTitleStyle: { display: "none" },
-        headerTitleStyle: { display: "none" }, }}
+        options={{
+          headerTintColor: "#006150",
+          headerBackTitleVisible: false,
+          headerTitleStyle: { display: "none" },
+          headerTitleStyle: { display: "none" },
+        }}
       />
       <Stack.Screen
         name="PacienteLogin"
         component={PacienteLogin}
-        options={{ headerTintColor: "#006150",
-        headerBackTitleVisible: false,
-        headerTitleStyle: { display: "none" },
-        headerTitleStyle: { display: "none" },  }}
+        options={{
+          headerTintColor: "#006150",
+          headerBackTitleVisible: false,
+          headerTitleStyle: { display: "none" },
+          headerTitleStyle: { display: "none" },
+        }}
       />
       <Stack.Screen
         name="MedicoLogin"
         component={MedicoLogin}
-        options={{ headerTintColor: "#006150",
-        headerBackTitleVisible: false,
-        headerTitleStyle: { display: "none" },
-        headerTitleStyle: { display: "none" }, }}
+        options={{
+          headerTintColor: "#006150",
+          headerBackTitleVisible: false,
+          headerTitleStyle: { display: "none" },
+          headerTitleStyle: { display: "none" },
+        }}
       />
       <Stack.Screen
         name="PacienteSignUp"

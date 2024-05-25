@@ -6,53 +6,46 @@ import {
   StyleSheet,
   Text,
   Image,
-  Alert,
-  Modal,
-  Button,
   ActivityIndicator,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import globalStyles, { LoginStyles } from "../../styles/globalStyles";
+import globalStyles, { LoginStyles } from "../../styles/globalStyles.js";
 import { useNavigation } from "@react-navigation/native";
-// ---------------------------------------------------------------------
+//---------------------------------------------------------------------
 import { useForm, Controller } from "react-hook-form";
 import {
-  usePacienteLogin,
-  useVerifyPaciente,
-} from "../../utils/hooks/paciente/auth.js";
+  useMedicoLogin,
+  useVerifyMedico,
+} from "../../utils/hooks/medico/auth.js";
 // import { doVerify } from "../../utils/api/paciente/auth.js";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-const PacienteLogin = () => {
+const MedicoLogin = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const loginMutation = usePacienteLogin();
-  const verifyQuery = useVerifyPaciente();
+  const loginMutation = useMedicoLogin();
+  const verifyQuery = useVerifyMedico();
   const navigation = useNavigation();
 
   const [rememberMe, setRememberMe] = useState(false);
 
   const handleLogIn = (values) => {
+    // console.log(values)
     loginMutation.mutate(values);
   };
 
   useEffect(() => {
     if (verifyQuery.isSuccess && rememberMe) {
-      navigation.navigate("HomePaciente");
+      navigation.navigate("HomeMedico");
     }
   }, [verifyQuery.isSuccess]);
 
   return (
     <LinearGradient colors={["#FFFFFF", "#D6FFE9"]} style={styles.container}>
-      {/* {loginMutation.isError && (
-        <View>
-          <Text>Error: {loginMutation.error.message}</Text>
-          <Button title="Close" onPress={() => loginMutation.reset()} />
-        </View>
-      )} */}
-
       <Image
         source={require("../../assets/nurse_logo.png")}
         style={{ width: 200, height: 230 }}
@@ -84,18 +77,49 @@ const PacienteLogin = () => {
               inputMode="numeric"
             />
           )}
-          name="cedula_paciente"
+          name="cedula_medico"
           rules={{ required: true }}
           defaultValue={""}
         />
-        {/* {errors.cedula_paciente && Alert.alert("Cédula requerida")} */}
+      </View>
+
+      <View style={LoginStyles.inputs}>
+        <Controller
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <View style={styles.passwordInputContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="Contraseña"
+                placeholderTextColor="#00826B"
+                onChangeText={(value) => onChange(value)}
+                onBlur={onBlur}
+                value={value}
+                secureTextEntry={!showPassword}
+              />
+              <TouchableOpacity
+                onPress={() => setShowPassword(!showPassword)}
+                style={styles.passwordToggleButton}
+              >
+                <MaterialCommunityIcons
+                  name={showPassword ? "eye-off" : "eye"}
+                  size={24}
+                  color="#00826B"
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+          name="contrasena"
+          rules={{ required: true }}
+          defaultValue={""}
+        />
       </View>
 
       <Text style={styles.registerText}>
         ¿No tienes una cuenta?{" "}
         <Text
           style={styles.registerLink}
-          onPress={() => navigation.navigate("PacienteSignUp")}
+          onPress={() => navigation.navigate("MedicoSignUp")}
         >
           Regístrate aquí
         </Text>
@@ -149,14 +173,16 @@ const styles = StyleSheet.create({
   },
   input: {
     width: "100%",
-    height: "100%",
-    zIndex: 8,
-    borderRadius: 10,
-    backgroundColor: "white",
-
+    height: 40,
+    marginLeft: 10,
+    marginTop: 10,
     fontSize: 15,
-    paddingHorizontal: 10,
+  },
+
+  passwordToggleButton: {
+    left: "90%",
+    bottom: "40%",
   },
 });
 
-export default PacienteLogin;
+export default MedicoLogin;

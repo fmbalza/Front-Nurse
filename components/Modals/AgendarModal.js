@@ -1,21 +1,28 @@
-import React, { useState } from 'react';
-import { View, Modal, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
-import DatePicker from 'react-native-modern-datepicker';
+import React, { useState } from "react";
+import {
+  View,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
+// import DatePicker from 'react-native-modern-datepicker';
 
 const AgendarModal = ({ visible, onClose, onSave }) => {
-  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedDate, setSelectedDate] = useState("");
 
   const handleSave = () => {
     Alert.alert(
-      'Confirmar Consulta',
+      "Confirmar Consulta",
       `Fecha y hora seleccionada: ${selectedDate}`,
       [
         {
-          text: 'Cancelar',
-          style: 'cancel',
+          text: "Cancelar",
+          style: "cancel",
         },
         {
-          text: 'Confirmar',
+          text: "Confirmar",
           onPress: () => {
             onSave(selectedDate);
             onClose();
@@ -30,9 +37,11 @@ const AgendarModal = ({ visible, onClose, onSave }) => {
     <Modal visible={visible} animationType="slide">
       <View style={styles.container}>
         <View style={styles.modalContent}>
-          <Text style={styles.title}>Seleccione Fecha y Hora de la consulta</Text>
+          <Text style={styles.title}>
+            Seleccione Fecha y Hora de la consulta
+          </Text>
           <View style={styles.dateTimeContainer}>
-            <DatePicker
+            {/* <DatePicker
               onSelectedChange={(date) => setSelectedDate(date)}
               options={{
                 textHeaderColor: '#00826B',
@@ -40,7 +49,7 @@ const AgendarModal = ({ visible, onClose, onSave }) => {
                 textSecondaryColor: '#00826B',
                 mainColor: '#00826B',
               }}
-            />
+            /> */}
           </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={onClose}>
@@ -58,39 +67,39 @@ const AgendarModal = ({ visible, onClose, onSave }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 20,
     borderRadius: 10,
-    width: '85%',
+    width: "85%",
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
   },
   dateTimeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 20,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
   button: {
-    backgroundColor: '#00826B',
+    backgroundColor: "#00826B",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
     marginLeft: 10,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
   },
 });
