@@ -1,15 +1,67 @@
 import * as React from 'react';
-import { View, TextInput, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { 
+  View, 
+  TextInput, 
+  StyleSheet, 
+  Text, 
+  TouchableOpacity, 
+  ActivityIndicator, } from 'react-native';
 import  {useState}  from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { useGetPaciente } from '../../../utils/hooks/medico/paciente'
+
+
 
 const BuscarPaciente = ({ onSearch }) => {
+
   const [searchText, setSearchText] = useState('');
   const navigation = useNavigation();
+  const { isPending, isError, data, error } = useGetPaciente();
 
+
+  
   const handleSearch = () => {
     onSearch(searchText);
   };
+
+  const handlePatientPress = (paciente) => {
+    
+    const cedula = paciente.cedula
+    navigation.navigate("PerfilPaciente", { cedula });
+  };
+
+  if (isError) {
+    return <Text>Error:{error.message}</Text>;
+  }
+
+  if (isPending) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  const pacientes = data.map(paciente => ({
+    cedula: paciente.cedula_paciente,
+    nombre: `${paciente.no_paciente} ${paciente.ap_paciente}`,
+    telefono: paciente.telefono,
+    genero: paciente.genero,
+    familiar: paciente.familiar,
+    fechaNacimiento: paciente.fecha_nacimiento
+  }));
+
+
+
+
+
+
+
+
+
+
+
+
 
   return (
     <View>
@@ -24,13 +76,19 @@ const BuscarPaciente = ({ onSearch }) => {
         />
       </View>
 
-      <TouchableOpacity style={styles.containerr} onPress={() => navigation.navigate("PerfilPaciente")}>
-        <View style={styles.photo}></View>
-        <View style={styles.detailsContainer}>
-          <Text style={styles.name}>Pedro Nolasco</Text>
-          <Text style={styles.cedula}>7.896.098</Text>
-        </View>
-      </TouchableOpacity  >
+      {pacientes.map((paciente, index) => (
+  <TouchableOpacity
+    key={index}
+    style={styles.containerr}
+    onPress={() => handlePatientPress(paciente)}
+  >
+    <View style={styles.photo}></View>
+    <View style={styles.detailsContainer}>
+      <Text style={styles.name}>{paciente.nombre}</Text>
+      <Text style={styles.cedula}>{paciente.cedula}</Text>
+    </View>
+  </TouchableOpacity>
+))}
 
 
 

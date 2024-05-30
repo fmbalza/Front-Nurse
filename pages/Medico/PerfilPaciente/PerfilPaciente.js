@@ -2,13 +2,17 @@ import React, {useState}from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import BtnAgregar from '../../../components/BtnAgregar';
 import AgendarModal from '../../../components/Modals/AgendarModal';
+import { useNavigation } from '@react-navigation/native';
+import { useGetPaciente, useGetPacienteConsulta } from '../../../utils/hooks/medico/paciente';
 
-
-const PerfilPaciente = () => {
-
+const PerfilPaciente = ({ route }) => {
+  const { cedula } = route.params
+  const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [eventDate, setEventDate] = useState('');
   const [eventTime, setEventTime] = useState('');
+  const { isPending, isError, data, error } = useGetPaciente();
+  const pacienteConsultaQuery = useGetPacienteConsulta(cedula);
 
   const handleOpenModal = () => {
     setModalVisible(true);
@@ -23,42 +27,103 @@ const PerfilPaciente = () => {
     setEventTime(time);
   };
 
+    
+ 
+
+
+
+
+  const pacientes = data.filter(paciente => paciente.cedula_paciente === cedula).map(paciente => ({
+    cedula: paciente.cedula_paciente,
+    nombre: `${paciente.no_paciente} ${paciente.ap_paciente}`,
+    telefono: paciente.telefono,
+    genero: paciente.genero,
+    familiar: paciente.familiar,
+    fechaNacimiento: paciente.fecha_nacimiento
+  }));
+
+  if (isError) {
+    return <Text>Error:{error.message}</Text>;
+  }
+
+  if (isPending) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  if (pacientes.length === 0) {
+    return <Text>No se encontró ningún paciente con la cédula {cedula}</Text>;
+  }
+
+
+
+
+
+
+    const consultas = pacienteConsultaQuery.data.map(consulta => ({
+      nombrePaciente: `${consulta.cd_paciente.ap_paciente} ${consulta.cd_paciente.no_paciente}`,
+      nombreMedico: `${consulta.cd_medico.ap_medico} ${consulta.cd_medico.no_medico}`,
+      fecha: consulta.fecha,
+      estado: consulta.estado,
+      descripcion: consulta.de_consulta,
+    
+    }));
+ 
+
+
   return (
     <View style={styles.container}>
       <View style={styles.profileInfo}>
       <View style={styles.detailsContainer}>
 
       <View style={styles.photo}></View>
-          <Text style={styles.name}>Jesus de Arimatea</Text>
-          <Text style={styles.cedula}>1.896.098</Text>
-          <Text style={styles.cedula}>Masculino</Text>
-          <Text style={styles.cedula}>500 años</Text>
+      {pacientes.map((paciente, index) => (
+        <View key={index} style={styles.pacienteContainer}>
+          <Text style={styles.label}>Cédula: {paciente.cedula}</Text>
+         
+          <Text style={styles.label}>Nombre: {paciente.nombre}</Text>
+         
+          <Text style={styles.label}>Teléfono: {paciente.telefono}</Text>
+         
+          <Text style={styles.label}>Género: {paciente.genero}</Text>
+         
+          <Text style={styles.label}>Familiar: {paciente.familiar}</Text>
+         
+          <Text style={styles.label}>Fecha de Nacimiento: {paciente.fechaNacimiento}</Text>
+        
+        </View>
+      ))}
           
-          <View style={{ alignItems:'flex-end', top:-40}}>
+          <View style={{ alignItems:'flex-end', top:10, zIndex:9}}>
           <BtnAgregar/>
           </View>
       </View>
       </View>
     <ScrollView verical>
       <View style={styles.cardsContainer}>
-          <TouchableOpacity style={styles.card}>
-            <Text style={styles.cardTitle}>Consulta 1</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.card}>
-            <Text style={styles.cardTitle}>Consulta 2</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.card}>
-            <Text style={styles.cardTitle}>Consulta 3</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.card}>
-            <Text style={styles.cardTitle}>Consulta 4</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.card}>
-            <Text style={styles.cardTitle}>Consulta 5</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.card}>
-            <Text style={styles.cardTitle}>Consulta 6</Text>
-          </TouchableOpacity>
+
+
+          {consultas.map((consulta, index) => (
+        <TouchableOpacity key={index} style={styles.card}>
+          <Text style={styles.cardTitle}>    Consulta{index + 1}: </Text>
+          <Text style={styles.label}>    Paciente: {consulta.nombrePaciente}</Text>
+         
+          <Text style={styles.label}>    Medico: {consulta.nombreMedico}</Text>
+         
+          <Text style={styles.label}>    Fecha: {consulta.fecha}</Text>
+         
+          <Text style={styles.label}>    Estado: {consulta.estado}</Text>
+         
+          <Text style={styles.label}>    Descripcion: {consulta.descripcion}</Text>
+         
+        
+        
+        </TouchableOpacity>
+      ))}
+
         </View>
 
     </ScrollView>
@@ -112,6 +177,7 @@ const styles = StyleSheet.create({
   },
   cardsContainer: {
     flexDirection: 'column',
+    marginTop:10
   },
   card: {
     width: 350,
@@ -120,11 +186,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginRight: 10,
     justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 10,
+    alignItems: 'left',
+    marginTop: 10
   },
   cardTitle: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   agendar:{

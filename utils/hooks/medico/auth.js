@@ -15,6 +15,7 @@ export const useMedicoLogin = () => {
       // console.log("aqui", data);
       login(data.jwt, jwtDecode(data.jwt));
       // navigation.navigate("HomeMedico"); //metodo por defecto
+      queryClient.invalidateQueries("consultasDia")
       navigation.reset({
         index: 0,
         routes: [{ name: "HomeMedico" }],

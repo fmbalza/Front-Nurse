@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useMemo } from "react";
+import React, { useState, useCallback} from "react";
 import {
   StyleSheet,
   Dimensions,
@@ -9,14 +9,22 @@ import {
   TouchableOpacity,
   ScrollView,
   Button,
+  ActivityIndicator,
+  Pressable
+  
 } from "react-native";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 //---------------------------------------------------------------------
 // import { FlashList} from "@shopify/flash-list"; //el componente calendario de abajo depende de esta libreria
 import { Calendar, toDateId } from "@marceloterreiro/flash-calendar";
+import { useConsultasDia } from "../../../utils/hooks/medico/consultaDia";
 
 const { width } = Dimensions.get("window");
 
-export default function Example() {
+
+
+const Menu = () => {
+
   const [date, setDate] = useState("12/12/2023");
   const today = toDateId(new Date());
   const [selectedDate, setSelectedDate] = useState(today);
@@ -24,30 +32,52 @@ export default function Example() {
     toDateId(new Date())
   );
 
+  const { isPending, isError, data, error } = useConsultasDia();
+
   const handleDateChange = (date) => {
     setSelectedDate(date);
     setDate(date);
   };
 
-  const handlePreviousMonth = useCallback(() => {
-    // console.log(currentCalendarMonth);
+const handlePreviousMonth = useCallback(() => {
+  setCurrentCalendarMonth((prev) => {
+    const date = new Date(prev);
+    date.setMonth(date.getMonth() - 1);
+    return toDateId(date);
+  });
+}, [currentCalendarMonth]);
 
-    setCurrentCalendarMonth((prev) => {
-      const date = new Date(prev);
-      date.setMonth(date.getMonth() - 1);
-      return toDateId(date);
-    });
-  }, [currentCalendarMonth]);
+const handleNextMonth = useCallback(() => {
+  setCurrentCalendarMonth((prev) => {
+    const date = new Date(prev);
+    date.setMonth(date.getMonth() + 1);
+    return toDateId(date);
+  });
+}, [currentCalendarMonth]);
 
-  const handleNextMonth = useCallback(() => {
-    // console.log(currentCalendarMonth);
+if (isError) {
+  return <Text>Error:{error.message}</Text>;
+}
 
-    setCurrentCalendarMonth((prev) => {
-      const date = new Date(prev);
-      date.setMonth(date.getMonth() + 1);
-      return toDateId(date);
-    });
-  }, [currentCalendarMonth]);
+if (isPending) {
+  return (
+    <View style={styles.container}>
+      <ActivityIndicator size="large" color="#0000ff" />
+    </View>
+  );
+}
+
+
+if (!data) {
+  // Si data es falsy (undefined, null, 0, false, NaN, '')
+  return <Text>No hay datos disponibles.</Text>;
+} else {
+  // Si data tiene un valor válido
+  const fechas = data.map(consulta => consulta.fecha);
+
+
+  // Resto del código que procesa los datos de data
+}
 
   return (
     <ScrollView>
@@ -56,37 +86,47 @@ export default function Example() {
           <View style={styles.header}>
             <Text style={styles.title}>Mis Consultas</Text>
           </View>
-          <Button title="previous" onPress={handlePreviousMonth} />
-          <Button title="next" onPress={handleNextMonth} />
-          <View style={styles.picker}>
-            <Calendar
-              calendarActiveDateRanges={[
-                { startId: selectedDate, endId: selectedDate },
-              ]}
-              calendarMonthId={currentCalendarMonth}
-              onCalendarDayPress={setSelectedDate}
-              calendarFormatLocale="es"
-            />
+          <View style={styles.pickerContainer}>
+              <Pressable style={styles.prevButton} onPress={handlePreviousMonth}>
+                <MaterialCommunityIcons name="chevron-left" size={29} color="#FFFFFF" />
+              </Pressable>
+            <View style={styles.calendarContainer}>
+              <Calendar
+                calendarActiveDateRanges={[{ startId: selectedDate, endId: selectedDate }]}
+                calendarMonthId={currentCalendarMonth}
+                onCalendarDayPress={setSelectedDate}
+                calendarFormatLocale="es"
+              />
+            </View>
+            <Pressable style={styles.nextButton} onPress={handleNextMonth}>
+              <MaterialCommunityIcons name="chevron-right" size={29} color="#FFFFFF" />
+            </Pressable>
           </View>
+
+
+
+
+
 
           <View
             style={{
-              marginTop: 150,
+              marginTop: 220,
               flex: 1,
               paddingHorizontal: 16,
               paddingVertical: 24,
             }}
           >
-            {selectedDate && <Text style={styles.subtitle}>{date}</Text>}
+            {selectedDate && <Text style={styles.subtitle}>{selectedDate}</Text>}
             <View style={styles.placeholder}>
-              <View style={styles.placeholderInset}>
-                {[1, 2, 3].map((index) => (
-                  <TouchableOpacity key={index} style={styles.eventContainer}>
-                    <Text style={styles.eventTitle}>Consulta {index}</Text>
-                    <Text style={styles.eventTime}>{index}:00 AM</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
+            <View style={styles.placeholderInset}>
+              {data.filter(item => new Date(item.fecha).getDate() -1 === new Date(selectedDate).getDate() )
+                  .map((item, index) => (
+                    <TouchableOpacity key={index} style={styles.eventContainer}>
+                      <Text style={styles.eventTitle}>Consulta {index + 1}</Text>
+                      <Text key={index}>                              {new Date(item.fecha).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+                    </TouchableOpacity>
+                  ))}
+            </View>
             </View>
           </View>
         </View>
@@ -138,7 +178,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 150,
+    marginTop: "10%",
   },
   subtitle: {
     fontSize: 17,
@@ -195,7 +235,6 @@ const styles = StyleSheet.create({
   placeholderInset: {
     borderWidth: 4,
     borderColor: "#e5e7eb",
-    borderStyle: "dashed",
     borderRadius: 9,
     flexGrow: 1,
     flexShrink: 1,
@@ -218,5 +257,34 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     fontWeight: "600",
     color: "#fff",
+  
+  },
+
+
+
+
+  pickerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 16,
+  },
+  calendarContainer: {
+    flex: 1,
+    maxHeight: 74,
+    paddingVertical: 12,
+  },
+  prevButton: {
+    borderRadius:20,
+    backgroundColor:"#00826B",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  nextButton: {
+    borderRadius:20,
+    backgroundColor:"#00826B",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
 });
+export default Menu;

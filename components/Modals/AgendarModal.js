@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-// import DatePicker from 'react-native-modern-datepicker';
 
 const AgendarModal = ({ visible, onClose, onSave }) => {
   const [selectedDate, setSelectedDate] = useState("");
@@ -41,15 +40,7 @@ const AgendarModal = ({ visible, onClose, onSave }) => {
             Seleccione Fecha y Hora de la consulta
           </Text>
           <View style={styles.dateTimeContainer}>
-            {/* <DatePicker
-              onSelectedChange={(date) => setSelectedDate(date)}
-              options={{
-                textHeaderColor: '#00826B',
-                textDefaultColor: '#00826B',
-                textSecondaryColor: '#00826B',
-                mainColor: '#00826B',
-              }}
-            /> */}
+      
           </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={onClose}>

@@ -21,7 +21,7 @@ export const SignUpStyles = StyleSheet.create({
     borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#00826B",
+    backgroundColor: "#  ",
     elevation: 5,
   },
   btnCert: {

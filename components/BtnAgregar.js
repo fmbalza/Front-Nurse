@@ -1,30 +1,58 @@
 import React, { useState } from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, Modal, View, Button } from 'react-native';
 
 const BtnAgregar = () => {
-  const [isFollowing, setIsFollowing] = useState(false);
+  const [followStatus, setFollowStatus] = useState('Agregar');
+  const [showModal, setShowModal] = useState(false);
 
   const handleFollow = () => {
-    setIsFollowing(!isFollowing);
+    if (followStatus === 'Remover') {
+      setShowModal(true);
+    } else {
+      setFollowStatus(followStatus === 'Agregar' ? 'Pendiente' : 'Remover');
+    }
+  };
+
+  const handleRemove = () => {
+    setFollowStatus('Agregar');
+    setShowModal(false);
+  };
+
+  const handleCancel = () => {
+    setShowModal(false);
   };
 
   return (
-    <TouchableOpacity
-      style={[
-        styles.button,
-        isFollowing ? styles.followingButton : styles.followButton,
-      ]}
-      onPress={handleFollow}
-    >
-      <Text
+    <>
+      <TouchableOpacity
         style={[
-          styles.buttonText,
-          isFollowing ? styles.followingText : styles.followText,
+          styles.button,
+          followStatus === 'Remover' ? styles.removeButton : followStatus === 'Pendiente' ? styles.pendingButton : styles.addButton,
         ]}
+        onPress={handleFollow}
       >
-        {isFollowing ? 'Remover' : 'Agregar'}
-      </Text>
-    </TouchableOpacity>
+        <Text
+          style={[
+            styles.buttonText,
+            followStatus === 'Remover' ? styles.removeText : followStatus === 'Pendiente' ? styles.pendingText : styles.addText,
+          ]}
+        >
+          {followStatus}
+        </Text>
+      </TouchableOpacity>
+
+      <Modal visible={showModal} transparent={true}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>¿Está seguro de que quiere remover?</Text>
+            <View style={styles.modalButtonContainer}>
+              <Button title="Confirmar" onPress={handleRemove} />
+              <Button title="Cancelar" onPress={handleCancel} />
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </>
   );
 };
 
@@ -35,14 +63,19 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
-    width:'40%'
+    width: '40%',
   },
-  followButton: {
+  addButton: {
     backgroundColor: '#00826B',
     borderColor: '#00826B',
     borderWidth: 1,
   },
-  followingButton: {
+  pendingButton: {
+    backgroundColor: '#FFC107',
+    borderColor: '#FFC107',
+    borderWidth: 1,
+  },
+  removeButton: {
     backgroundColor: '#fff',
     borderColor: '#dbdbdb',
     borderWidth: 1,
@@ -51,11 +84,35 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
   },
-  followText: {
+  addText: {
     color: '#fff',
   },
-  followingText: {
+  pendingText: {
     color: '#262626',
+  },
+  removeText: {
+    color: '#262626',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  modalButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
   },
 });
 
