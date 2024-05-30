@@ -1,5 +1,5 @@
 import React, {useState}from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity,ActivityIndicator } from 'react-native';
 import BtnAgregar from '../../../components/BtnAgregar';
 import AgendarModal from '../../../components/Modals/AgendarModal';
 import { useNavigation } from '@react-navigation/native';
@@ -59,13 +59,19 @@ const PerfilPaciente = ({ route }) => {
   }
 
 
-
+  if (pacienteConsultaQuery.isPending) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
 
 
     const consultas = pacienteConsultaQuery.data.map(consulta => ({
-      nombrePaciente: `${consulta.cd_paciente.ap_paciente} ${consulta.cd_paciente.no_paciente}`,
-      nombreMedico: `${consulta.cd_medico.ap_medico} ${consulta.cd_medico.no_medico}`,
+      nombrePaciente: ` ${consulta.cd_paciente.no_paciente} ${consulta.cd_paciente.ap_paciente}`,
+      nombreMedico: ` ${consulta.cd_medico.no_medico} ${consulta.cd_medico.ap_medico}`,
       fecha: consulta.fecha,
       estado: consulta.estado,
       descripcion: consulta.de_consulta,
