@@ -4,25 +4,24 @@ import {
   TextInput, 
   StyleSheet, 
   Text, 
+  FlatList,
   TouchableOpacity, 
   ActivityIndicator, } from 'react-native';
-import  {useState}  from 'react';
+import  {useState, useEffect}  from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useGetPaciente } from '../../../utils/hooks/medico/paciente'
-
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 const BuscarPaciente = ({ onSearch }) => {
-
-  const [searchText, setSearchText] = useState('');
+  const [filteredData, setFilteredData] = useState([])
+  const [masterData, setMasterData] = useState([])
+  const [search, setSearch] = useState('')
   const navigation = useNavigation();
   const { isPending, isError, data, error } = useGetPaciente();
-
-
   
-  const handleSearch = () => {
-    onSearch(searchText);
-  };
+  
+ 
 
   const handlePatientPress = (paciente) => {
     
@@ -51,44 +50,91 @@ const BuscarPaciente = ({ onSearch }) => {
     fechaNacimiento: paciente.fecha_nacimiento
   }));
 
+ 
+  useEffect(()=>{
+    fetchPosts() ;
+    return() => {
+   
+    }
+  }, [])
 
 
 
+  const ItemView = ({paciente, handlePatientPress}) =>{
+    console.log(paciente)
+    return(
+      <TouchableOpacity
+      onPress={() => handlePatientPress(paciente)}
+      style={styles.containerr}
+    
+    
+    >
+      <View style={styles.photo}></View>
+      <View style={styles.detailsContainer}>
+        <Text style={styles.name}>{paciente.nombre}</Text>
+        <Text style={styles.cedula}>{paciente.cedula}</Text>
+        <MaterialCommunityIcons name="account-details-outline" size={24} color="black" style={{left:240}}/>
+      </View>
+    </TouchableOpacity>
+    )
+  }
+  
+  const ItemSeparatorView = () => {
+    return(
+      <View
+      style={{height:0.5, width:'100%', backgroundColor:'#c8c8c8'}}
+      />
+    )
+  }
+  
+  const fetchPosts = () => {
+    setFilteredData(pacientes)
+    setMasterData(pacientes)
+  }
 
 
-
-
-
-
-
-
+  const searchFilter = (text) => {
+  
+    const searchText = text.toUpperCase();
+  
+  
+    if (searchText) {
+      const newData = masterData.filter((paciente) => {
+   
+        const itemData = paciente.nombre.toUpperCase();
+  
+        return itemData.includes(searchText);
+      });
+      setFilteredData(newData);
+      setSearch(text);
+    } else {
+     
+      setFilteredData(masterData);
+      setSearch(text);
+    }
+  }
 
   return (
     <View>
       <View style={styles.container}>
-        <TextInput
-          style={styles.input}
-          placeholder="Buscar..."
-          placeholderTextColor={'#00826B'}
-          onChangeText={setSearchText}
-          value={searchText}
-          onSubmitEditing={handleSearch}
+      <TextInput
+        style={{height:60, borderWidth:2, paddingLeft:20, margin:5, borderColor:'#FAFAFA', backgroundColor:'white', borderRadius:7, elevation:3}}
+        value={search}
+        placeholder='Buscar...'
+        
+        underlineColorAndroid="transparent"
+        onChangeText={(text) => searchFilter(text)}
+        />
+        <FlatList
+        data={filteredData}
+        keyExtractor={(item, index) => index.toString()}
+        ItemSeparatorComponent={ItemSeparatorView}
+        renderItem={({ item }) => <ItemView paciente={item} handlePatientPress={handlePatientPress}/>}
+        style={{marginTop:10, width:'100%'}}
         />
       </View>
 
-      {pacientes.map((paciente, index) => (
-  <TouchableOpacity
-    key={index}
-    style={styles.containerr}
-    onPress={() => handlePatientPress(paciente)}
-  >
-    <View style={styles.photo}></View>
-    <View style={styles.detailsContainer}>
-      <Text style={styles.name}>{paciente.nombre}</Text>
-      <Text style={styles.cedula}>{paciente.cedula}</Text>
-    </View>
-  </TouchableOpacity>
-))}
+  
 
 
 

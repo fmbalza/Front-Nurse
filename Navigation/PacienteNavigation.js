@@ -26,6 +26,7 @@ function MyTabs() {
              options={{
                 tabBarIcon: ({ color, size }) => (<MaterialCommunityIcons name="account-injury-outline" size={24} color="#00826B" />), 
                 tabBarActiveTintColor: '#00826B',
+                
             }}
             />
             <Tab.Screen name="BuscarDoctor" component={BuscarDoctor}

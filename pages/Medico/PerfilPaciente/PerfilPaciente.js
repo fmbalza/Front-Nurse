@@ -27,11 +27,6 @@ const PerfilPaciente = ({ route }) => {
     setEventTime(time);
   };
 
-    
- 
-
-
-
 
   const pacientes = data.filter(paciente => paciente.cedula_paciente === cedula).map(paciente => ({
     cedula: paciente.cedula_paciente,
