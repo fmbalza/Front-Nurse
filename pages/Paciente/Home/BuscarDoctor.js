@@ -22,8 +22,39 @@ const BuscarDoctor = () => {
   const navigation = useNavigation();
   const { isPending, isError, data, error } = useGetMedico();
 
+  useEffect(() => {
+    if (data) {
+      fetchPosts();
+    }
+  }, [data]);
 
- 
+  if (isError) {
+    return <Text>Error: {error.message}</Text>;
+  }
+
+  if (isPending) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+
+  
+  const fetchPosts = () => {
+    const medicos = data.map((medico) => ({
+      foto:medico.foto_perfil,
+      cedula: medico.cedula_medico,
+      nombre: `${medico.no_medico} ${medico.ap_medico}`,
+      telefono: medico.telefono,
+      genero: medico.genero,
+      email: medico.email,
+      especialidad: medico.especialidad.de_especialidad,
+    }));
+    setFilteredData(medicos)
+    setMasterData(medicos)
+  }
 
   if (isError) {
     return <Text>Error: {error.message}</Text>;
@@ -40,23 +71,10 @@ const BuscarDoctor = () => {
 
 
 
-  const medicos = data.map((medico) => ({
-    foto:medico.foto_perfil,
-    cedula: medico.cedula_medico,
-    nombre: `${medico.no_medico} ${medico.ap_medico}`,
-    telefono: medico.telefono,
-    genero: medico.genero,
-    email: medico.email,
-    especialidad: medico.especialidad.de_especialidad,
-  }));
-console.log(medicos)
 
-  useEffect(()=>{
-    fetchPosts() ;
-    return() => {
-   
-    }
-  }, [])
+
+
+
 
  
 
@@ -85,10 +103,7 @@ const ItemSeparatorView = () => {
   )
 }
 
-const fetchPosts = () => {
-  setFilteredData(medicos)
-  setMasterData(medicos)
-}
+
 
 const searchFilter = (text) => {
   

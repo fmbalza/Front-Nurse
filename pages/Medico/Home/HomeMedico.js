@@ -16,11 +16,11 @@ export default function App() {
     <React.Fragment>
 
 
-        <ValidationModal
+        {/* <ValidationModal
           visible={modalVisible}
           message="This is a custom modal"
           onClose={handleCloseModal}
-        />
+        /> */}
 
       <MedicoNavigation />
     </React.Fragment>

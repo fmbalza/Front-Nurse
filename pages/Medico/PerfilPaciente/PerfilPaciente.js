@@ -4,15 +4,25 @@ import BtnAgregar from '../../../components/BtnAgregar';
 import AgendarModal from '../../../components/Modals/AgendarModal';
 import { useNavigation } from '@react-navigation/native';
 import { useGetPaciente, useGetPacienteConsulta } from '../../../utils/hooks/medico/paciente';
+import AgregarTratModal from '../../../components/Modals/AgregarTratModal';
 
-const PerfilPaciente = ({ route }) => {
+  const PerfilPaciente = ({ route }) => {
   const { cedula } = route.params
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
+  const [modal, setModal] = useState(false);
   const [eventDate, setEventDate] = useState('');
   const [eventTime, setEventTime] = useState('');
   const { isPending, isError, data, error } = useGetPaciente();
   const pacienteConsultaQuery = useGetPacienteConsulta(cedula);
+
+
+  const toggleModal = () => {
+    setModal(!modal);
+  };
+  
+
+
 
   const handleOpenModal = () => {
     setModalVisible(true);
@@ -27,16 +37,6 @@ const PerfilPaciente = ({ route }) => {
     setEventTime(time);
   };
 
-
-  const pacientes = data.filter(paciente => paciente.cedula_paciente === cedula).map(paciente => ({
-    cedula: paciente.cedula_paciente,
-    nombre: `${paciente.no_paciente} ${paciente.ap_paciente}`,
-    telefono: paciente.telefono,
-    genero: paciente.genero,
-    familiar: paciente.familiar,
-    fechaNacimiento: paciente.fecha_nacimiento
-  }));
-
   if (isError) {
     return <Text>Error:{error.message}</Text>;
   }
@@ -49,11 +49,19 @@ const PerfilPaciente = ({ route }) => {
     );
   }
 
-  if (pacientes.length === 0) {
-    return <Text>No se encontró ningún paciente con la cédula {cedula}</Text>;
-  }
 
 
+
+  const pacientes = data.filter(paciente => paciente.cedula_paciente === cedula).map(paciente => ({
+    cedula: paciente.cedula_paciente,
+    nombre: `${paciente.no_paciente} ${paciente.ap_paciente}`,
+    telefono: paciente.telefono,
+    genero: paciente.genero,
+    familiar: paciente.familiar,
+    fechaNacimiento: paciente.fecha_nacimiento
+  }));
+
+ 
   if (pacienteConsultaQuery.isPending) {
     return (
       <View style={styles.container}>
@@ -61,17 +69,32 @@ const PerfilPaciente = ({ route }) => {
       </View>
     );
   }
+  if (pacienteConsultaQuery.isError) {
+
+    return <Text>Error:{error.message}</Text>;
+  }
 
 
-
-    const consultas = pacienteConsultaQuery.data.map(consulta => ({
+  console.log("Tipo de variable: ", typeof pacienteConsultaQuery.data )
+    
+  const consultas = typeof pacienteConsultaQuery.data === 'string'
+  ? pacienteConsultaQuery.data
+  : pacienteConsultaQuery.data.map(consulta => ({
       nombrePaciente: ` ${consulta.cd_paciente.no_paciente} ${consulta.cd_paciente.ap_paciente}`,
       nombreMedico: ` ${consulta.cd_medico.no_medico} ${consulta.cd_medico.ap_medico}`,
       fecha: consulta.fecha,
       estado: consulta.estado,
-      descripcion: consulta.de_consulta,
-    
+      descripcion: consulta.de_consulta
     }));
+
+    console.log(consultas)
+  
+
+
+  
+
+
+   
  
 
 
@@ -97,34 +120,52 @@ const PerfilPaciente = ({ route }) => {
         
         </View>
       ))}
+
+      
           
           <View style={{ alignItems:'flex-end', top:10, zIndex:9}}>
           <BtnAgregar/>
           </View>
       </View>
       </View>
-    <ScrollView verical>
+    <ScrollView verical
+    style={{height:1000}}>
       <View style={styles.cardsContainer}>
+      <View>
+        {typeof consultas === 'string' || consultas.every(consulta => consulta.estado !== 1) ? <Text></Text> :<Text>Consultas Pendientes: </Text>}
+      
 
+         {typeof consultas === 'string' || consultas.every(consulta => consulta.estado !== 1)
+              ? <Text></Text>
+              : consultas.filter(consulta => consulta.estado === 1).map((consulta, index) => (
+                <TouchableOpacity key={index} style={styles.card} onPress={toggleModal}>
+                  <Text style={styles.cardTitle}>    Consulta{index + 1}: </Text>
+                  <Text style={styles.label}>    Paciente: {consulta.nombrePaciente}</Text>
+                  <Text style={styles.label}>    Medico: {consulta.nombreMedico}</Text>
+                  <Text style={styles.label}>    Fecha: {consulta.fecha}</Text>
+                  <Text style={styles.label}>    Estado: {consulta.estado}</Text>
+                  <Text style={styles.label}>    Descripcion: {consulta.descripcion}</Text>
 
-          {consultas.map((consulta, index) => (
-        <TouchableOpacity key={index} style={styles.card}>
-          <Text style={styles.cardTitle}>    Consulta{index + 1}: </Text>
-          <Text style={styles.label}>    Paciente: {consulta.nombrePaciente}</Text>
-         
-          <Text style={styles.label}>    Medico: {consulta.nombreMedico}</Text>
-         
-          <Text style={styles.label}>    Fecha: {consulta.fecha}</Text>
-         
-          <Text style={styles.label}>    Estado: {consulta.estado}</Text>
-         
-          <Text style={styles.label}>    Descripcion: {consulta.descripcion}</Text>
-         
-        
-        
-        </TouchableOpacity>
-      ))}
-
+                  <AgregarTratModal visible={modal} onClose={toggleModal} />
+                </TouchableOpacity>
+              ))}
+      
+    </View>
+<View style={{marginTop:10}}>
+      <Text>Consultas: </Text>
+      {typeof consultas === 'string'
+              ? <Text>No hay consultas</Text>
+              : consultas.filter(consulta => consulta.estado === 2).map((consulta, index) => (
+                <TouchableOpacity key={index} style={styles.card}>
+                  <Text style={styles.cardTitle}>    Consulta{index + 1}{(index + 1) === 1 ? " (De primera)" : ""}: </Text>
+                  <Text style={styles.label}>    Paciente: {consulta.nombrePaciente}</Text>
+                  <Text style={styles.label}>    Medico: {consulta.nombreMedico}</Text>
+                  <Text style={styles.label}>    Fecha: {consulta.fecha}</Text>
+                  <Text style={styles.label}>    Estado: {consulta.estado}</Text>
+                  <Text style={styles.label}>    Descripcion: {consulta.descripcion}</Text>
+                </TouchableOpacity>
+              ))}
+      </View>
         </View>
 
     </ScrollView>
@@ -178,7 +219,8 @@ const styles = StyleSheet.create({
   },
   cardsContainer: {
     flexDirection: 'column',
-    marginTop:10
+    marginTop:20,
+    height:1000
   },
   card: {
     width: 350,

@@ -88,7 +88,7 @@ if (!data) {
           </View>
           <View style={styles.pickerContainer}>
               <Pressable style={styles.prevButton} onPress={handlePreviousMonth}>
-                <MaterialCommunityIcons name="chevron-left" size={29} color="#FFFFFF" />
+                <MaterialCommunityIcons name="chevron-left" size={29} color="#00826B" />
               </Pressable>
             <View style={styles.calendarContainer}>
               <Calendar
@@ -99,7 +99,7 @@ if (!data) {
               />
             </View>
             <Pressable style={styles.nextButton} onPress={handleNextMonth}>
-              <MaterialCommunityIcons name="chevron-right" size={29} color="#FFFFFF" />
+              <MaterialCommunityIcons name="chevron-right" size={29} color="#00826B" />
             </Pressable>
           </View>
 
@@ -276,15 +276,19 @@ const styles = StyleSheet.create({
   },
   prevButton: {
     borderRadius:20,
-    backgroundColor:"#00826B",
+    right:-40,
+    top:-15,
     paddingHorizontal: 10,
     paddingVertical: 5,
+    zIndex:9
   },
   nextButton: {
     borderRadius:20,
-    backgroundColor:"#00826B",
     paddingHorizontal: 10,
     paddingVertical: 5,
+    left:-40,
+    top:-15,
+    zIndex:9
   },
 });
 export default Menu;

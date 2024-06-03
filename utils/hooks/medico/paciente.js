@@ -1,4 +1,4 @@
-import { getPaciente, getPacienteConsulta } from "../../api/medico/paciente";
+import { getPaciente, getPacienteConsulta, getPacienteMedico } from "../../api/medico/paciente";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 // import { jwtDecode } from "jwt-decode";
 // import { useNavigation } from "@react-navigation/native";
@@ -10,6 +10,15 @@ export const useGetPaciente = () => {
     // staleTime: 5000,
   });
 };
+
+export const useGetPacienteMedico = () => {
+  return useQuery({
+    queryKey: ["getPacienteMedico"],
+    queryFn: () => getPacienteMedico(),
+    // staleTime: 5000,
+  });
+};
+
 
 
 export const useGetPacienteConsulta = (cedula) => {

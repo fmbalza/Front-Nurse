@@ -9,6 +9,7 @@ import MisPacientes from "../pages/Medico/Home/MisPacientes";
 import BuscarPaciente from "../pages/Medico/Home/BuscarPaciente";
 import Perfil from "../pages/Medico/Home/Perfil";
 import Testing from "../pages/Medico/Home/testing";
+import AddMedication from "../pages/Medico/PerfilPaciente/AddMedication";
 
 import PerfilPaciente from "../pages/Medico/PerfilPaciente/PerfilPaciente";
 
@@ -18,7 +19,10 @@ const StackNavigator = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="PerfilPaciente" component={PerfilPaciente} />
+      <Stack.Screen name="AddMedication" component={AddMedication} />
     </Stack.Navigator>
+
+ 
   );
 };
 
@@ -111,6 +115,7 @@ function MyTabs() {
               options={{ headerShown: false }}
             />
             <Stack.Screen name="PerfilPaciente" component={PerfilPaciente} />
+            <Stack.Screen name="AddMedication" component={AddMedication} />
           </Stack.Navigator>
         )}
       </Tab.Screen>

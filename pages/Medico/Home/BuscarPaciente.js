@@ -14,23 +14,20 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 const BuscarPaciente = ({ onSearch }) => {
+  const { isPending, isError, data, error } = useGetPaciente();
   const [filteredData, setFilteredData] = useState([])
   const [masterData, setMasterData] = useState([])
   const [search, setSearch] = useState('')
   const navigation = useNavigation();
-  const { isPending, isError, data, error } = useGetPaciente();
   
-  
- 
-
-  const handlePatientPress = (paciente) => {
-    
-    const cedula = paciente.cedula
-    navigation.navigate("PerfilPaciente", { cedula });
-  };
+  useEffect(() => {
+    if (data) {
+      fetchPosts();
+    }
+  }, [data]);
 
   if (isError) {
-    return <Text>Error:{error.message}</Text>;
+    return <Text>Error: {error.message}</Text>;
   }
 
   if (isPending) {
@@ -40,23 +37,27 @@ const BuscarPaciente = ({ onSearch }) => {
       </View>
     );
   }
-
-  const pacientes = data.map(paciente => ({
-    cedula: paciente.cedula_paciente,
-    nombre: `${paciente.no_paciente} ${paciente.ap_paciente}`,
-    telefono: paciente.telefono,
-    genero: paciente.genero,
-    familiar: paciente.familiar,
-    fechaNacimiento: paciente.fecha_nacimiento
-  }));
-
+  
  
-  useEffect(()=>{
-    fetchPosts() ;
-    return() => {
-   
-    }
-  }, [])
+
+  const fetchPosts = () => {
+    const pacientes = data.map(paciente => ({
+      cedula: paciente.cedula_paciente,
+      nombre: `${paciente.no_paciente} ${paciente.ap_paciente}`,
+      telefono: paciente.telefono,
+      genero: paciente.genero,
+      familiar: paciente.familiar,
+      fechaNacimiento: paciente.fecha_nacimiento
+    }));
+    setFilteredData(pacientes)
+    setMasterData(pacientes)
+  }
+
+  const handlePatientPress = (paciente) => {
+    
+    const cedula = paciente.cedula
+    navigation.navigate("PerfilPaciente", { cedula });
+  };
 
 
 
@@ -87,10 +88,7 @@ const BuscarPaciente = ({ onSearch }) => {
     )
   }
   
-  const fetchPosts = () => {
-    setFilteredData(pacientes)
-    setMasterData(pacientes)
-  }
+
 
 
   const searchFilter = (text) => {
