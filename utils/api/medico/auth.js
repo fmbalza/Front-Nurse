@@ -29,3 +29,13 @@ export const doRegister = async (data) => {
     throw new Error(error);
   }
 };
+
+export const doUpdate = async (data) => {
+  try {
+    const response = await api.put("/medico", data);
+    // console.log("response", response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};

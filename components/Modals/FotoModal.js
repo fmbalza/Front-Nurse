@@ -58,7 +58,8 @@ const FotoModal = ({ isVisible, onClose, onImagePicked, onChange, value }) => {
         if (error) console.log("Error uploading image: ", error);
         if (data) {
           const imageUrl =
-            "https://jnyudpxchlukyoxinfai.supabase.co/storage/v1/object/public/NURSE/" +
+            process.env.EXPO_PUBLIC_SUPABASE_URL +
+            "/storage/v1/object/public/NURSE/" +
             data.path;
           setSelectedImage(imageUrl);
           onImagePicked(imageUrl);

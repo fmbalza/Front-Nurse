@@ -6,6 +6,9 @@ import { useNavigation } from "@react-navigation/native";
 
 export const useMedicoLogin = () => {
   const login = useAuthStore((state) => state.login);
+  const setRole = useAuthStore((state) => state.setRole);
+  const setCertified = useAuthStore((state) => state.setCertified);
+  const setPushToken = useAuthStore((state) => state.setPushToken);
   const navigation = useNavigation();
   const queryClient = useQueryClient();
 
@@ -13,9 +16,13 @@ export const useMedicoLogin = () => {
     mutationFn: (data) => doLogin(data),
     onSuccess: (data) => {
       // console.log("aqui", data);
-      login(data.jwt, jwtDecode(data.jwt));
+      const user = jwtDecode(data.jwt);
+      login(data.jwt, user);
+      setRole("medico");
+      setCertified(data.certified);
+      setPushToken(user.push_token);
       // navigation.navigate("HomeMedico"); //metodo por defecto
-      queryClient.invalidateQueries("consultasDia")
+      queryClient.invalidateQueries("consultasDia");
       navigation.reset({
         index: 0,
         routes: [{ name: "HomeMedico" }],
@@ -49,10 +56,12 @@ export const useRegisterMedico = () => {
 export const useVerifyMedico = () => {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
+  const role = useAuthStore((state) => state.role);
+  const rememberMe = useAuthStore((state) => state.rememberMe);
 
   return useQuery({
     queryKey: ["verifyMedico"],
     queryFn: () => doVerify(),
-    // enabled: false,
+    enabled: rememberMe && role === "medico",
   });
 };

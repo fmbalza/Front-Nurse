@@ -6,6 +6,8 @@ import { useNavigation } from "@react-navigation/native";
 
 export const usePacienteLogin = () => {
   const login = useAuthStore((state) => state.login);
+  const setRole = useAuthStore((state) => state.setRole);
+  const setPushToken = useAuthStore((state) => state.setPushToken);
   const navigation = useNavigation();
   const queryClient = useQueryClient();
 
@@ -13,8 +15,17 @@ export const usePacienteLogin = () => {
     mutationFn: (data) => doLogin(data),
     onSuccess: (data) => {
       // console.log("aqui", data);
-      login(data.jwt, jwtDecode(data.jwt));
-      navigation.navigate("HomePaciente");
+      const user = jwtDecode(data.jwt);
+      login(data.jwt, user);
+      setRole("paciente");
+      setPushToken(user.push_token);
+      // console.log("reached here");
+      // navigation.navigate("HomePaciente");
+      // queryClient.invalidateQueries("consultasDia")
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "HomePaciente" }],
+      });
     },
     onError: (error) => {
       console.log(error);
@@ -29,7 +40,7 @@ export const useRegisterPaciente = () => {
   return useMutation({
     mutationFn: (data) => doRegister(data),
     onSuccess: (data) => {
-      console.log("aqui", data);
+      // console.log("aqui", data);
       // queryClient.invalidateQueries("paciente");
       if (data === "Paciente creado exitosamente") {
         navigation.navigate("PacienteLogin");
@@ -44,10 +55,12 @@ export const useRegisterPaciente = () => {
 export const useVerifyPaciente = () => {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
+  const role = useAuthStore((state) => state.role);
+  const rememberMe = useAuthStore((state) => state.rememberMe);
 
   return useQuery({
     queryKey: ["verifyPaciente"],
     queryFn: () => doVerify(),
-    // enabled: false,
+    enabled: rememberMe && role === "paciente",
   });
 };

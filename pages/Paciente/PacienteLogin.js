@@ -10,17 +10,16 @@ import {
   Modal,
   Button,
   ActivityIndicator,
+  Switch,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import globalStyles, { LoginStyles } from "../../styles/globalStyles";
 import { useNavigation } from "@react-navigation/native";
 // ---------------------------------------------------------------------
 import { useForm, Controller } from "react-hook-form";
-import {
-  usePacienteLogin,
-  useVerifyPaciente,
-} from "../../utils/hooks/paciente/auth.js";
-// import { doVerify } from "../../utils/api/paciente/auth.js";
+import { usePacienteLogin } from "../../utils/hooks/paciente/auth.js";
+import useAuthStore from "../../utils/storage/auth.js";
+import { registerForPushNotificationsAsync } from "../../utils/notifications/notifications.js";
 
 const PacienteLogin = () => {
   const {
@@ -28,31 +27,27 @@ const PacienteLogin = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const loginMutation = usePacienteLogin();
-  const verifyQuery = useVerifyPaciente();
   const navigation = useNavigation();
 
-  const [rememberMe, setRememberMe] = useState(false);
+  const { setRememberMe } = useAuthStore();
+  const [autoLogin, setAutoLogin] = useState(false);
 
-  const handleLogIn = (values) => {
+  const toggleSwitch = () => {
+    setAutoLogin((previousState) => !previousState);
+    setRememberMe(autoLogin);
+  };
+
+  const handleLogIn = async (values) => {
+    const push_token = await registerForPushNotificationsAsync();
+    values = { ...values, push_token };
+    // console.log(values);
     loginMutation.mutate(values);
   };
 
-  useEffect(() => {
-    if (verifyQuery.isSuccess && rememberMe) {
-      navigation.navigate("HomePaciente");
-    }
-  }, [verifyQuery.isSuccess]);
-
   return (
     <LinearGradient colors={["#FFFFFF", "#D6FFE9"]} style={styles.container}>
-      {/* {loginMutation.isError && (
-        <View>
-          <Text>Error: {loginMutation.error.message}</Text>
-          <Button title="Close" onPress={() => loginMutation.reset()} />
-        </View>
-      )} */}
-
       <Image
         source={require("../../assets/nurse_logo.png")}
         style={{ width: 200, height: 230 }}
@@ -89,6 +84,16 @@ const PacienteLogin = () => {
           defaultValue={""}
         />
         {/* {errors.cedula_paciente && Alert.alert("Cédula requerida")} */}
+      </View>
+
+      <View>
+        <Text style={{ color: "#00826B", fontSize: 20 }}>Recuerdame</Text>
+        <Switch
+          trackColor={{ false: "#767577", true: "#81b0ff" }}
+          thumbColor={autoLogin ? "#f5dd4b" : "#f4f3f4"}
+          onValueChange={toggleSwitch}
+          value={autoLogin}
+        />
       </View>
 
       <Text style={styles.registerText}>

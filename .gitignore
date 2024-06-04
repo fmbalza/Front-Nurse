@@ -36,3 +36,7 @@ yarn-error.*
 
 # dotenv
 .env
+
+# misc
+google-services.json
+android

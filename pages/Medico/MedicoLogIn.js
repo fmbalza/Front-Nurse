@@ -7,18 +7,17 @@ import {
   Text,
   Image,
   ActivityIndicator,
+  Switch,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import globalStyles, { LoginStyles } from "../../styles/globalStyles.js";
 import { useNavigation } from "@react-navigation/native";
 //---------------------------------------------------------------------
 import { useForm, Controller } from "react-hook-form";
-import {
-  useMedicoLogin,
-  useVerifyMedico,
-} from "../../utils/hooks/medico/auth.js";
-// import { doVerify } from "../../utils/api/paciente/auth.js";
+import { useMedicoLogin } from "../../utils/hooks/medico/auth.js";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import useAuthStore from "../../utils/storage/auth.js";
+import { registerForPushNotificationsAsync } from "../../utils/notifications/notifications.js";
 
 const MedicoLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -27,22 +26,24 @@ const MedicoLogin = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const loginMutation = useMedicoLogin();
-  const verifyQuery = useVerifyMedico();
   const navigation = useNavigation();
 
-  const [rememberMe, setRememberMe] = useState(false);
+  const { setRememberMe } = useAuthStore();
+  const [autoLogin, setAutoLogin] = useState(false);
 
-  const handleLogIn = (values) => {
-    // console.log(values)
-    loginMutation.mutate(values);
+  const toggleSwitch = () => {
+    setAutoLogin((previousState) => !previousState);
+    setRememberMe(autoLogin);
   };
 
-  useEffect(() => {
-    if (verifyQuery.isSuccess && rememberMe) {
-      navigation.navigate("HomeMedico");
-    }
-  }, [verifyQuery.isSuccess]);
+  const handleLogIn = async (values) => {
+    const push_token = await registerForPushNotificationsAsync();
+    values = { ...values, push_token };
+    // console.log(values);
+    loginMutation.mutate(values);
+  };
 
   return (
     <LinearGradient colors={["#FFFFFF", "#D6FFE9"]} style={styles.container}>
@@ -112,6 +113,16 @@ const MedicoLogin = () => {
           name="contrasena"
           rules={{ required: true }}
           defaultValue={""}
+        />
+      </View>
+
+      <View>
+        <Text style={{ color: "#00826B", fontSize: 20 }}>Recuerdame</Text>
+        <Switch
+          trackColor={{ false: "#767577", true: "#81b0ff" }}
+          thumbColor={autoLogin ? "#f5dd4b" : "#f4f3f4"}
+          onValueChange={toggleSwitch}
+          value={autoLogin}
         />
       </View>
 

@@ -1,24 +1,22 @@
-import * as React from 'react';
-import { 
-  View, 
-  TextInput, 
-  StyleSheet, 
+import * as React from "react";
+import {
+  View,
+  TextInput,
+  StyleSheet,
   Text,
-  TouchableOpacity, 
+  TouchableOpacity,
   FlatList,
-  ActivityIndicator, } from 'react-native';
-import  {useState, useEffect}  from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { useGetMedico} from '../../../utils/hooks/paciente/buscarDoctor';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-
-
+  ActivityIndicator,
+} from "react-native";
+import { useState, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { useGetMedico } from "../../../utils/hooks/paciente/buscarDoctor";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const BuscarDoctor = () => {
-
-  const [filteredData, setFilteredData] = useState([])
-  const [masterData, setMasterData] = useState([])
-  const [search, setSearch] = useState('')
+  const [filteredData, setFilteredData] = useState([]);
+  const [masterData, setMasterData] = useState([]);
+  const [search, setSearch] = useState("");
   const navigation = useNavigation();
   const { isPending, isError, data, error } = useGetMedico();
 
@@ -40,11 +38,9 @@ const BuscarDoctor = () => {
     );
   }
 
-
-  
   const fetchPosts = () => {
     const medicos = data.map((medico) => ({
-      foto:medico.foto_perfil,
+      foto: medico.foto_perfil,
       cedula: medico.cedula_medico,
       nombre: `${medico.no_medico} ${medico.ap_medico}`,
       telefono: medico.telefono,
@@ -52,9 +48,9 @@ const BuscarDoctor = () => {
       email: medico.email,
       especialidad: medico.especialidad.de_especialidad,
     }));
-    setFilteredData(medicos)
-    setMasterData(medicos)
-  }
+    setFilteredData(medicos);
+    setMasterData(medicos);
+  };
 
   if (isError) {
     return <Text>Error: {error.message}</Text>;
@@ -68,136 +64,118 @@ const BuscarDoctor = () => {
     );
   }
 
+  const ItemView = ({ medico }) => {
+    return (
+      <TouchableOpacity style={styles.containerr}>
+        <View style={styles.photo}></View>
+        <View style={styles.detailsContainer}>
+          <Text style={styles.name}>{medico.nombre}</Text>
+          <Text style={styles.cedula}>{medico.especialidad}</Text>
+          <MaterialCommunityIcons
+            name="account-details-outline"
+            size={24}
+            color="black"
+            style={{ left: 240 }}
+          />
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
+  const ItemSeparatorView = () => {
+    return (
+      <View
+        style={{ height: 0.5, width: "100%", backgroundColor: "#c8c8c8" }}
+      />
+    );
+  };
 
+  const searchFilter = (text) => {
+    const searchText = text.toUpperCase();
 
+    if (searchText) {
+      const newData = masterData.filter((medico) => {
+        const itemData = medico.nombre.toUpperCase();
 
-
-
-
-
- 
-
-const ItemView = ({medico}) =>{
-  return(
-    <TouchableOpacity
- 
-    style={styles.containerr}
-  
-  >
-    <View style={styles.photo}></View>
-    <View style={styles.detailsContainer}>
-      <Text style={styles.name}>{medico.nombre}</Text>
-      <Text style={styles.cedula}>{medico.especialidad}</Text>
-      <MaterialCommunityIcons name="account-details-outline" size={24} color="black" style={{left:240}}/>
-    </View>
-  </TouchableOpacity>
-  )
-}
-
-const ItemSeparatorView = () => {
-  return(
-    <View
-    style={{height:0.5, width:'100%', backgroundColor:'#c8c8c8'}}
-    />
-  )
-}
-
-
-
-const searchFilter = (text) => {
-  
-  const searchText = text.toUpperCase();
-
-
-  if (searchText) {
-    const newData = masterData.filter((medico) => {
- 
-      const itemData = medico.nombre.toUpperCase();
-
-      return itemData.includes(searchText);
-    });
-    setFilteredData(newData);
-    setSearch(text);
-  } else {
-   
-    setFilteredData(masterData);
-    setSearch(text);
-  }
-}
-
+        return itemData.includes(searchText);
+      });
+      setFilteredData(newData);
+      setSearch(text);
+    } else {
+      setFilteredData(masterData);
+      setSearch(text);
+    }
+  };
 
   return (
     <View>
       <View style={styles.container}>
         <TextInput
-        style={{height:60, borderWidth:2, paddingLeft:20, margin:5, borderColor:'#FAFAFA', backgroundColor:'white', borderRadius:7, elevation:3}}
-        value={search}
-        placeholder='Buscar...'
-        
-        underlineColorAndroid="transparent"
-        onChangeText={(text) => searchFilter(text)}
+          style={{
+            height: 60,
+            borderWidth: 2,
+            paddingLeft: 20,
+            margin: 5,
+            borderColor: "#FAFAFA",
+            backgroundColor: "white",
+            borderRadius: 7,
+            elevation: 3,
+          }}
+          value={search}
+          placeholder="Buscar..."
+          underlineColorAndroid="transparent"
+          onChangeText={(text) => searchFilter(text)}
         />
         <FlatList
-        data={filteredData}
-        keyExtractor={(item, index) => index.toString()}
-        ItemSeparatorComponent={ItemSeparatorView}
-        renderItem={({ item }) => <ItemView medico={item} />}
-        style={{marginTop:10, width:'100%'}}
+          data={filteredData}
+          keyExtractor={(item, index) => index.toString()}
+          ItemSeparatorComponent={ItemSeparatorView}
+          renderItem={({ item }) => <ItemView medico={item} />}
+          style={{ marginTop: 10, width: "100%" }}
         />
       </View>
-
-    
-      
-
-
-
-
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    
-    backgroundColor: '#F5F5F5',
-    padding: 10
+    backgroundColor: "#F5F5F5",
+    padding: 10,
   },
   containerr: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 10,
-    backgroundColor:'#D6FFE9',
-    marginLeft:10,
-    marginRight:10,
-    borderRadius:20,
-    height:100,
+    backgroundColor: "#D6FFE9",
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 20,
+    height: 100,
     elevation: 5,
-
-
   },
   input: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 10,
     paddingHorizontal: 50,
-    height:70,
+    height: 70,
     elevation: 3,
   },
   photo: {
     width: 50,
     height: 50,
-    borderRadius:25,
-    marginLeft:10,
+    borderRadius: 25,
+    marginLeft: 10,
     marginRight: 10,
-    backgroundColor: '#00826B'
+    backgroundColor: "#00826B",
   },
   detailsContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   name: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 4,
   },
   cedula: {
