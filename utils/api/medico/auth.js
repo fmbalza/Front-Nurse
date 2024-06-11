@@ -13,7 +13,7 @@ export const doLogin = async (data) => {
 export const doVerify = async () => {
   try {
     const response = await api.get("/verify");
-    // console.log("response", response.data);
+    // console.log("verifyMedico", response.data);
     return response.data;
   } catch (error) {
     throw new Error(error);

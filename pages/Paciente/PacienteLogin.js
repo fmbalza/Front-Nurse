@@ -35,8 +35,8 @@ const PacienteLogin = () => {
   const [autoLogin, setAutoLogin] = useState(false);
 
   const toggleSwitch = () => {
-    setAutoLogin((previousState) => !previousState);
-    setRememberMe(autoLogin);
+    setAutoLogin((a) => !a);
+    setRememberMe(!autoLogin);
   };
 
   const handleLogIn = async (values) => {

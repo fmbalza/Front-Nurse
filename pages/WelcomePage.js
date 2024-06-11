@@ -13,9 +13,12 @@ const StartPage = () => {
 
   const verifyPacienteQuery = useVerifyPaciente();
   const verifyMedicoQuery = useVerifyMedico();
-  const { rememberMe, role } = useAuthStore();
+  const { rememberMe, role, user, logout } = useAuthStore();
 
   useEffect(() => {
+    // console.log(rememberMe, role);
+    // logout();
+
     if (verifyPacienteQuery.isSuccess && rememberMe && role === "paciente") {
       navigation.reset({
         index: 0,
@@ -27,6 +30,15 @@ const StartPage = () => {
         routes: [{ name: "HomeMedico" }],
       });
     }
+
+    if (
+      verifyPacienteQuery.isError ||
+      verifyMedicoQuery.isError ||
+      !rememberMe ||
+      !role
+    ) {
+      logout();
+    }
   }, [verifyPacienteQuery.isSuccess, verifyMedicoQuery.isSuccess]);
 
   return (
@@ -36,7 +48,8 @@ const StartPage = () => {
         height: "100%",
       }}
     >
-      {rememberMe && (
+      {((rememberMe && role && verifyMedicoQuery.isPending) ||
+        (rememberMe && role && verifyPacienteQuery.isPending)) && (
         <View
           style={{
             position: "absolute",
