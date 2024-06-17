@@ -49,7 +49,7 @@ const MedicoLogin = () => {
     <LinearGradient colors={["#FFFFFF", "#D6FFE9"]} style={styles.container}>
       <Image
         source={require("../../assets/nurse_logo.png")}
-        style={{ width: 200, height: 230 }}
+        style={{ width: 200, height: 230, top: 30 }}
       />
 
       <Text
@@ -96,6 +96,7 @@ const MedicoLogin = () => {
                 onChangeText={(value) => onChange(value)}
                 onBlur={onBlur}
                 value={value}
+                inputMode="numeric"
                 secureTextEntry={!showPassword}
               />
               <TouchableOpacity
@@ -135,6 +136,16 @@ const MedicoLogin = () => {
           Regístrate aquí
         </Text>
       </Text>
+{/* 
+      <Text style={styles.registerText}>
+        ¿Olvidaste tu contraseña?{" "}
+        <Text
+          style={styles.registerLink}
+          onPress={() => navigation.navigate("PasswordM")}
+        >
+          Click aquí
+        </Text>
+      </Text> */}
 
       <TouchableOpacity
         onPress={handleSubmit((data) => handleLogIn(data))}

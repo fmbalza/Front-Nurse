@@ -8,7 +8,7 @@ import StartPage from "../pages/StartPage";
 import MedicoSignUp from "../pages/Medico/MedicoSignUp";
 import PacienteSignUp from "../pages/Paciente/PacienteSignUp";
 import WelcomePage from "../pages/WelcomePage";
-
+import PasswordM from "../pages/Medico/PasswordM";
 import HomeMedico from "../pages/Medico/Home/HomeMedico";
 import PacienteLogin from "../pages/Paciente/PacienteLogin";
 import MedicoLogin from "../pages/Medico/MedicoLogIn";
@@ -75,7 +75,11 @@ function MyStack() {
           headerTitleStyle: { display: "none" },
         }}
       />
-
+ <Stack.Screen
+        name="PasswordM"
+        component={PasswordM}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="HomeMedico"
         component={HomeMedico}

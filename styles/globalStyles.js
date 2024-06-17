@@ -58,6 +58,7 @@ export const LoginStyles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#00826B",
     elevation: 5,
+    marginBottom:40
   },
   btnCert: {
     width: "90%",

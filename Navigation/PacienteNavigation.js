@@ -8,10 +8,10 @@ import BuscarDoctor from '../pages/Paciente/Home/BuscarDoctor'
 import MenuPaciente from '../pages/Paciente/Home/MenuPaciente'; 
 import MisDoctores from '../pages/Paciente/Home/MisDoctores';
 import SolicitudesPaciente from '../pages/Paciente/Home/SolicitudesPaciente';
+import WelcomePage from '../pages/WelcomePage'
 
 
-
-
+const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function MyTabs() {
@@ -35,6 +35,9 @@ function MyTabs() {
                 tabBarActiveTintColor: '#00826B',
             }}
             />
+
+
+
             <Tab.Screen name="SolicitudesPaciente" component={SolicitudesPaciente
 
             }
@@ -43,6 +46,14 @@ function MyTabs() {
                 tabBarActiveTintColor: '#00826B',
             }}
             />
+
+
+
+       
+
+
+
+
                
         </Tab.Navigator>
     );

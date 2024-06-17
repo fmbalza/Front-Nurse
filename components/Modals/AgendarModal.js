@@ -1,53 +1,95 @@
-import React, { useState } from "react";
-import {
-  View,
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
+import React, { useState } from 'react';
+import { Modal, View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { useCreateConsulta } from '../../utils/hooks/medico/consultaDia'; 
+import { useForm, Controller } from "react-hook-form";
 
-const AgendarModal = ({ visible, onClose, onSave }) => {
-  const [selectedDate, setSelectedDate] = useState("");
 
-  const handleSave = () => {
-    Alert.alert(
-      "Confirmar Consulta",
-      `Fecha y hora seleccionada: ${selectedDate}`,
-      [
-        {
-          text: "Cancelar",
-          style: "cancel",
-        },
-        {
-          text: "Confirmar",
-          onPress: () => {
-            onSave(selectedDate);
-            onClose();
-          },
-        },
-      ],
-      { cancelable: false }
-    );
+const AgendarModal = ({ visible, onClose, onSave, doctorId, pacienteId }) => {
+  const [date, setDate] = useState(new Date());
+  const [mode, setMode] = useState('date');
+  const [show, setShow] = useState(false);
+  const consultaMutation = useCreateConsulta();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === 'ios');
+    setDate(currentDate);
   };
 
+  const showMode = (currentMode) => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode('date');
+  };
+
+  const showTimepicker = () => {
+    showMode('time');
+  };
+
+  const handleAgendar =(values)=> {
+    values['cd_medico'] = doctorId;
+    values['cd_paciente'] = pacienteId;
+    values['de_consulta'] = "consulta con ...";
+    values['examen'] = "null";
+    values['estado'] = 1;
+    console.log(values)
+    consultaMutation.mutate(values)
+  }
+
+
   return (
-    <Modal visible={visible} animationType="slide">
-      <View style={styles.container}>
-        <View style={styles.modalContent}>
-          <Text style={styles.title}>
-            Seleccione Fecha y Hora de la consulta
-          </Text>
-          <View style={styles.dateTimeContainer}>
-      
-          </View>
+    <Modal visible={visible} animationType="slide" transparent>
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <Text style={styles.modalTitle}>Selecciona la fecha y hora del evento</Text>
+          <TouchableOpacity onPress={showDatepicker}>
+            <Text>Fecha: {date.toLocaleDateString()}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={showTimepicker}>
+            <Text>Hora: {date.toLocaleTimeString()}</Text>
+          </TouchableOpacity>
+          {show && (
+
+
+            
+
+            <Controller
+            control={control}
+            render={({ field: { value } }) => (
+              <View style={styles.componentt}>
+                <DateTimePicker
+              testID="dateTimePicker"
+              value={value}
+              mode={mode}
+              display="spinner"
+              onChange={onChange}
+            />
+              </View>
+            )}
+            name="fecha"
+            defaultValue={new Date()}
+
+            // rules={{ required: true }} // siempre tiene algo asignado por defecto
+          />
+
+          )}
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={onClose}>
               <Text style={styles.buttonText}>Cancelar</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleSave}>
-              <Text style={styles.buttonText}>Agendar</Text>
+            <TouchableOpacity style={styles.button} onPress={handleSubmit((data) => handleAgendar(data))}>
+              <Text style={styles.buttonText}>Guardar</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -55,43 +97,47 @@ const AgendarModal = ({ visible, onClose, onSave }) => {
     </Modal>
   );
 };
+
 const styles = StyleSheet.create({
-  container: {
+  centeredView: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  modalContent: {
-    backgroundColor: "#fff",
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 20,
     padding: 20,
-    borderRadius: 10,
-    width: "85%",
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
-  title: {
+  modalTitle: {
     fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  dateTimeContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    fontWeight: 'bold',
     marginBottom: 20,
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
+    flexDirection: 'row',
+    marginTop: 20,
   },
   button: {
-    backgroundColor: "#00826B",
+    backgroundColor: '#007AFF',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
-    marginLeft: 10,
+    marginHorizontal: 10,
   },
   buttonText: {
-    color: "#fff",
-    fontSize: 16,
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 
