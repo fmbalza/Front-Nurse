@@ -5,8 +5,10 @@ import AgendarModal from '../../../components/Modals/AgendarModal';
 import { useNavigation } from '@react-navigation/native';
 import { useGetPaciente, useGetPacienteConsulta } from '../../../utils/hooks/medico/paciente';
 import AgregarTratModal from '../../../components/Modals/AgregarTratModal';
+import useAuthStore from '../../../utils/storage/auth';
 
   const PerfilPaciente = ({ route }) => {
+  const { user } = useAuthStore.getState()
   const { cedula } = route.params
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
@@ -16,6 +18,7 @@ import AgregarTratModal from '../../../components/Modals/AgregarTratModal';
   const { isPending, isError, data, error } = useGetPaciente();
   const pacienteConsultaQuery = useGetPacienteConsulta(cedula);
 
+  
 
   const toggleModal = () => {
     setModal(!modal);
@@ -87,7 +90,7 @@ import AgregarTratModal from '../../../components/Modals/AgregarTratModal';
       descripcion: consulta.de_consulta
     }));
 
-    console.log(consultas)
+    
   
 
 
@@ -174,13 +177,10 @@ import AgregarTratModal from '../../../components/Modals/AgregarTratModal';
         visible={modalVisible}
         onClose={handleCloseModal}
         onSave={handleSaveEvent}
+        pacienteId={cedula}
+        doctorId={user.cedula_medico}
       />
-      {eventDate && eventTime && (
-        <View>
-          <Text>Event Date: {eventDate}</Text>
-          <Text>Event Time: {eventTime}</Text>
-        </View>
-      )}
+    
       <Text style={{color:'#FFFFFF'}}>
         Agendar Consulta
       </Text>

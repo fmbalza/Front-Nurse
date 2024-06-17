@@ -9,3 +9,13 @@ export const getConsultasDia = async () => {
     throw new Error(error);
   }
 };
+
+export const createConsulta = async (data) => {
+  try {
+    // console.log("aqui", data);
+    const response = await api.post("/consulta", data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};

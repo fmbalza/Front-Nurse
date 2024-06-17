@@ -7,24 +7,34 @@ import {
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
+  Image
 } from "react-native";
 import { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useGetMedico } from "../../../utils/hooks/paciente/buscarDoctor";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import ModalMedico from "../../../components/Modals/ModalMedico";
 
 const BuscarDoctor = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [masterData, setMasterData] = useState([]);
   const [search, setSearch] = useState("");
+
+ 
+
   const navigation = useNavigation();
-  const { isPending, isError, data, error } = useGetMedico();
+
+
+  const { isPending, isError, data, error, isSuccess } = useGetMedico();
+
+ const [selectedMedico, setSelectedMedico] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     if (data) {
       fetchPosts();
     }
-  }, [data]);
+  }, [isSuccess]);
 
   if (isError) {
     return <Text>Error: {error.message}</Text>;
@@ -39,17 +49,21 @@ const BuscarDoctor = () => {
   }
 
   const fetchPosts = () => {
-    const medicos = data.map((medico) => ({
-      foto: medico.foto_perfil,
-      cedula: medico.cedula_medico,
-      nombre: `${medico.no_medico} ${medico.ap_medico}`,
-      telefono: medico.telefono,
-      genero: medico.genero,
-      email: medico.email,
-      especialidad: medico.especialidad.de_especialidad,
-    }));
+    if (data && Array.isArray(data)){
+      const medicos = data.map((medico) => ({
+        foto: medico.foto_perfil,
+        cedula: medico.cedula_medico,
+        nombre: `${medico.no_medico} ${medico.ap_medico}`,
+        telefono: medico.telefono,
+        genero: medico.genero,
+        email: medico.email,
+        especialidad: medico.especialidad.de_especialidad,
+      }));
+      
     setFilteredData(medicos);
     setMasterData(medicos);
+    }
+
   };
 
   if (isError) {
@@ -66,8 +80,15 @@ const BuscarDoctor = () => {
 
   const ItemView = ({ medico }) => {
     return (
-      <TouchableOpacity style={styles.containerr}>
-        <View style={styles.photo}></View>
+      <TouchableOpacity style={styles.containerr} onPress={() => handleSelectMedico({ medico })}>
+        <View style={styles.photo}>
+          <Image
+          source={{uri: medico.foto}}
+          style={{    width: 50,
+            height: 50,
+            borderRadius: 25,
+           }}/>
+        </View>
         <View style={styles.detailsContainer}>
           <Text style={styles.name}>{medico.nombre}</Text>
           <Text style={styles.cedula}>{medico.especialidad}</Text>
@@ -107,6 +128,24 @@ const BuscarDoctor = () => {
     }
   };
 
+
+  const handleSelectMedico = (medico) => {
+
+   
+    setSelectedMedico(medico);
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
+
+  const handleBookAppointment = () => {
+    // Aquí puedes agregar la lógica para agendar una cita con el médico seleccionado
+    setModalVisible(false);
+    navigation.navigate('AgendarCita', { medico: selectedMedico });
+  };
+
   return (
     <View>
       <View style={styles.container}>
@@ -130,9 +169,17 @@ const BuscarDoctor = () => {
           data={filteredData}
           keyExtractor={(item, index) => index.toString()}
           ItemSeparatorComponent={ItemSeparatorView}
-          renderItem={({ item }) => <ItemView medico={item} />}
+          renderItem={({ item }) => <ItemView medico={item}  />}
           style={{ marginTop: 10, width: "100%" }}
         />
+
+{modalVisible && selectedMedico && <ModalMedico
+  visible={modalVisible}
+  medico={selectedMedico}
+  onClose={handleCloseModal}
+  onBookAppointment={handleBookAppointment}
+/>}
+        
       </View>
     </View>
   );
@@ -167,7 +214,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     marginLeft: 10,
     marginRight: 10,
-    backgroundColor: "#00826B",
+  
   },
   detailsContainer: {
     flex: 1,

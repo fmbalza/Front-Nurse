@@ -11,6 +11,7 @@ import {
 import  {useState, useEffect}  from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useGetPacienteMedico } from '../../../utils/hooks/medico/paciente';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const MisPacientes = ({ onSearch }) => {
   const { isPending, isError, data, error } = useGetPacienteMedico()
