@@ -17,6 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 // ---------------------------------------------------------------------
 import { useForm, Controller } from "react-hook-form";
 import { useRegisterPaciente } from "../../utils/hooks/paciente/auth.js";
+import { MaskedTextInput } from "react-native-mask-text";
 // import { doRegister } from "../../utils/api/paciente/auth.js";
 
 const PacienteSignUp = () => {
@@ -126,13 +127,14 @@ const PacienteSignUp = () => {
             <Controller
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
+                <MaskedTextInput
                   style={SignUpStyles.inputs}
                   placeholderTextColor="#00826B"
-                  placeholder="Cedula"
+                  placeholder="Cedula Ej: 29.560.310"
                   keyboardType="numeric"
                   onBlur={onBlur}
-                  onChangeText={onChange}
+                  onChangeText={(text, rawText) => onChange(rawText)}
+                  mask={"99.999.999"}
                   value={value}
                 />
               )}
@@ -145,14 +147,15 @@ const PacienteSignUp = () => {
             <Controller
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
+                <MaskedTextInput
                   style={SignUpStyles.inputs}
                   placeholderTextColor="#00826B"
-                  placeholder="Telefono"
-                  keyboardType="numeric"
+                  placeholder="Telefonon Ej: +58 123-1234567"
                   onBlur={onBlur}
-                  onChangeText={onChange}
+                  onChangeText={(text, rawText) => onChange(rawText)}
+                  mask={"+99 999-9999999"}
                   value={value}
+                  keyboardType="numeric"
                 />
               )}
               name="telefono"

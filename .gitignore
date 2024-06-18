@@ -40,3 +40,4 @@ yarn-error.*
 # misc
 google-services.json
 android
+eas.json

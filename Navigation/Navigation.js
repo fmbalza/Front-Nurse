@@ -18,7 +18,7 @@ const Stack = createStackNavigator();
 
 function MyStack() {
   return (
-    <Stack.Navigator initialRouteName="StartPage">
+    <Stack.Navigator initialRouteName="StartPage" id="MainStack">
       <Stack.Screen
         name="StartPage"
         component={StartPage}
@@ -75,7 +75,7 @@ function MyStack() {
           headerTitleStyle: { display: "none" },
         }}
       />
- <Stack.Screen
+      <Stack.Screen
         name="PasswordM"
         component={PasswordM}
         options={{ headerShown: false }}
@@ -96,7 +96,8 @@ function MyStack() {
 
 export default function Navigation() {
   return (
-    <NavigationContainer independent={true}>
+    // <NavigationContainer independent={true}>
+    <NavigationContainer>
       <MyStack />
     </NavigationContainer>
   );

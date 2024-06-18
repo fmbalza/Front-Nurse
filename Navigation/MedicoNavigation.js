@@ -21,8 +21,6 @@ const StackNavigator = () => {
       <Stack.Screen name="PerfilPaciente" component={PerfilPaciente} />
       <Stack.Screen name="AddMedication" component={AddMedication} />
     </Stack.Navigator>
-
- 
   );
 };
 
@@ -30,7 +28,7 @@ const Tab = createBottomTabNavigator();
 
 function MyTabs() {
   return (
-    <Tab.Navigator initialRouteName="Menu">
+    <Tab.Navigator initialRouteName="Menu" id="MedicoTabs">
       <Tab.Screen
         name="Menu"
         component={Menu}
@@ -140,8 +138,8 @@ function MyTabs() {
 
 export default function MedicoNavigation() {
   return (
-    <NavigationContainer independent={true}>
-      <MyTabs />
-    </NavigationContainer>
+    // <NavigationContainer independent={true}>
+    <MyTabs />
+    // </NavigationContainer>
   );
 }

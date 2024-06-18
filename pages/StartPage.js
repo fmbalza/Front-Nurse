@@ -1,11 +1,19 @@
-import * as React from "react";
+import { useEffect } from "react";
 import { Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { View, Text, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 // import RFValue from '@react-native-responsive-fontsize'
+import useAuthStore from "../utils/storage/auth";
+
 const StartPage = () => {
   const navigation = useNavigation();
+  const { logout } = useAuthStore();
+
+  // useEffect(() => {
+  //   logout();
+  // }, []);
+
   return (
     <LinearGradient
       colors={["#FFFFFF", "#D6FFE9"]}

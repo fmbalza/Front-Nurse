@@ -1,4 +1,4 @@
-import { getConsultasDia, createConsulta } from "../../api/medico/consultaDia"; 
+import { getConsultasDia, createConsulta } from "../../api/medico/consultaDia";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 // import { jwtDecode } from "jwt-decode";
 // import { useNavigation } from "@react-navigation/native";
@@ -7,13 +7,12 @@ export const useConsultasDia = () => {
   return useQuery({
     queryKey: ["consultasDia"],
     queryFn: () => getConsultasDia(),
-    // staleTime: 5000,
+    refetchInterval: 30000,
   });
 };
 
 export const useCreateConsulta = () => {
   const queryClient = useQueryClient();
- 
 
   return useMutation({
     mutationFn: (data) => createConsulta(data),
@@ -21,7 +20,7 @@ export const useCreateConsulta = () => {
       console.log("aqui", data);
       // queryClient.invalidateQueries("paciente");
       if (data === "Consulta creada exitosamente") {
-        console.log("La consulta se creo exitosamente")
+        console.log("La consulta se creo exitosamente");
       }
     },
     onError: (error) => {

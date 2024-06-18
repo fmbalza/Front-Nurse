@@ -96,7 +96,7 @@ const MedicoLogin = () => {
                 onChangeText={(value) => onChange(value)}
                 onBlur={onBlur}
                 value={value}
-                inputMode="numeric"
+                inputMode="text"
                 secureTextEntry={!showPassword}
               />
               <TouchableOpacity
@@ -136,7 +136,7 @@ const MedicoLogin = () => {
           Regístrate aquí
         </Text>
       </Text>
-{/* 
+      {/* 
       <Text style={styles.registerText}>
         ¿Olvidaste tu contraseña?{" "}
         <Text

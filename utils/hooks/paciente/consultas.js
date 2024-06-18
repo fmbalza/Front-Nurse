@@ -1,11 +1,10 @@
 import { getConsultasById } from "../../api/paciente/consultas";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-
 export const useGetConsultasById = () => {
   return useQuery({
     queryKey: ["getConsultasById"],
     queryFn: () => getConsultasById(),
-    // staleTime: 5000,
+    refetchInterval: 30000,
   });
 };

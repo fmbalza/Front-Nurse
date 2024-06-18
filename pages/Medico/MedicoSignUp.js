@@ -19,7 +19,8 @@ import FotoModal from "../../components/Modals/FotoModal";
 import { useForm, Controller } from "react-hook-form";
 import { useRegisterMedico } from "../../utils/hooks/medico/auth.js";
 import { useEspecialidades } from "../../utils/hooks/medico/especialidades";
-import { doRegister } from "../../utils/api/paciente/auth.js";
+// import { doRegister } from "../../utils/api/paciente/auth.js";
+import { MaskedTextInput } from "react-native-mask-text";
 
 const MedicoSignUp = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -180,14 +181,15 @@ const MedicoSignUp = () => {
             <Controller
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
+                <MaskedTextInput
                   style={SignUpStyles.inputs}
                   placeholderTextColor="#00826B"
-                  placeholder="Ej: 29560310"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
+                  placeholder="Cedula Ej: 29.560.310"
                   keyboardType="numeric"
+                  onBlur={onBlur}
+                  onChangeText={(text, rawText) => onChange(rawText)}
+                  mask={"99.999.999"}
+                  value={value}
                 />
               )}
               name="cedula_medico"
@@ -199,12 +201,22 @@ const MedicoSignUp = () => {
             <Controller
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
+                // <TextInput
+                //   style={SignUpStyles.inputs}
+                //   placeholderTextColor="#00826B"
+                //   placeholder="Ej: 0123-1234567"
+                //   onBlur={onBlur}
+                //   onChangeText={onChange}
+                //   value={value}
+                //   keyboardType="numeric"
+                // />
+                <MaskedTextInput
                   style={SignUpStyles.inputs}
                   placeholderTextColor="#00826B"
-                  placeholder="Ej: 0123-1234567"
+                  placeholder="Telefonon Ej: +58 123-1234567"
                   onBlur={onBlur}
-                  onChangeText={onChange}
+                  onChangeText={(text, rawText) => onChange(rawText)}
+                  mask={"+99 999-9999999"}
                   value={value}
                   keyboardType="numeric"
                 />

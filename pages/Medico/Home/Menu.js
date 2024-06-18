@@ -1,4 +1,4 @@
-import React, { useState, useCallback} from "react";
+import React, { useState, useCallback } from "react";
 import {
   StyleSheet,
   Dimensions,
@@ -10,10 +10,9 @@ import {
   ScrollView,
   Button,
   ActivityIndicator,
-  Pressable
-  
+  Pressable,
 } from "react-native";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 //---------------------------------------------------------------------
 // import { FlashList} from "@shopify/flash-list"; //el componente calendario de abajo depende de esta libreria
 import { Calendar, toDateId } from "@marceloterreiro/flash-calendar";
@@ -21,10 +20,7 @@ import { useConsultasDia } from "../../../utils/hooks/medico/consultaDia";
 
 const { width } = Dimensions.get("window");
 
-
-
 const Menu = () => {
-
   const [date, setDate] = useState("12/12/2023");
   const today = toDateId(new Date());
   const [selectedDate, setSelectedDate] = useState(today);
@@ -39,101 +35,131 @@ const Menu = () => {
     setDate(date);
   };
 
-const handlePreviousMonth = useCallback(() => {
-  setCurrentCalendarMonth((prev) => {
-    const date = new Date(prev);
-    date.setMonth(date.getMonth() - 1);
-    return toDateId(date);
-  });
-}, [currentCalendarMonth]);
+  const handlePreviousMonth = useCallback(() => {
+    setCurrentCalendarMonth((prev) => {
+      const date = new Date(prev);
+      date.setMonth(date.getMonth() - 1);
+      return toDateId(date);
+    });
+  }, [currentCalendarMonth]);
 
-const handleNextMonth = useCallback(() => {
-  setCurrentCalendarMonth((prev) => {
-    const date = new Date(prev);
-    date.setMonth(date.getMonth() + 1);
-    return toDateId(date);
-  });
-}, [currentCalendarMonth]);
+  const handleNextMonth = useCallback(() => {
+    setCurrentCalendarMonth((prev) => {
+      const date = new Date(prev);
+      date.setMonth(date.getMonth() + 1);
+      return toDateId(date);
+    });
+  }, [currentCalendarMonth]);
 
-if (isError) {
-  return <Text>Error:{error.message}</Text>;
-}
+  if (isError) {
+    return <Text>Error:{error.message}</Text>;
+  }
 
-if (isPending) {
-  return (
-    <View style={styles.container}>
-      <ActivityIndicator size="large" color="#0000ff" />
-    </View>
-  );
-}
+  if (isPending) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
-
-if (!data) {
-  // Si data es falsy (undefined, null, 0, false, NaN, '')
-  return <Text>No hay datos disponibles.</Text>;
-} else {
-  // Si data tiene un valor válido
-  const fechas = data.map(consulta => consulta.fecha);
-
-
-  // Resto del código que procesa los datos de data
-}
+  if (Array.isArray(data) && data.length > 0) {
+    // Si data tiene un valor válido
+    // console.log(data);
+    const fechas = data.map((consulta) => consulta.fecha);
+  }
 
   return (
-    <ScrollView>
-      <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.title}>Mis Consultas</Text>
-          </View>
-          <View style={styles.pickerContainer}>
-              <Pressable style={styles.prevButton} onPress={handlePreviousMonth}>
-                <MaterialCommunityIcons name="chevron-left" size={29} color="#00826B" />
+    <>
+      <ScrollView>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+          <View style={styles.container}>
+            <View style={styles.header}>
+              <Text style={styles.title}>Mis Eventos</Text>
+            </View>
+            <View style={styles.pickerContainer}>
+              <Pressable
+                style={styles.prevButton}
+                onPress={handlePreviousMonth}
+              >
+                <MaterialCommunityIcons
+                  name="chevron-left"
+                  size={29}
+                  color="#00826B"
+                />
               </Pressable>
-            <View style={styles.calendarContainer}>
-              <Calendar
-                calendarActiveDateRanges={[{ startId: selectedDate, endId: selectedDate }]}
-                calendarMonthId={currentCalendarMonth}
-                onCalendarDayPress={setSelectedDate}
-                calendarFormatLocale="es"
-              />
+              <View style={styles.calendarContainer}>
+                <Calendar
+                  calendarActiveDateRanges={[
+                    { startId: selectedDate, endId: selectedDate },
+                  ]}
+                  calendarMonthId={currentCalendarMonth}
+                  onCalendarDayPress={setSelectedDate}
+                  calendarFormatLocale="es"
+                />
+              </View>
+              <Pressable style={styles.nextButton} onPress={handleNextMonth}>
+                <MaterialCommunityIcons
+                  name="chevron-right"
+                  size={29}
+                  color="#00826B"
+                />
+              </Pressable>
             </View>
-            <Pressable style={styles.nextButton} onPress={handleNextMonth}>
-              <MaterialCommunityIcons name="chevron-right" size={29} color="#00826B" />
-            </Pressable>
+
+            <View
+              style={{
+                marginTop: 220,
+                flex: 1,
+                paddingHorizontal: 16,
+                paddingVertical: 24,
+              }}
+            >
+              {selectedDate && (
+                <Text style={styles.subtitle}>{selectedDate}</Text>
+              )}
+              <View style={styles.placeholder}>
+                <View style={styles.placeholderInset}>
+                  {typeof data === "string" ? (
+                    <View style={styles.noEventsContainer}>
+                      <Text style={styles.noEventsText}>{data}</Text>
+                    </View>
+                  ) : (
+                    <>
+                      {data
+                        .filter(
+                          (item) =>
+                            new Date(item.fecha).getDate() - 1 ===
+                            new Date(selectedDate).getDate()
+                        )
+                        .map((item, index) => (
+                          <TouchableOpacity
+                            key={index}
+                            style={styles.eventContainer}
+                          >
+                            <Text style={styles.eventTitle}>
+                              Consulta {index + 1}
+                            </Text>
+                            <Text key={index}>
+                              {" "}
+                              {new Date(item.fecha).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                    </>
+                  )}
+                </View>
+              </View>
+            </View>
           </View>
-
-
-
-
-
-
-          <View
-            style={{
-              marginTop: 220,
-              flex: 1,
-              paddingHorizontal: 16,
-              paddingVertical: 24,
-            }}
-          >
-            {selectedDate && <Text style={styles.subtitle}>{selectedDate}</Text>}
-            <View style={styles.placeholder}>
-            <View style={styles.placeholderInset}>
-              {data.filter(item => new Date(item.fecha).getDate() -1 === new Date(selectedDate).getDate() )
-                  .map((item, index) => (
-                    <TouchableOpacity key={index} style={styles.eventContainer}>
-                      <Text style={styles.eventTitle}>Consulta {index + 1}</Text>
-                      <Text key={index}>                              {new Date(item.fecha).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
-                    </TouchableOpacity>
-                  ))}
-            </View>
-            </View>
-          </View>
-        </View>
-      </SafeAreaView>
-    </ScrollView>
+        </SafeAreaView>
+      </ScrollView>
+    </>
   );
-}
+};
 const styles = StyleSheet.create({
   eventContainer: {
     backgroundColor: "#F5F5F5",
@@ -157,7 +183,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginLeft: "auto",
   },
-
+  noEventsContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+  },
+  noEventsText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
   container: {
     marginTop: "10%",
     flex: 1,
@@ -257,16 +293,12 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     fontWeight: "600",
     color: "#fff",
-  
   },
 
-
-
-
   pickerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginTop: 16,
   },
   calendarContainer: {
@@ -275,20 +307,20 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   prevButton: {
-    borderRadius:20,
-    right:-40,
-    top:-15,
+    borderRadius: 20,
+    right: -40,
+    top: -15,
     paddingHorizontal: 10,
     paddingVertical: 5,
-    zIndex:9
+    zIndex: 9,
   },
   nextButton: {
-    borderRadius:20,
+    borderRadius: 20,
     paddingHorizontal: 10,
     paddingVertical: 5,
-    left:-40,
-    top:-15,
-    zIndex:9
+    left: -40,
+    top: -15,
+    zIndex: 9,
   },
 });
 export default Menu;
