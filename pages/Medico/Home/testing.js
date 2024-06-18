@@ -1,14 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import useAuthStore from "../../../utils/storage/auth";
+import CertifyMedicoModal from "../../../components/Modals/CertifyMedicoModal";
 
 const Testing = () => {
   const navigation = useNavigation();
-  const { logout, user } = useAuthStore();
-
-  // const { user } = useAuthStore.getState();
-  // console.log(user);
+  const { logout, user, certified } = useAuthStore();
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const doLogOut = () => {
     // Aquí se debe de hacer el logout
@@ -41,6 +40,22 @@ const Testing = () => {
           >
             <Text>Cerrar Sesion</Text>
           </TouchableOpacity>
+
+          {!certified && (
+            <>
+              <TouchableOpacity
+                onPress={() => setIsModalVisible(true)}
+                style={styles.buttonCR}
+                titleStyle={styles.buttonText}
+              >
+                <Text>Completar Registro</Text>
+              </TouchableOpacity>
+              <CertifyMedicoModal
+                visible={isModalVisible}
+                onClose={() => setIsModalVisible(false)}
+              />
+            </>
+          )}
         </>
       )}
     </View>
@@ -66,6 +81,17 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#FF5B5B", // Color de fondo del botón
+    paddingVertical: 12, // Espacio vertical dentro del botón
+    paddingHorizontal: 20, // Espacio horizontal dentro del botón
+    borderRadius: 8, // Redondeo de las esquinas
+    elevation: 2, // Sombra del botón (solo para Android)
+    shadowColor: "rgba(0, 0, 0, 0.25)", // Color de la sombra (solo para iOS)
+    shadowOffset: { width: 0, height: 2 }, // Desplazamiento de la sombra (solo para iOS)
+    shadowOpacity: 0.25, // Opacidad de la sombra (solo para iOS)
+    shadowRadius: 3.84, // Radio de la sombra (solo para iOS)
+  },
+  buttonCR: {
+    backgroundColor: "#03fc7f", // Color de fondo del botón
     paddingVertical: 12, // Espacio vertical dentro del botón
     paddingHorizontal: 20, // Espacio horizontal dentro del botón
     borderRadius: 8, // Redondeo de las esquinas

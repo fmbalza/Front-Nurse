@@ -39,3 +39,12 @@ export const doUpdate = async (data) => {
     throw new Error(error);
   }
 };
+
+export const requestCertificado = async (id, url) => {
+  try {
+    const response = await api.post(`/medico/certify/${id}`, url);
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};

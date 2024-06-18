@@ -1,4 +1,9 @@
-import { doLogin, doVerify, doRegister } from "../../api/medico/auth.js";
+import {
+  doLogin,
+  doVerify,
+  doRegister,
+  requestCertificado,
+} from "../../api/medico/auth.js";
 import useAuthStore from "../../storage/auth.js";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { jwtDecode } from "jwt-decode";
@@ -15,11 +20,10 @@ export const useMedicoLogin = () => {
   return useMutation({
     mutationFn: (data) => doLogin(data),
     onSuccess: (data) => {
-      // console.log("aqui", data);
       const user = jwtDecode(data.jwt);
       login(data.jwt, user);
       setRole("medico");
-      setCertified(data.certified);
+      setCertified(data.certificado);
       setPushToken(user.push_token);
       // navigation.navigate("HomeMedico"); //metodo por defecto
       queryClient.invalidateQueries("consultasDia");
@@ -63,5 +67,21 @@ export const useVerifyMedico = () => {
     queryKey: ["verifyMedico"],
     queryFn: () => doVerify(),
     enabled: rememberMe && role === "medico",
+  });
+};
+
+export const useRequestCertificado = () => {
+  const navigation = useNavigation();
+  const queryClient = useQueryClient();
+  const id = useAuthStore((state) => state.user.cedula_medico);
+
+  return useMutation({
+    mutationFn: (data) => requestCertificado(id, data),
+    onSuccess: (data) => {
+      console.log("aqui", data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
 };

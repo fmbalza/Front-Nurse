@@ -47,8 +47,8 @@ const FotoModal = ({ isVisible, onClose, onImagePicked, onChange, value }) => {
       base64: true,
     });
 
-    const selectedImage = result.assets[0];
     if (!result.canceled) {
+      const selectedImage = result.assets[0];
       try {
         const { data, error } = await supabase.storage
           .from("NURSE")
