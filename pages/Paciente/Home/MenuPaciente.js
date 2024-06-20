@@ -20,6 +20,7 @@ const MenuPaciente = () => {
   const swiper = useRef();
   const [value, setValue] = useState(new Date());
   const [week, setWeek] = useState(0);
+  const [isManualChange, setIsManualChange] = useState(false);
 
   const { isPending, isError, data, error } = useGetConsultasById();
   moment.locale("es");
@@ -49,9 +50,9 @@ const MenuPaciente = () => {
     );
   }
 
-  if (Array.isArray(data) && data.length > 0) {
-    const fechas = data.map((consulta) => consulta.fecha);
-  }
+  // if (Array.isArray(data) && data.length > 0) {
+  //   const fechas = data.map((consulta) => consulta.fecha);
+  // }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -64,7 +65,8 @@ const MenuPaciente = () => {
             loop={false}
             showsPagination={false}
             onIndexChanged={(ind) => {
-              if (ind === 1) {
+              if (ind === 1 || isManualChange) {
+                setIsManualChange(false);
                 return;
               }
               setTimeout(() => {
@@ -72,6 +74,7 @@ const MenuPaciente = () => {
                 const newWeek = week + newIndex;
                 setWeek(newWeek);
                 setValue(moment(value).add(newIndex, "week").toDate());
+                setIsManualChange(true);
                 swiper.current.scrollTo(1, false);
               }, 100);
             }}
@@ -123,13 +126,6 @@ const MenuPaciente = () => {
           <Text style={styles.subtitle}>{value.toLocaleDateString()}</Text>
           <View style={styles.placeholder}>
             <View style={styles.placeholderInset}>
-              {/* {data.map((item, index) => (
-                  <TouchableOpacity key={index} style={styles.eventContainer}>
-                    <Text style={styles.eventTitle}>Consulta {index + 1}</Text>
-                    <Text >Descripcion: {item.de_consulta}</Text>
-                    <Text  >fecha: {item.fecha}</Text>
-                  </TouchableOpacity>
-                ))} */}
               {typeof data === "string" ? (
                 <View style={styles.noEventsContainer}>
                   <Text style={styles.noEventsText}>{data}</Text>
@@ -137,11 +133,15 @@ const MenuPaciente = () => {
               ) : (
                 <>
                   {data
-                    .filter(
-                      (item) =>
-                        new Date(item.fecha).getDate() ===
-                        new Date(value).getDate()
-                    )
+                    .filter((item) => {
+                      const itemDate = new Date(item.fecha);
+                      const selected = new Date(value);
+                      return (
+                        itemDate.getUTCDate() === selected.getUTCDate() &&
+                        itemDate.getUTCMonth() === selected.getUTCMonth() &&
+                        itemDate.getUTCFullYear() === selected.getUTCFullYear()
+                      );
+                    })
                     .map((item, index) => (
                       <TouchableOpacity
                         key={index}

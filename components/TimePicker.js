@@ -4,39 +4,40 @@ import { useState } from "react";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 // ---------------------------------------------------------------------
 
-const DatePicker = ({ onDateChange, value }) => {
-  const [date, setDate] = useState(new Date());
+const TimePicker = ({ onTimeChange, value }) => {
+  const [time, setTime] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
-  value = date;
+  value = time;
 
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
+  const onChange = (event, selectedTime) => {
+    const currentTime = selectedTime || time;
     setShowPicker(false);
-    setDate(currentDate);
-    onDateChange(currentDate.toISOString().split("T")[0]);
-    value = currentDate.toISOString().split("T")[0];
+    setTime(currentTime);
+    onTimeChange(currentTime.toLocaleTimeString());
+    value = currentTime.toLocaleTimeString();
   };
 
-  const showDatePicker = () => {
+  const showTimePicker = () => {
     setShowPicker(true);
   };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={showDatePicker} style={{ width: "100%" }}>
+      <TouchableOpacity onPress={showTimePicker} style={{ width: "100%" }}>
         {showPicker && (
           <RNDateTimePicker
-            value={date}
-            mode="date"
+            value={time}
+            mode="time"
             display="spinner"
+            // is24Hour={true}
             onChange={onChange}
-            dateFormat="year month day"
           />
         )}
         <TextInput
           style={styles.input}
-          value={date.toISOString().split("T")[0]} // Display the date in the input field
-          editable={false} // Disable direct editing of the input field
+          //   value={time.toTimeString().split(" ")[0]}
+          value={time.toLocaleTimeString()}
+          editable={false}
         />
       </TouchableOpacity>
     </View>
@@ -63,4 +64,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DatePicker;
+export default TimePicker;

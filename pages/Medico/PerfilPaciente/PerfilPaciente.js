@@ -157,7 +157,10 @@ const PerfilPaciente = ({ route }) => {
                       {" "}
                       Medico: {consulta.nombreMedico}
                     </Text>
-                    <Text style={styles.label}> Fecha: {consulta.fecha}</Text>
+                    <Text style={styles.label}>
+                      {" "}
+                      Fecha: {new Date(consulta.fecha).toLocaleString()}
+                    </Text>
                     <Text style={styles.label}>
                       {" "}
                       Estado: {estado[consulta.estado]}
@@ -218,6 +221,7 @@ const PerfilPaciente = ({ route }) => {
           onSave={handleSaveEvent}
           pacienteId={cedula}
           doctorId={user.cedula_medico}
+          expoToken={user.push_token}
         />
 
         <Text style={{ color: "#FFFFFF" }}>Agendar Consulta</Text>

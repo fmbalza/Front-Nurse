@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+// import React, { useState, useEffect } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   View,
@@ -7,13 +7,13 @@ import {
   TextInput,
   StyleSheet,
   ScrollView,
-  Switch,
+  // Switch,
   ActivityIndicator,
 } from "react-native";
 import { SignUpStyles } from "../../styles/globalStyles";
 import DatePicker from "../../components/DatePicker";
 import GenderPicker from "../../components/GenderPicker";
-import { useNavigation } from "@react-navigation/native";
+// import { useNavigation } from "@react-navigation/native";
 // ---------------------------------------------------------------------
 import { useForm, Controller } from "react-hook-form";
 import { useRegisterPaciente } from "../../utils/hooks/paciente/auth.js";

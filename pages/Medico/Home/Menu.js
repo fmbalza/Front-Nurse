@@ -1,14 +1,14 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   StyleSheet,
   Dimensions,
-  TouchableWithoutFeedback,
+  // TouchableWithoutFeedback,
   SafeAreaView,
   View,
   Text,
   TouchableOpacity,
   ScrollView,
-  Button,
+  // Button,
   ActivityIndicator,
   Pressable,
 } from "react-native";
@@ -27,6 +27,10 @@ const Menu = () => {
   const [currentCalendarMonth, setCurrentCalendarMonth] = useState(
     toDateId(new Date())
   );
+
+  // useEffect(() => {
+  //   console.log("Selected date: ", selectedDate);
+  // }, [selectedDate]);
 
   const { isPending, isError, data, error } = useConsultasDia();
 
@@ -63,11 +67,10 @@ const Menu = () => {
     );
   }
 
-  if (Array.isArray(data) && data.length > 0) {
-    // Si data tiene un valor válido
-    // console.log(data);
-    const fechas = data.map((consulta) => consulta.fecha);
-  }
+  // if (Array.isArray(data) && data.length > 0) {
+  //   // console.log(data);
+  //   const fechas = data.map((consulta) => consulta.fecha);
+  // }
 
   return (
     <>
@@ -127,11 +130,16 @@ const Menu = () => {
                   ) : (
                     <>
                       {data
-                        .filter(
-                          (item) =>
-                            new Date(item.fecha).getDate() - 1 ===
-                            new Date(selectedDate).getDate()
-                        )
+                        .filter((item) => {
+                          const itemDate = new Date(item.fecha);
+                          const selected = new Date(selectedDate);
+                          return (
+                            itemDate.getUTCDate() === selected.getUTCDate() &&
+                            itemDate.getUTCMonth() === selected.getUTCMonth() &&
+                            itemDate.getUTCFullYear() ===
+                              selected.getUTCFullYear()
+                          );
+                        })
                         .map((item, index) => (
                           <TouchableOpacity
                             key={index}

@@ -17,11 +17,11 @@ export const useCreateConsulta = () => {
   return useMutation({
     mutationFn: (data) => createConsulta(data),
     onSuccess: (data) => {
-      console.log("aqui", data);
-      // queryClient.invalidateQueries("paciente");
-      if (data === "Consulta creada exitosamente") {
-        console.log("La consulta se creo exitosamente");
-      }
+      // console.log("aqui", data);
+      queryClient.invalidateQueries("consultasDia");
+      // if (data === "Consulta creada exitosamente") {
+      //   console.log("La consulta se creo exitosamente");
+      // }
     },
     onError: (error) => {
       console.log(error);

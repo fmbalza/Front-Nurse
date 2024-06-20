@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   View,
@@ -7,11 +7,10 @@ import {
   TextInput,
   StyleSheet,
   ScrollView,
-  Image,
   ActivityIndicator,
 } from "react-native";
 import { SignUpStyles } from "../../styles/globalStyles";
-import { useNavigation } from "@react-navigation/native";
+// import { useNavigation } from "@react-navigation/native";
 import GenderPicker from "../../components/GenderPicker";
 import SpecialtyPicker from "../../components/SpecialtyPicker";
 import FotoModal from "../../components/Modals/FotoModal";
