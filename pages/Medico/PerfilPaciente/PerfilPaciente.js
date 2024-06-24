@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useGetPaciente, useGetPacienteConsulta } from '../../../utils/hooks/medico/paciente';
 import AgregarTratModal from '../../../components/Modals/AgregarTratModal';
 import useAuthStore from '../../../utils/storage/auth';
+import { useGetPacienteMedico } from '../../../utils/hooks/medico/paciente';
 
   const PerfilPaciente = ({ route }) => {
   const { user } = useAuthStore.getState()
@@ -17,11 +18,27 @@ import useAuthStore from '../../../utils/storage/auth';
   const [eventTime, setEventTime] = useState('');
   const { isPending, isError, data, error } = useGetPaciente();
   const pacienteConsultaQuery = useGetPacienteConsulta(cedula);
-
+  const pacienteMedicoQuery = useGetPacienteMedico()
   
+
+  if (pacienteMedicoQuery.isPending) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+
+
+
+
+
+
 
   const toggleModal = () => {
     setModal(!modal);
+    
   };
   
 
@@ -127,8 +144,14 @@ import useAuthStore from '../../../utils/storage/auth';
       
           
           <View style={{ alignItems:'flex-end', top:10, zIndex:9}}>
-          <BtnAgregar/>
-          </View>
+
+       
+      <BtnAgregar 
+          cedula={cedula} 
+          
+          user={user}/> 
+         
+          </View> 
       </View>
       </View>
     <ScrollView verical

@@ -1,4 +1,4 @@
-import { doLogin, doVerify, doRegister } from "../../api/medico/auth.js";
+import { doLogin, doVerify, doRegister, getMe, doUpdate } from "../../api/medico/auth.js";
 import useAuthStore from "../../storage/auth.js";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { jwtDecode } from "jwt-decode";
@@ -63,5 +63,36 @@ export const useVerifyMedico = () => {
     queryKey: ["verifyMedico"],
     queryFn: () => doVerify(),
     enabled: rememberMe && role === "medico",
+  });
+};
+
+
+export const useGetMe = () => {
+  return useQuery({
+    queryKey: ["getMe"],
+    queryFn: () => getMe(),
+    // staleTime: 5000,
+  });
+};
+
+
+export const useUpdateMedico = () => {
+  const queryClient = useQueryClient();
+ 
+
+  return useMutation({
+    mutationFn: (data) => doUpdate(data),
+    onSuccess: (data) => {
+      // console.log("aqui", data);
+      // queryClient.invalidateQueries("paciente");
+      if (data === 'Medico actualizado exitosamente') {
+        console.log("Los datos se cambiaron exitosamente");
+      } else {
+        console.error('Error: ',data);
+      }
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
 };

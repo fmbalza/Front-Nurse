@@ -35,3 +35,22 @@ export const getPacienteConsulta = async (cedula) => {
 };
 
 
+export const postAssignPaciente = async (data) => {
+  try {
+    const response = await api.post(`/medico/subject`,data);
+
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const deleteRemovePaciente = async (data) => {
+  try {
+    const response = await api.delete(`/medico/subject`,data);
+    console.log(data)
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};

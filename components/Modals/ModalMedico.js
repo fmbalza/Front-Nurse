@@ -3,45 +3,51 @@ import { View, Text, TouchableOpacity, StyleSheet, Modal, Linking, Image } from 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const ModalMedico = ({ visible, medico, onClose, onBookAppointment }) => {
-
-    const handlePress = () => {
-        const url = `whatsapp://send?phone=58${medico.medico.telefono}`;
-        Linking.canOpenURL(url)
-          .then((supported) => {
-            if (supported) {
-              return Linking.openURL(url);
-            } else {
-              console.log("No se pudo abrir la aplicación de WhatsApp");
-            }
-          })
-          .catch((error) => console.error(error));
-      };
+  const handlePress = () => {
+    const url = `whatsapp://send?phone=${medico.medico.telefono}`;
+    Linking.canOpenURL(url)
+      .then((supported) => {
+        if (supported) {
+          return Linking.openURL(url);
+        } else {
+          console.log('No se pudo abrir la aplicación de WhatsApp');
+        }
+      })
+      .catch((error) => console.error(error));
+  };
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <View style={styles.photoContainer}>
-            <View style={styles.photo} >
-            <Image
-                source={{uri: medico.medico.foto}}
-                style={{    width: 80,
-                    height: 80,
-                    borderRadius: 100,
-                }}/>
+          <View style={styles.row}>
+            <View style={styles.photoContainer}>
+              <Image source={{ uri: medico.medico.foto }} style={styles.photo} />
             </View>
-          </View>
-          <Text style={styles.name}>{medico.medico.nombre}</Text>
-          <Text style={styles.info}>Especialidad: {medico.medico.especialidad}</Text>
-          <Text style={styles.info}>Teléfono: {medico.medico.telefono}</Text>
-          <Text style={styles.info}>Correo: {medico.medico.email}</Text>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.buttonCerrar} onPress={onClose}>
-              <Text style={styles.buttonText}>Cerrar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handlePress}>
-            <MaterialCommunityIcons name="whatsapp" size={24} color="white" />
-            </TouchableOpacity>
+            <View style={styles.infoContainer}>
+              <Text style={styles.name}>{medico.medico.nombre}</Text>
+              <Text style={styles.specialty}>{medico.medico.especialidad}</Text>
+              <View style={styles.contactInfo}>
+                <View style={styles.contactItem}>
+                  <MaterialCommunityIcons name="phone" size={20} color="#333" />
+                  <Text style={styles.contactText}>{medico.medico.telefono}</Text>
+                </View>
+                <View style={styles.contactItem}>
+                  <MaterialCommunityIcons name="email" size={20} color="#333" />
+                  <Text style={styles.contactText}>{medico.medico.email}</Text>
+                </View>
+              </View>
+              <View style={styles.buttons}>
+                <TouchableOpacity style={[styles.button, styles.whatsappButton]} onPress={handlePress}>
+                  <MaterialCommunityIcons name="whatsapp" size={20} color="white" />
+                  <Text style={styles.buttonText}>WhatsApp</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.button, styles.closeButton]} onPress={onClose}>
+                  <MaterialCommunityIcons name="close" size={20} color="white" />
+                  <Text style={styles.buttonText}>Cerrar</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
         </View>
       </View>
@@ -60,7 +66,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 20,
     padding: 20,
-    alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -71,55 +76,77 @@ const styles = StyleSheet.create({
     elevation: 5,
     width: '80%',
   },
-  photoContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: '#ccc',
-    justifyContent: 'center',
+  row: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
   },
-  photo: {
+  photoContainer: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#777',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 20,
+    backgroundColor:'#ccc',
+    bottom:100,
+    borderRadius:100
+  },
+  photo: {
+    width: 70,
+    height: 70,
+    borderRadius: 30,
+  
+  },
+  infoContainer: {
+    flex: 1,
   },
   name: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
+    color: '#333',
   },
-  cedula: {
+  specialty: {
     fontSize: 16,
-    marginBottom: 5,
+    color: '#666',
+    marginBottom: 10,
   },
-  info: {
-    fontSize: 16,
-    marginVertical: 3,
+  contactInfo: {
+    marginVertical: 10,
   },
-  buttonContainer: {
+  contactItem: {
     flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  contactText: {
+    fontSize: 16,
+    color: '#666',
+    marginLeft: 10,
+  },
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
     marginTop: 10,
   },
   button: {
-    backgroundColor: '#00826B',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
     borderRadius: 5,
-    marginHorizontal: 5,
+    marginLeft: 10,
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
+    marginLeft: 5,
   },
-  buttonCerrar: {
-    backgroundColor: 'red',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginHorizontal: 5,
+  whatsappButton: {
+    backgroundColor: '#00826B',
+  },
+  closeButton: {
+    backgroundColor: '#E53935',
   },
 });
 

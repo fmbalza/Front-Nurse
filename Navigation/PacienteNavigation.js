@@ -38,7 +38,7 @@ function MyTabs() {
 
 
 
-            <Tab.Screen name="SolicitudesPaciente" component={SolicitudesPaciente
+            <Tab.Screen name="Perfil" component={SolicitudesPaciente
 
             }
              options={{

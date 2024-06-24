@@ -41,9 +41,7 @@ const MisPacientes = ({ onSearch }) => {
     );
   }
   
-  if(data){
-    console.log(data)
-  }
+ 
 
   const fetchPosts = () => {
     const pacientes = data.map(paciente => ({
@@ -68,8 +66,9 @@ const MisPacientes = ({ onSearch }) => {
 
 
 
+  
   const ItemView = ({paciente, handlePatientPress}) =>{
-    console.log(paciente)
+   
     return(
       <TouchableOpacity
       onPress={() => handlePatientPress(paciente)}
