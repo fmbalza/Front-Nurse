@@ -27,11 +27,11 @@ const SolicitudesPaciente = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const [userData, setUserData] = useState({
-    no_paciente: user.no_paciente,
-    ap_paciente: user.ap_paciente,
-    telefono: user.telefono,
-    genero: user.genero,
-    fecha_nacimiento: user.fecha_nacimiento,
+    no_paciente: user?.no_paciente,
+    ap_paciente: user?.ap_paciente,
+    telefono: user?.telefono,
+    genero: user?.genero,
+    fecha_nacimiento: user?.fecha_nacimiento,
   });
 
   const navigation = useNavigation();
@@ -51,11 +51,11 @@ const SolicitudesPaciente = () => {
 
   useEffect(() => {
     setUserData({
-      no_paciente: user.no_paciente,
-      ap_paciente: user.ap_paciente,
-      telefono: user.telefono,
-      genero: user.genero,
-      fecha_nacimiento: user.fecha_nacimiento,
+      no_paciente: user?.no_paciente,
+      ap_paciente: user?.ap_paciente,
+      telefono: user?.telefono,
+      genero: user?.genero,
+      fecha_nacimiento: user?.fecha_nacimiento,
     });
   }, [user]);
 
@@ -80,7 +80,7 @@ const SolicitudesPaciente = () => {
     fechaNacimiento: paciente.fecha_nacimiento,
   }));
 
-  console.log(pacientes);
+  // console.log(pacientes);
 
   const handleUpdate = (values) => {
     const updatedData = {
@@ -119,45 +119,44 @@ const SolicitudesPaciente = () => {
 
   return (
     <View style={styles.container}>
-      {pacientes.map((paciente, index) => (
-        <View key={index} style={styles.pacienteContainer}>
-          <View style={styles.header}>
-            <View style={styles.photoContainer}>
-              <Image source={{ uri: user.foto_perfil }} style={styles.photo} />
+      {user && (
+        <>
+          {pacientes.map((paciente, index) => (
+            <View key={index} style={styles.pacienteContainer}>
+              <View style={styles.header}>
+                <View style={styles.photoContainer}>
+                  <Image
+                    source={{ uri: user.foto_perfil }}
+                    style={styles.photo}
+                  />
+                </View>
+                <View style={styles.nameContainer}>
+                  <Text style={styles.name}>{paciente.nombre}</Text>
+                  <Text style={styles.cedula}>C.I: {paciente.cedula}</Text>
+                </View>
+              </View>
+
+              <View style={styles.infoContainer}>
+                <Text style={styles.infoText}>
+                  Edad: {calculateAge(`${paciente.fechaNacimiento}`)}
+                </Text>
+                <Text style={styles.infoText}>Género: {paciente.genero}</Text>
+                <Text style={styles.infoText}>
+                  Teléfono: {paciente.telefono}
+                </Text>
+              </View>
             </View>
-            <View style={styles.nameContainer}>
-              <Text style={styles.name}>{paciente.nombre}</Text>
-              <Text style={styles.cedula}>C.I: {paciente.cedula}</Text>
-            </View>
-          </View>
+          ))}
 
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoText}>
-              Edad: {calculateAge(`${paciente.fechaNacimiento}`)}
-            </Text>
-            <Text style={styles.infoText}>Género: {paciente.genero}</Text>
-            <Text style={styles.infoText}>Teléfono: {paciente.telefono}</Text>
-          </View>
-        </View>
-      ))}
-      {/* <View style={styles.header}>
-        <View style={styles.photoContainer}>
-          <Image
-            source={{ uri: user.foto_perfil }}
-            style={styles.photo}
-          />
-        </View>
-
-      */}
-
-      <TouchableOpacity
-        style={styles.logoutButton}
-        titleStyle={styles.logoutButtonText}
-        onPress={doLogOut}
-      >
-        <Text>Cerrar Sesion</Text>
-      </TouchableOpacity>
-
+          <TouchableOpacity
+            style={styles.logoutButton}
+            titleStyle={styles.logoutButtonText}
+            onPress={doLogOut}
+          >
+            <Text>Cerrar Sesion</Text>
+          </TouchableOpacity>
+        </>
+      )}
       <TouchableOpacity style={styles.editButton} onPress={toggleModal}>
         <Icon name="pencil" size={24} color="#FF5B5B" />
       </TouchableOpacity>

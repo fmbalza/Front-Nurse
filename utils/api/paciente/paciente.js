@@ -1,13 +1,11 @@
 import api from "../Axios";
-import useAuthStore from '../../../utils/storage/auth';
+import useAuthStore from "../../../utils/storage/auth";
 
 export const putUpdatePaciente = async (data) => {
-  const { user } = useAuthStore.getState()
-  const cedula = user.cedula_paciente
+  const { user } = useAuthStore.getState();
+  const cedula = user.cedula_paciente;
   try {
-    
-    console.log(cedula)
-    const response = await api.put(`/paciente/${cedula}`,data);
+    const response = await api.put(`/paciente/${cedula}`, data);
     // console.log("sexo",response.data);
     return response.data;
   } catch (error) {
@@ -16,11 +14,10 @@ export const putUpdatePaciente = async (data) => {
 };
 
 export const getMe = async () => {
-  const { user } = useAuthStore.getState()
-  const cedula = user.cedula_paciente
+  const { user } = useAuthStore.getState();
+  const cedula = user.cedula_paciente;
   try {
-    
-    console.log(cedula)
+    console.log(cedula);
     const response = await api.get(`/paciente/${cedula}`);
     // console.log("sexo",response.data);
     return response.data;
@@ -29,13 +26,11 @@ export const getMe = async () => {
   }
 };
 
-
 export const getMisMedicos = async () => {
-  const { user } = useAuthStore.getState()
-  const cedula = user.cedula_paciente
+  const { user } = useAuthStore.getState();
+  const cedula = user.cedula_paciente;
   try {
-    
-    console.log(cedula)
+    console.log(cedula);
     const response = await api.get(`/paciente/caregiver/${cedula}`);
     // console.log("sexo",response.data);
     return response.data;
@@ -43,6 +38,3 @@ export const getMisMedicos = async () => {
     throw new Error(error);
   }
 };
-
-
-

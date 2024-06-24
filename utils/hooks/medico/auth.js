@@ -90,22 +90,25 @@ export const useRequestCertificado = () => {
 
 export const useGetMe = () => {
   return useQuery({
-    queryKey: ["getMe"],
+    queryKey: ["getMeMedico"],
     queryFn: () => getMe(),
     // staleTime: 5000,
   });
 };
 
 export const useUpdateMedico = () => {
+  const login = useAuthStore((state) => state.login);
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (data) => doUpdate(data),
     onSuccess: (data) => {
       // console.log("aqui", data);
-      // queryClient.invalidateQueries("paciente");
-      if (data === "Medico actualizado exitosamente") {
+      const user = jwtDecode(data.jwt);
+      login(data.jwt, user);
+      if (data.msg === "Medico actualizado exitosamente") {
         console.log("Los datos se cambiaron exitosamente");
+        queryClient.invalidateQueries("getMeMedico");
       } else {
         console.error("Error: ", data);
       }

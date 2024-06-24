@@ -12,7 +12,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import useAuthStore from "../../../utils/storage/auth";
 import CertifyMedicoModal from "../../../components/Modals/CertifyMedicoModal";
-import { useState, useEffect } from "react";
+
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { useUpdateMedico } from "../../../utils/hooks/medico/auth";
 import { useForm, Controller } from "react-hook-form";
@@ -20,6 +20,7 @@ import SpecialtyPicker from "../../../components/SpecialtyPicker";
 import GenderPicker from "../../../components/GenderPicker";
 import { useGetMe } from "../../../utils/hooks/medico/auth";
 import { useEspecialidades } from "../../../utils/hooks/medico/especialidades";
+
 const Testing = () => {
   const { isPending, isError, data, error } = useEspecialidades();
   const getMeQuery = useGetMe();
@@ -28,6 +29,7 @@ const Testing = () => {
   const { user, logout, certified } = useAuthStore.getState();
   const specialties = [];
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalCRVisible, setIsModalCRVisible] = useState(false);
 
   const doLogOut = () => {
     // Aquí se debe de hacer el logout
@@ -36,12 +38,12 @@ const Testing = () => {
   };
 
   const [userData, setUserData] = useState({
-    no_medico: user.no_medico,
-    ap_medico: user.ap_medico,
-    telefono: user.telefono,
-    genero: user.genero,
-    foto_perfil: user.foto_perfil,
-    especialidad: user.id_especialidad.de_especialidad,
+    no_medico: user?.no_medico,
+    ap_medico: user?.ap_medico,
+    telefono: user?.telefono,
+    genero: user?.genero,
+    foto_perfil: user?.foto_perfil,
+    especialidad: user?.id_especialidad.de_especialidad,
   });
 
   const {
@@ -52,12 +54,12 @@ const Testing = () => {
 
   useEffect(() => {
     setUserData({
-      no_medico: user.no_medico,
-      ap_medico: user.ap_medico,
-      telefono: user.telefono,
-      genero: user.genero,
-      foto_perfil: user.foto_perfil,
-      especialidad: user.id_especialidad.de_especialidad,
+      no_medico: user?.no_medico,
+      ap_medico: user?.ap_medico,
+      telefono: user?.telefono,
+      genero: user?.genero,
+      foto_perfil: user?.foto_perfil,
+      especialidad: user?.id_especialidad.de_especialidad,
     });
   }, [user]);
 
@@ -131,55 +133,58 @@ const Testing = () => {
 
   return (
     <View style={styles.container}>
-      {medicos.map((medico, index) => (
-        <View key={index} style={styles.medicoContainer}>
-          <View style={styles.header}>
-            <View style={styles.photoContainer}>
-              <Image
-                source={{ uri: medico.foto_perfil }}
-                style={styles.photo}
-              />
-            </View>
-            <View style={styles.nameContainer}>
-              <Text style={styles.name}>{medico.nombre}</Text>
-              <Text style={styles.cedula}>C.I: {user.cedula_medico}</Text>
-            </View>
-          </View>
-
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoText}>
-              Especialiadad: {medico.especialidad}
-            </Text>
-            <Text style={styles.infoText}>Género: {medico.genero}</Text>
-            <Text style={styles.infoText}>Teléfono: {medico.telefono}</Text>
-          </View>
-        </View>
-      ))}
-
-      <TouchableOpacity
-        onPress={doLogOut}
-        style={styles.logoutButton}
-        titleStyle={styles.logoutButtonText}
-      >
-        <Text>Cerrar Sesion</Text>
-      </TouchableOpacity>
-
-      {!certified && (
+      {user && (
         <>
+          {medicos.map((medico, index) => (
+            <View key={index} style={styles.medicoContainer}>
+              <View style={styles.header}>
+                <View style={styles.photoContainer}>
+                  <Image
+                    source={{ uri: medico.foto_perfil }}
+                    style={styles.photo}
+                  />
+                </View>
+                <View style={styles.nameContainer}>
+                  <Text style={styles.name}>{medico.nombre}</Text>
+                  <Text style={styles.cedula}>C.I: {user.cedula_medico}</Text>
+                </View>
+              </View>
+
+              <View style={styles.infoContainer}>
+                <Text style={styles.infoText}>
+                  Especialiadad: {medico.especialidad}
+                </Text>
+                <Text style={styles.infoText}>Género: {medico.genero}</Text>
+                <Text style={styles.infoText}>Teléfono: {medico.telefono}</Text>
+              </View>
+            </View>
+          ))}
+
           <TouchableOpacity
-            onPress={() => setIsModalVisible(true)}
-            style={styles.buttonCR}
-            titleStyle={styles.buttonText}
+            onPress={doLogOut}
+            style={styles.logoutButton}
+            titleStyle={styles.logoutButtonText}
           >
-            <Text>Completar Registro</Text>
+            <Text>Cerrar Sesion</Text>
           </TouchableOpacity>
-          <CertifyMedicoModal
-            visible={isModalVisible}
-            onClose={() => setIsModalVisible(false)}
-          />
+
+          {!certified && (
+            <>
+              <TouchableOpacity
+                onPress={() => setIsModalCRVisible(true)}
+                style={styles.buttonCR}
+                titleStyle={styles.buttonText}
+              >
+                <Text>Completar Registro</Text>
+              </TouchableOpacity>
+              <CertifyMedicoModal
+                visible={isModalCRVisible}
+                onClose={() => setIsModalCRVisible(false)}
+              />
+            </>
+          )}
         </>
       )}
-
       <TouchableOpacity style={styles.editButton} onPress={toggleModal}>
         <Icon name="pencil" size={24} color="#FF5B5B" />
       </TouchableOpacity>
