@@ -16,6 +16,7 @@ import {
 } from "../../../utils/hooks/medico/paciente";
 import AgregarTratModal from "../../../components/Modals/AgregarTratModal";
 import useAuthStore from "../../../utils/storage/auth";
+import { useGetPacienteMedico } from "../../../utils/hooks/medico/paciente";
 
 const PerfilPaciente = ({ route }) => {
   const { user } = useAuthStore.getState();
@@ -27,6 +28,15 @@ const PerfilPaciente = ({ route }) => {
   const [eventTime, setEventTime] = useState("");
   const { isPending, isError, data, error } = useGetPaciente();
   const pacienteConsultaQuery = useGetPacienteConsulta(cedula);
+  const pacienteMedicoQuery = useGetPacienteMedico();
+
+  if (pacienteMedicoQuery.isPending) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   const estado = ["omitido", "completado", "pendiente"];
 
@@ -118,7 +128,7 @@ const PerfilPaciente = ({ route }) => {
           ))}
 
           <View style={{ alignItems: "flex-end", top: 10, zIndex: 9 }}>
-            <BtnAgregar />
+            <BtnAgregar cedula={cedula} user={user} />
           </View>
         </View>
       </View>

@@ -60,7 +60,7 @@ function MyTabs() {
       />
 
       <Tab.Screen
-        name="SolicitudesPaciente"
+        name="Perfil"
         component={SolicitudesPaciente}
         options={{
           tabBarIcon: ({ color, size }) => (

@@ -57,7 +57,6 @@ const BuscarPaciente = ({ onSearch }) => {
   };
 
   const ItemView = ({ paciente, handlePatientPress }) => {
-    // console.log(paciente)
     return (
       <TouchableOpacity
         onPress={() => handlePatientPress(paciente)}

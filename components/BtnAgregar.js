@@ -1,43 +1,86 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TouchableOpacity, Text, StyleSheet, Modal, View, Button } from 'react-native';
+import {useAssignPaciente, useDeleteAsPaciente} from '../utils/hooks/medico/paciente'
+import { useGetPacienteMedico } from '../utils/hooks/medico/paciente';
 
-const BtnAgregar = () => {
-  const [followStatus, setFollowStatus] = useState('Agregar');
+const BtnAgregar = ({ cedula, user }) => {
+  const assignPacienteMutation = useAssignPaciente()
+  const removePacienteMutation = useDeleteAsPaciente()
+  const pacienteMedicoQuery = useGetPacienteMedico()
+  const [isFollowing, setIsFollowing] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  const handleFollow = () => {
-    if (followStatus === 'Remover') {
+
+  useEffect(() => {
+    if (Array.isArray(pacienteMedicoQuery.data) && pacienteMedicoQuery.data.length > 0) {
+      const pacienteEncontrado = pacienteMedicoQuery.data.find(
+        paciente => paciente.cedula_paciente === cedula
+      );
+      setIsFollowing(!!pacienteEncontrado); 
+  
+    } else {
+      setIsFollowing(false); // Establecer el estado a "agregar"
+    }
+    
+  }, [pacienteMedicoQuery.data, cedula]);
+
+
+
+
+  const handleFollow = async () => {
+    if (isFollowing) {
       setShowModal(true);
     } else {
-      setFollowStatus(followStatus === 'Agregar' ? 'Pendiente' : 'Remover');
+      // Handle "Agregar" logic:
+      try {
+        await assignPacienteMutation.mutate({ cedula_medico: user.cedula_medico , cedula_paciente: cedula}); // Use provided cedula and query data
+        setIsFollowing(true); // Update state for visual change
+      } catch (error) {
+        console.error('Error assigning patient:', error);
+        // Handle error gracefully (e.g., display an error message)
+      }
     }
   };
 
-  const handleRemove = () => {
-    setFollowStatus('Agregar');
+  const handleRemove = async () => {
+    setIsFollowing(false); // Update state for visual change
     setShowModal(false);
+   
+    try {
+      console.log(user.cedula_medico)
+      console.log(cedula)
+      await removePacienteMutation.mutate({ cedula_medico: `${user.cedula_medico}` , cedula_paciente: `${cedula}`});
+      setIsFollowing(false); 
+    setShowModal(false);
+    } catch (error) {
+      console.error('Error removing patient:', error);
+      setIsFollowing(true); 
+      setShowModal(true);
+    
+    }
   };
+
 
   const handleCancel = () => {
     setShowModal(false);
-  };
+    };
 
   return (
     <>
-      <TouchableOpacity
+        <TouchableOpacity
         style={[
           styles.button,
-          followStatus === 'Remover' ? styles.removeButton : followStatus === 'Pendiente' ? styles.pendingButton : styles.addButton,
+          isFollowing ? styles.removeButton : styles.addButton,
         ]}
         onPress={handleFollow}
       >
         <Text
           style={[
             styles.buttonText,
-            followStatus === 'Remover' ? styles.removeText : followStatus === 'Pendiente' ? styles.pendingText : styles.addText,
+            isFollowing ? styles.removeText : styles.addText,
           ]}
         >
-          {followStatus}
+          {isFollowing ? 'Remover' : 'Agregar'}
         </Text>
       </TouchableOpacity>
 

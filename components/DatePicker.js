@@ -23,7 +23,7 @@ const DatePicker = ({ onDateChange, value }) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={showDatePicker} style={{ width: "100%" }}>
+      <TouchableOpacity onPress={showDatePicker}  >
         {showPicker && (
           <RNDateTimePicker
             value={date}
@@ -47,10 +47,12 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
+    
   },
+ 
   input: {
     marginTop: 10,
-    width: 354,
+    width: 270,
     height: 64,
     paddingHorizontal: 10,
     borderWidth: 1,
