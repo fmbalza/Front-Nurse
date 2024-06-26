@@ -131,6 +131,9 @@ const Testing = () => {
     return age;
   }
 
+
+  console.log("Aqui: ",getMeQuery.data)
+
   return (
     <View style={styles.container}>
       {user && (
@@ -146,7 +149,7 @@ const Testing = () => {
                 </View>
                 <View style={styles.nameContainer}>
                   <Text style={styles.name}>{medico.nombre}</Text>
-                  <Text style={styles.cedula}>C.I: {user.cedula_medico}</Text>
+                  <Text style={styles.cedula}>C.I: {user?.cedula_medico}</Text>
                 </View>
               </View>
 
@@ -273,7 +276,7 @@ const Testing = () => {
                 </View>
               )}
               name="id_especialidad"
-              rules={{ required: true }}
+              rules={{ required: false }}
             />
 
             <View style={styles.modalButtons}>

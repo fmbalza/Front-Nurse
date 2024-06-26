@@ -16,7 +16,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 //---------------------------------------------------------------------
 // import { FlashList} from "@shopify/flash-list"; //el componente calendario de abajo depende de esta libreria
 import { Calendar, toDateId } from "@marceloterreiro/flash-calendar";
-import { useConsultasDia } from "../../../utils/hooks/medico/consultaDia";
+import { useConsultasDia, useDeleteConsulta } from "../../../utils/hooks/medico/consultaDia";
 
 const { width } = Dimensions.get("window");
 
@@ -33,6 +33,7 @@ const Menu = () => {
   // }, [selectedDate]);
 
   const { isPending, isError, data, error } = useConsultasDia();
+  const deleteConsultaMutation = useDeleteConsulta();
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -141,10 +142,11 @@ const Menu = () => {
                           );
                         })
                         .map((item, index) => (
-                          <TouchableOpacity
-                            key={index}
-                            style={styles.eventContainer}
-                          >
+                         <TouchableOpacity
+                          key={index}
+                          style={styles.eventContainer}
+                        >
+                          <View style={styles.eventContent}>
                             <Text style={styles.eventTitle}>
                               Consulta {index + 1}
                             </Text>
@@ -155,7 +157,21 @@ const Menu = () => {
                                 minute: "2-digit",
                               })}
                             </Text>
-                          </TouchableOpacity>
+                          </View>
+                          <Pressable
+                            style={styles.deleteButton}
+                            onPress={() => {
+                              console.log(item)
+                              deleteConsultaMutation.mutate(item.id_consulta);
+                            }}
+                          >
+                            <MaterialCommunityIcons
+                              name="trash-can-outline"
+                              size={24}
+                              color="#00826B"
+                            />
+                          </Pressable>
+                        </TouchableOpacity>
                         ))}
                     </>
                   )}
@@ -176,6 +192,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     flexDirection: "row",
     alignItems: "center",
+  },
+  deleteButton: {
+    marginLeft: 8,
+    padding: 4,
   },
   eventTitle: {
     fontSize: 16,

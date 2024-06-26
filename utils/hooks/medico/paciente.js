@@ -41,6 +41,7 @@ export const useAssignPaciente = () => {
       // queryClient.invalidateQueries("paciente");
       if (data === "Paciente asignado exitosamente") {
         console.log("Paciente asignado exitosamente")
+        queryClient.invalidateQueries('getPacienteMedico')
       }
     },
     onError: (error) => {
@@ -61,6 +62,7 @@ export const useDeleteAsPaciente = () => {
      
       if (data === "Paciente removido exitosamente") {
         console.log("Paciente removido exitosamente")
+        queryClient.invalidateQueries('getPacienteMedico')
       }else{ console.log(data)}
     },
     onError: (error) => {

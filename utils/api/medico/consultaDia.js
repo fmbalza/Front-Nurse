@@ -19,3 +19,15 @@ export const createConsulta = async (data) => {
     throw new Error(error);
   }
 };
+
+
+export const deleteConsulta = async (data) => {
+  try {
+    console.log("aqui", data);
+    const response = await api.delete(`/consulta/${data}`, data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+    
+  }
+};

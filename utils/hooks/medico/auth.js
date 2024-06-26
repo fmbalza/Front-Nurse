@@ -75,7 +75,7 @@ export const useVerifyMedico = () => {
 export const useRequestCertificado = () => {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
-  const id = useAuthStore((state) => state.user.cedula_medico);
+  const id = useAuthStore((state) => state.user?.cedula_medico);
 
   return useMutation({
     mutationFn: (data) => requestCertificado(id, data),

@@ -52,6 +52,7 @@ const MisPacientes = ({ onSearch }) => {
     }));
     setFilteredData(pacientes);
     setMasterData(pacientes);
+  
   };
 
   const handlePatientPress = (paciente) => {

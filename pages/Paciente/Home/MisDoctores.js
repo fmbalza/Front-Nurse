@@ -34,10 +34,12 @@ const MisDoctores = () => {
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    if (data) {
+    if (typeof data === "string" || !data) {
+      console.log("no hay data");
+    } else {
       fetchPosts();
     }
-  }, [isSuccess]);
+  }, [data]);
 
   if (isError) {
     return <Text>Error: {error.message}</Text>;
@@ -62,7 +64,7 @@ const MisDoctores = () => {
         email: medico.medico.email,
         especialidad: medico.medico.especialidad.de_especialidad
       }));
-      
+      console.log(medicos)
     setFilteredData(medicos);
     setMasterData(medicos);
     }

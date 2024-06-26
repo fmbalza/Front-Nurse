@@ -7,7 +7,7 @@ export const useGetMedico = () => {
   return useQuery({
     queryKey: ["getMedico"],
     queryFn: () => getMedico(),
-    // staleTime: 5000,
+    staleTime: 30000,
   });
 };
 
