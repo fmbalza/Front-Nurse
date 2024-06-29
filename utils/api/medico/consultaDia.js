@@ -31,3 +31,26 @@ export const deleteConsulta = async (data) => {
     
   }
 };
+
+export const updateConsulta = async (idconsulta, data) => {
+  try {
+    console.log("aqui idconsulta", idconsulta);
+    console.log("aqui data", data);
+    const response = await api.put(`/consulta/${idconsulta}`, data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+
+
+export const getConsulta = async (id_consulta) => {
+  try {
+    // console.log("aqui", data);
+    const response = await api.get(`/consulta/${id_consulta}` );
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};

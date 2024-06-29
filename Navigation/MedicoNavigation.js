@@ -10,7 +10,7 @@ import BuscarPaciente from "../pages/Medico/Home/BuscarPaciente";
 import Perfil from "../pages/Medico/Home/Perfil";
 import Testing from "../pages/Medico/Home/testing";
 import AddMedication from "../pages/Medico/PerfilPaciente/AddMedication";
-
+import Consulta from "../pages/Medico/PerfilPaciente/consulta";
 import PerfilPaciente from "../pages/Medico/PerfilPaciente/PerfilPaciente";
 
 const Stack = createStackNavigator();
@@ -81,6 +81,8 @@ function MyTabs() {
               options={{ headerShown: false }}
             />
             <Stack.Screen name="PerfilPaciente" component={PerfilPaciente} />
+            <Stack.Screen name="AddMedication" component={AddMedication} />
+            <Stack.Screen name="Consulta" component={Consulta} />
           </Stack.Navigator>
         )}
       </Tab.Screen>

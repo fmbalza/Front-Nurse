@@ -18,7 +18,7 @@ const AgendarModal = ({
   visible,
   onClose,
   onSave,
-  doctorId,
+  doctorId, 
   pacienteId,
   expoToken,
 }) => {

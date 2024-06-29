@@ -17,6 +17,7 @@ import {
 import AgregarTratModal from "../../../components/Modals/AgregarTratModal";
 import useAuthStore from "../../../utils/storage/auth";
 import { useGetPacienteMedico } from "../../../utils/hooks/medico/paciente";
+import ModalConsulta from "../../../components/Modals/modalConsulta";
 
 const PerfilPaciente = ({ route }) => {
   const { user } = useAuthStore.getState();
@@ -24,6 +25,7 @@ const PerfilPaciente = ({ route }) => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [modal, setModal] = useState(false);
+  const [cmodal, setCModal] = useState(false);
   const [eventDate, setEventDate] = useState("");
   const [eventTime, setEventTime] = useState("");
   const { isPending, isError, data, error } = useGetPaciente();
@@ -39,6 +41,10 @@ const PerfilPaciente = ({ route }) => {
   }
 
   const estado = ["omitido", "completado", "pendiente"];
+
+  const toggleCModal = () => {
+    setCModal(!cmodal);
+  };
 
   const toggleModal = () => {
     setModal(!modal);
@@ -79,6 +85,7 @@ const PerfilPaciente = ({ route }) => {
       familiar: paciente.familiar,
       fechaNacimiento: paciente.fecha_nacimiento,
     }));
+  
 
   if (pacienteConsultaQuery.isPending) {
     return (
@@ -91,7 +98,7 @@ const PerfilPaciente = ({ route }) => {
     return <Text>Error:{error.message}</Text>;
   }
 
-  // console.log("Tipo de variable: ", typeof pacienteConsultaQuery.data);
+
 
   const consultas =
     typeof pacienteConsultaQuery.data === "string"
@@ -102,7 +109,15 @@ const PerfilPaciente = ({ route }) => {
           fecha: consulta.fecha,
           estado: consulta.estado,
           descripcion: consulta.de_consulta,
+          examen: consulta.examen,
+          id_consulta: consulta.id_consulta,
         }));
+
+        handleConsultaPress = (consulta) => {
+          const id_consulta = consulta.id_consulta;
+    
+          navigation.navigate("Consulta", { id_consulta });
+        };
 
   return (
     <View style={styles.container}>
@@ -111,17 +126,17 @@ const PerfilPaciente = ({ route }) => {
           <View style={styles.photo}></View>
           {pacientes.map((paciente, index) => (
             <View key={index} style={styles.pacienteContainer}>
-              <Text style={styles.label}>Cédula: {paciente.cedula}</Text>
+              <Text style={styles}>Cédula: {paciente.cedula}</Text>
 
-              <Text style={styles.label}>Nombre: {paciente.nombre}</Text>
+              <Text style={styles}>Nombre: {paciente.nombre}</Text>
 
-              <Text style={styles.label}>Teléfono: {paciente.telefono}</Text>
+              <Text style={styles}>Teléfono: {paciente.telefono}</Text>
 
-              <Text style={styles.label}>Género: {paciente.genero}</Text>
+              <Text style={styles}>Género: {paciente.genero}</Text>
 
-              <Text style={styles.label}>Familiar: {paciente.familiar}</Text>
+              <Text style={styles}>Familiar: {paciente.familiar}</Text>
 
-              <Text style={styles.label}>
+              <Text style={styles}>
                 Fecha de Nacimiento: {paciente.fechaNacimiento}
               </Text>
             </View>
@@ -132,7 +147,7 @@ const PerfilPaciente = ({ route }) => {
           </View>
         </View>
       </View>
-
+      <Text>Consultas: </Text>
       <ScrollView verical style={{ height: 1000 }}>
         <View style={styles.cardsContainer}>
           <View>
@@ -140,7 +155,7 @@ const PerfilPaciente = ({ route }) => {
             consultas.every((consulta) => consulta.estado !== 2) ? (
               <Text></Text>
             ) : (
-              <Text>Consultas Pendientes: </Text>
+              <Text>Pendientes: </Text>
             )}
 
             {typeof consultas === "string" ||
@@ -159,65 +174,69 @@ const PerfilPaciente = ({ route }) => {
                       {" "}
                       Consulta {index + 1}:{" "}
                     </Text>
-                    <Text style={styles.label}>
+                    <Text style={styles.cardlabel}>
                       {" "}
                       Paciente: {consulta.nombrePaciente}
                     </Text>
-                    <Text style={styles.label}>
+                    <Text style={styles.cardlabel}>
                       {" "}
                       Medico: {consulta.nombreMedico}
                     </Text>
-                    <Text style={styles.label}>
+                    <Text style={styles.cardlabel}>
                       {" "}
                       Fecha: {new Date(consulta.fecha).toLocaleString()}
                     </Text>
-                    <Text style={styles.label}>
+                    <Text style={styles.cardlabel}>
                       {" "}
                       Estado: {estado[consulta.estado]}
                     </Text>
-                    <Text style={styles.label}>
+                    <Text style={styles.cardlabel}>
                       {" "}
-                      Descripcion: {consulta.descripcion}
+                   
                     </Text>
 
-                    <AgregarTratModal visible={modal} onClose={toggleModal} />
+                    <AgregarTratModal visible={modal} onClose={toggleModal} id_consulta={consulta.id_consulta}/>
+
                   </TouchableOpacity>
                 ))
             )}
           </View>
-
+          
           <View style={{ marginTop: 10 }}>
-            <Text>Consultas: </Text>
+          <Text>: </Text>
             {typeof consultas === "string" ? (
               <Text>No hay consultas</Text>
             ) : (
               consultas
                 .filter((consulta) => consulta.estado === 1)
                 .map((consulta, index) => (
-                  <TouchableOpacity key={index} style={styles.card}>
+                  <TouchableOpacity key={index} style={styles.card} onPress={() => handleConsultaPress(consulta)}>
                     <Text style={styles.cardTitle}>
                       {" "}
                       Consulta {index + 1}
                       {index + 1 === 1 ? " (De primera)" : ""}:{" "}
                     </Text>
-                    <Text style={styles.label}>
+                    <Text style={styles.cardlabel}>
                       {" "}
                       Paciente: {consulta.nombrePaciente}
                     </Text>
-                    <Text style={styles.label}>
+                    <Text style={styles.cardlabel}>
                       {" "}
                       Medico: {consulta.nombreMedico}
                     </Text>
-                    <Text style={styles.label}> Fecha: {consulta.fecha}</Text>
-                    <Text style={styles.label}>
+                    <Text style={styles.cardlabel}> Fecha: {new Date(consulta.fecha).toLocaleString()}</Text>
+                    <Text style={styles.cardlabel}>
                       {" "}
                       Estado: {estado[consulta.estado]}
                     </Text>
-                    <Text style={styles.label}>
+                    <Text style={styles.cardlabel}>
                       {" "}
-                      Descripcion: {consulta.descripcion}
+                    
                     </Text>
+                  
                   </TouchableOpacity>
+
+                  
                 ))
             )}
           </View>
@@ -276,17 +295,27 @@ const styles = StyleSheet.create({
   },
   card: {
     width: 350,
-    height: 150,
-    backgroundColor: "#ECECEC",
+    height: 200,
+    backgroundColor: "#00826B",
     borderRadius: 10,
     marginRight: 10,
     justifyContent: "center",
     alignItems: "left",
     marginTop: 10,
+    
+  },
+  cardlabel:{
+    color:'white',
+    marginLeft:10
+  },
+
+  label:{
+    color:'white'
   },
   cardTitle: {
     fontSize: 15,
     fontWeight: "bold",
+    color:'white'
   },
   agendar: {
     width: 100,

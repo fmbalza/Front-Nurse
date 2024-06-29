@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const AgregarTratModal = ({ visible, onClose, onSave }) => {
+const AgregarTratModal = ({ visible, onClose, onSave, id_consulta }) => {
 
+  console.log(id_consulta)
   const navigation = useNavigation();
 
 
   const handleYesPress = () => {
     onClose();
-    navigation.navigate('AddMedication');
+    const idconsulta = id_consulta;
+    navigation.navigate('AddMedication', {idconsulta});
   };
 
   const handleNoPress = () => {
@@ -26,7 +28,7 @@ const AgregarTratModal = ({ visible, onClose, onSave }) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>¿Desea Agregar un Tratamiento?</Text>
+            <Text style={styles.modalText}>¿Desea Completar esta consulta?</Text>
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 style={[styles.button, styles.buttonYes]}
