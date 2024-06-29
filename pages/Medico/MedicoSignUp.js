@@ -60,7 +60,7 @@ const MedicoSignUp = () => {
   }
 
   const handleRegister = (values) => {
-    console.log(values);
+    console.log("Aqui en MedicoSignUp.js: ", values);
     registerMutation.mutate(values);
   };
 

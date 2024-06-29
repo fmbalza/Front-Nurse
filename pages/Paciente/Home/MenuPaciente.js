@@ -151,7 +151,9 @@ const MenuPaciente = () => {
                           Consulta {index + 1}
                         </Text>
                         <Text>Descripcion: {item.de_consulta}</Text>
-                        <Text>fecha: {item.fecha}</Text>
+                        <Text>
+                          fecha: {new Date(item.fecha).toLocaleString()}
+                        </Text>
                       </TouchableOpacity>
                     ))}
                 </>

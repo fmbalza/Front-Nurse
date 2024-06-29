@@ -7,7 +7,7 @@ import RNDateTimePicker from "@react-native-community/datetimepicker";
 const TimePicker = ({ onTimeChange, value }) => {
   const [time, setTime] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
-  value = time;
+  // value = time;
 
   const onChange = (event, selectedTime) => {
     const currentTime = selectedTime || time;

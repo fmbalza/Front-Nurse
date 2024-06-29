@@ -22,7 +22,7 @@ const MisPacientes = ({ onSearch }) => {
 
   useEffect(() => {
     if (typeof data === "string" || !data) {
-      console.log("no hay data");
+      console.log("Aqui en MisPacientes.js: no hay data");
     } else {
       fetchPosts();
     }
@@ -52,7 +52,6 @@ const MisPacientes = ({ onSearch }) => {
     }));
     setFilteredData(pacientes);
     setMasterData(pacientes);
-  
   };
 
   const handlePatientPress = (paciente) => {

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Modal,
   View,
@@ -12,7 +12,7 @@ import { useForm, Controller } from "react-hook-form";
 // import DateTimePicker from "@react-native-community/datetimepicker";
 import DatePicker from "../DatePicker";
 import TimePicker from "../TimePicker";
-import { sendPushNotification } from "../../utils/notifications/notifications";
+import { sendPushNotificationV1 } from "../../utils/notifications/notifications";
 
 const AgendarModal = ({
   visible,
@@ -22,7 +22,8 @@ const AgendarModal = ({
   pacienteId,
   expoToken,
 }) => {
-  // const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState();
+  const [time, setTime] = useState();
   // const [mode, setMode] = useState("date");
   // const [show, setShow] = useState(false);
   const consultaMutation = useCreateConsulta();
@@ -69,10 +70,30 @@ const AgendarModal = ({
     // console.log(expoToken);
     // console.log(values);
     const { fecha, hora, descripcion } = values;
+
+    const localeDate = new Date(fecha).toLocaleDateString();
+    const to24Hours = convertTo24Hour(hora);
+    const [month, day, year] = localeDate.split("/");
+    const [hours, minutes, seconds] = to24Hours.split(":");
+    // console.log("Aqui: ", month, day, year);
+    // console.log("Aqui: ", hours, minutes, seconds);
+    setDate(localeDate);
+    setTime(hora);
     // console.log(convertTo24Hour(hora));
-    const formattedDate = new Date(`${fecha} ${convertTo24Hour(hora)}`);
+    const formattedDate = new Date();
+    formattedDate.setFullYear(year);
+    formattedDate.setMonth(month - 1);
+    formattedDate.setDate(day);
+    formattedDate.setHours(hours);
+    formattedDate.setMinutes(minutes);
+    formattedDate.setSeconds(0);
+
     // formattedDate.setHours(values.hora.split(":")[0]);
     // formattedDate.setMinutes(values.hora.split(":")[1]);
+
+    // console.log(formattedDate.toUTCString());
+    // console.log(formattedDate.toISOString());
+    // console.log(formattedDate.toLocaleString());
 
     const request = {
       cd_medico: doctorId,
@@ -80,19 +101,23 @@ const AgendarModal = ({
       de_consulta: descripcion || `Consulta con ${pacienteId}`,
       examen: "null",
       estado: 2,
-      fecha: formattedDate.toISOString(),
+      fecha: formattedDate.toUTCString(),
     };
     // "locale and current timezones" depends on the device's language and location so be careful when choosing which one to use...
-    // console.log(request.fecha.toISOString()); // this is the one to use when sending the date to the server/backend
-    // console.log(request.fecha.toUTCString()); // this one should be used when we need to ignore the timezone
-    // console.log(request.fecha.toString());
-    // console.log(request.fecha.toLocaleString()); // this is the one to use when showing the date in the app
     consultaMutation.mutate(request);
-
-    if (expoToken) await sendPushNotification(expoToken, fecha, hora);
   };
 
   useEffect(() => {
+    // console.log(consultaMutation.data);
+
+    if (consultaMutation.data === "Ya existe una consulta en este horario") {
+      alert("Ya existe una consulta en este horario");
+    }
+
+    if (consultaMutation.data === "Consulta creada exitosamente") {
+      sendPushNotificationV1(expoToken, date, time);
+    }
+
     if (consultaMutation.isSuccess) {
       onClose();
     }

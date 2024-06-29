@@ -1,4 +1,8 @@
-import { getConsultasDia, createConsulta, deleteConsulta } from "../../api/medico/consultaDia";
+import {
+  getConsultasDia,
+  createConsulta,
+  deleteConsulta,
+} from "../../api/medico/consultaDia";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 // import { jwtDecode } from "jwt-decode";
 // import { useNavigation } from "@react-navigation/native";
@@ -17,8 +21,9 @@ export const useCreateConsulta = () => {
   return useMutation({
     mutationFn: (data) => createConsulta(data),
     onSuccess: (data) => {
-      // console.log("aqui", data);
+      console.log("Aqui en consultaDia.js: ", data);
       queryClient.invalidateQueries("consultasDia");
+      queryClient.invalidateQueries("getPacienteConsulta");
       // if (data === "Consulta creada exitosamente") {
       //   console.log("La consulta se creo exitosamente");
       // }
@@ -29,20 +34,18 @@ export const useCreateConsulta = () => {
   });
 };
 
-
 export const useDeleteConsulta = () => {
   const queryClient = useQueryClient();
- 
-  
+
   return useMutation({
-    
     mutationFn: (data) => deleteConsulta(data),
     onSuccess: (data) => {
-     
       if (data) {
-        console.log("mensaje:", data)
-        queryClient.invalidateQueries('consultasDia')
-      }else{ console.log(data)}
+        console.log("mensaje:", data);
+        queryClient.invalidateQueries("consultasDia");
+      } else {
+        console.log(data);
+      }
     },
     onError: (error) => {
       console.log(error);

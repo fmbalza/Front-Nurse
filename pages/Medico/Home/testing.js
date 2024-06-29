@@ -104,7 +104,7 @@ const Testing = () => {
       foto_perfil: values.foto_perfil || userData.foto_perfil,
       id_especialidad: values.id_especialidad || userData.especialidad,
     };
-    console.log(updatedData);
+    console.log("Aqui en Testing.js ", updatedData);
     updateMutation.mutate(updatedData);
 
     setIsModalVisible(!isModalVisible);
@@ -131,8 +131,7 @@ const Testing = () => {
     return age;
   }
 
-
-  console.log("Aqui: ",getMeQuery.data)
+  console.log("Aqui en Testing.js ", getMeQuery.data);
 
   return (
     <View style={styles.container}>

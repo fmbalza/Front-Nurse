@@ -11,6 +11,16 @@ export const getPaciente = async () => {
   }
 };
 
+export const getPacienteByCedula = async (cedula) => {
+  try {
+    const response = await api.get(`/paciente/${cedula}`);
+
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export const getPacienteMedico = async () => {
   try {
     const { user } = useAuthStore.getState();
@@ -47,7 +57,7 @@ export const postAssignPaciente = async (data) => {
 export const deleteRemovePaciente = async (data) => {
   try {
     const response = await api.delete(`/medico/subject`, { data: data });
-    console.log(data);
+    console.log("Aqui en paciente.js: ", data);
     return response.data;
   } catch (error) {
     throw new Error(error);

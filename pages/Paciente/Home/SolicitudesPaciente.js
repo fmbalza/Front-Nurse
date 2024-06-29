@@ -90,7 +90,7 @@ const SolicitudesPaciente = () => {
       genero: values.genero || userData.genero,
       fecha_nacimiento: values.fecha_nacimiento || userData.fecha_nacimiento,
     };
-    console.log(updatedData);
+    console.log("Aqui en SolicitudesPaciente.js: ", updatedData);
     updateMutation.mutate(updatedData);
 
     setIsModalVisible(!isModalVisible);

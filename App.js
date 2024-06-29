@@ -23,11 +23,17 @@ export default function App() {
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
         setNotification(notification);
+        // console.log("aqui en App.js", notification.request.content.data);
+
+        if (notification.request.content.data?.key) {
+          // console.log("aqui en App.js", notification.request.content.data.key);
+          queryClient.invalidateQueries(notification.request.content.data.key);
+        }
       });
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
+        console.log("Aqui en App.js: ", response);
       });
 
     return () => {

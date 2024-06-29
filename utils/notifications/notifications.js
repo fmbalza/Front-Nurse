@@ -60,15 +60,59 @@ export const registerForPushNotificationsAsync = async () => {
   }
 };
 
-export const sendPushNotification = async (expoPushToken, fecha, hora) => {
+export const sendPushNotificationV1 = async (expoPushToken, fecha, hora) => {
   const { user } = useAuthStore.getState();
 
   const message = {
     to: expoPushToken,
     sound: "default",
     title: "Consulta agendada!",
-    body: `Saludos, ${user.no_medico} ha agendado una consulta para el ${fecha} a las ${hora}`,
-    // data: { someData: "goes here" },
+    body: `Saludos, ${user?.no_medico} ${user?.ap_medico} ha agendado una consulta para el ${fecha} a las ${hora}`,
+    data: { key: "getConsultasById" },
+  };
+
+  await fetch("https://exp.host/--/api/v2/push/send", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Accept-encoding": "gzip, deflate",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(message),
+  });
+};
+
+export const sendPushNotificationV2 = async (expoPushToken, fecha, hora) => {
+  const { user } = useAuthStore.getState();
+
+  const message = {
+    to: expoPushToken,
+    sound: "default",
+    title: "Consulta cancelada!",
+    body: `${user?.no_medico} ${user?.ap_medico} ha cancelado la consulta del ${fecha} a las ${hora}`,
+    data: { key: "getConsultasById" },
+  };
+
+  await fetch("https://exp.host/--/api/v2/push/send", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Accept-encoding": "gzip, deflate",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(message),
+  });
+};
+
+export const sendPushNotificationV3 = async (expoPushToken, fecha, hora) => {
+  const { user } = useAuthStore.getState();
+
+  const message = {
+    to: expoPushToken,
+    sound: "default",
+    title: "Tratamiento asignado!",
+    body: `${user?.no_medico} ${user?.ap_medico} le ha asignado un nuevo tratamiento`,
+    data: { key: "assignTratamiento" },
   };
 
   await fetch("https://exp.host/--/api/v2/push/send", {

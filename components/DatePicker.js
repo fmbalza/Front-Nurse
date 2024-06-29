@@ -7,14 +7,14 @@ import RNDateTimePicker from "@react-native-community/datetimepicker";
 const DatePicker = ({ onDateChange, value }) => {
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
-  value = date;
+  // value = date;
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShowPicker(false);
     setDate(currentDate);
-    onDateChange(currentDate.toISOString().split("T")[0]);
-    value = currentDate.toISOString().split("T")[0];
+    onDateChange(currentDate);
+    value = currentDate;
   };
 
   const showDatePicker = () => {
@@ -23,7 +23,7 @@ const DatePicker = ({ onDateChange, value }) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={showDatePicker}  >
+      <TouchableOpacity onPress={showDatePicker}>
         {showPicker && (
           <RNDateTimePicker
             value={date}
@@ -35,7 +35,7 @@ const DatePicker = ({ onDateChange, value }) => {
         )}
         <TextInput
           style={styles.input}
-          value={date.toISOString().split("T")[0]} // Display the date in the input field
+          value={date.toLocaleDateString()} // Display the date in the input field
           editable={false} // Disable direct editing of the input field
         />
       </TouchableOpacity>
@@ -47,9 +47,8 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    
   },
- 
+
   input: {
     marginTop: 10,
     width: 270,

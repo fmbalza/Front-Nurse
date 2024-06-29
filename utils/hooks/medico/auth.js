@@ -47,7 +47,7 @@ export const useRegisterMedico = () => {
   return useMutation({
     mutationFn: (data) => doRegister(data),
     onSuccess: (data) => {
-      console.log("aqui", data);
+      console.log("Aqui en auth.js: ", data);
       // queryClient.invalidateQueries("paciente");
       if (data === "Medico creado exitosamente") {
         navigation.navigate("MedicoLogin");
@@ -80,7 +80,7 @@ export const useRequestCertificado = () => {
   return useMutation({
     mutationFn: (data) => requestCertificado(id, data),
     onSuccess: (data) => {
-      console.log("aqui", data);
+      console.log("Aqui en auth.js: ", data);
     },
     onError: (error) => {
       console.log(error);

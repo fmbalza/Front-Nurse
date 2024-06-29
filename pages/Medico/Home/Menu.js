@@ -16,7 +16,10 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 //---------------------------------------------------------------------
 // import { FlashList} from "@shopify/flash-list"; //el componente calendario de abajo depende de esta libreria
 import { Calendar, toDateId } from "@marceloterreiro/flash-calendar";
-import { useConsultasDia, useDeleteConsulta } from "../../../utils/hooks/medico/consultaDia";
+import {
+  useConsultasDia,
+  useDeleteConsulta,
+} from "../../../utils/hooks/medico/consultaDia";
 
 const { width } = Dimensions.get("window");
 
@@ -132,46 +135,50 @@ const Menu = () => {
                     <>
                       {data
                         .filter((item) => {
+                          // console.log("Item: ", new Date(item.fecha).getDate());
+                          // console.log(
+                          //   "Selected date: ",
+                          //   new Date(selectedDate).getUTCDate()
+                          // );
                           const itemDate = new Date(item.fecha);
                           const selected = new Date(selectedDate);
                           return (
-                            itemDate.getUTCDate() === selected.getUTCDate() &&
-                            itemDate.getUTCMonth() === selected.getUTCMonth() &&
-                            itemDate.getUTCFullYear() ===
-                              selected.getUTCFullYear()
+                            itemDate.getDate() === selected.getUTCDate() &&
+                            itemDate.getMonth() === selected.getUTCMonth() &&
+                            itemDate.getFullYear() === selected.getUTCFullYear()
                           );
                         })
                         .map((item, index) => (
-                         <TouchableOpacity
-                          key={index}
-                          style={styles.eventContainer}
-                        >
-                          <View style={styles.eventContent}>
-                            <Text style={styles.eventTitle}>
-                              Consulta {index + 1}
-                            </Text>
-                            <Text key={index}>
-                              {" "}
-                              {new Date(item.fecha).toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </Text>
-                          </View>
-                          <Pressable
-                            style={styles.deleteButton}
-                            onPress={() => {
-                              console.log(item)
-                              deleteConsultaMutation.mutate(item.id_consulta);
-                            }}
+                          <TouchableOpacity
+                            key={index}
+                            style={styles.eventContainer}
                           >
-                            <MaterialCommunityIcons
-                              name="trash-can-outline"
-                              size={24}
-                              color="#00826B"
-                            />
-                          </Pressable>
-                        </TouchableOpacity>
+                            <View style={styles.eventContent}>
+                              <Text style={styles.eventTitle}>
+                                Consulta {index + 1}
+                              </Text>
+                              <Text key={index}>
+                                {" "}
+                                {new Date(item.fecha).toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </Text>
+                            </View>
+                            <Pressable
+                              style={styles.deleteButton}
+                              onPress={() => {
+                                console.log("Aqui en Menu.js ", item);
+                                deleteConsultaMutation.mutate(item.id_consulta);
+                              }}
+                            >
+                              <MaterialCommunityIcons
+                                name="trash-can-outline"
+                                size={24}
+                                color="#00826B"
+                              />
+                            </Pressable>
+                          </TouchableOpacity>
                         ))}
                     </>
                   )}

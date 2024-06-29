@@ -8,7 +8,7 @@ import {
   FlatList,
   ActivityIndicator,
   Image,
-  ScrollView
+  ScrollView,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -16,26 +16,21 @@ import { useGetMisMedicos } from "../../../utils/hooks/paciente/paciente";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import ModalMedico from "../../../components/Modals/ModalMedico";
 
-
 const MisDoctores = () => {
-
   const [filteredData, setFilteredData] = useState([]);
   const [masterData, setMasterData] = useState([]);
   const [search, setSearch] = useState("");
 
- 
-
   const navigation = useNavigation();
-
 
   const { isPending, isError, data, error, isSuccess } = useGetMisMedicos();
 
- const [selectedMedico, setSelectedMedico] = useState(false);
+  const [selectedMedico, setSelectedMedico] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     if (typeof data === "string" || !data) {
-      console.log("no hay data");
+      console.log("Aqui en MisDoctores.js: no hay data");
     } else {
       fetchPosts();
     }
@@ -54,7 +49,7 @@ const MisDoctores = () => {
   }
 
   const fetchPosts = () => {
-    if (data && Array.isArray(data)){
+    if (data && Array.isArray(data)) {
       const medicos = data.map((medico) => ({
         foto: medico.medico.foto_perfil,
         cedula: medico.medico.cedula_medico,
@@ -62,13 +57,12 @@ const MisDoctores = () => {
         telefono: medico.medico.telefono,
         genero: medico.medico.genero,
         email: medico.medico.email,
-        especialidad: medico.medico.especialidad.de_especialidad
+        especialidad: medico.medico.especialidad.de_especialidad,
       }));
-      console.log(medicos)
-    setFilteredData(medicos);
-    setMasterData(medicos);
+      console.log("Aqui en MisDoctores.js: ", medicos);
+      setFilteredData(medicos);
+      setMasterData(medicos);
     }
-
   };
 
   if (isError) {
@@ -85,14 +79,15 @@ const MisDoctores = () => {
 
   const ItemView = ({ medico }) => {
     return (
-      <TouchableOpacity style={styles.containerr} onPress={() => handleSelectMedico({ medico })}>
+      <TouchableOpacity
+        style={styles.containerr}
+        onPress={() => handleSelectMedico({ medico })}
+      >
         <View style={styles.photo}>
           <Image
-          source={{uri: medico.foto}}
-          style={{    width: 50,
-            height: 50,
-            borderRadius: 25,
-           }}/>
+            source={{ uri: medico.foto }}
+            style={{ width: 50, height: 50, borderRadius: 25 }}
+          />
         </View>
         <View style={styles.detailsContainer}>
           <Text style={styles.name}>{medico.nombre}</Text>
@@ -133,10 +128,7 @@ const MisDoctores = () => {
     }
   };
 
-
   const handleSelectMedico = (medico) => {
-
-   
     setSelectedMedico(medico);
     setModalVisible(true);
   };
@@ -148,54 +140,47 @@ const MisDoctores = () => {
   const handleBookAppointment = () => {
     // Aquí puedes agregar la lógica para agendar una cita con el médico seleccionado
     setModalVisible(false);
-    navigation.navigate('AgendarCita', { medico: selectedMedico });
+    navigation.navigate("AgendarCita", { medico: selectedMedico });
   };
-
-
-
-
-
 
   return (
     <View style={styles.container}>
-    
       <View>
-      <View style={styles.container}>
-        <TextInput
-          style={{
-            height: 60,
-            borderWidth: 2,
-            paddingLeft: 20,
-            margin: 5,
-            borderColor: "#FAFAFA",
-            backgroundColor: "white",
-            borderRadius: 7,
-            elevation: 3,
-          }}
-          value={search}
-          placeholder="Buscar..."
-          underlineColorAndroid="transparent"
-          onChangeText={(text) => searchFilter(text)}
-        />
-        <FlatList
-          data={filteredData}
-          keyExtractor={(item, index) => index.toString()}
-          ItemSeparatorComponent={ItemSeparatorView}
-          renderItem={({ item }) => <ItemView medico={item}  />}
-          style={{ marginTop: 10, width: "100%" }}
-        />
+        <View style={styles.container}>
+          <TextInput
+            style={{
+              height: 60,
+              borderWidth: 2,
+              paddingLeft: 20,
+              margin: 5,
+              borderColor: "#FAFAFA",
+              backgroundColor: "white",
+              borderRadius: 7,
+              elevation: 3,
+            }}
+            value={search}
+            placeholder="Buscar..."
+            underlineColorAndroid="transparent"
+            onChangeText={(text) => searchFilter(text)}
+          />
+          <FlatList
+            data={filteredData}
+            keyExtractor={(item, index) => index.toString()}
+            ItemSeparatorComponent={ItemSeparatorView}
+            renderItem={({ item }) => <ItemView medico={item} />}
+            style={{ marginTop: 10, width: "100%" }}
+          />
 
-          {modalVisible && selectedMedico && <ModalMedico
-            visible={modalVisible}
-            medico={selectedMedico}
-            onClose={handleCloseModal}
-            onBookAppointment={handleBookAppointment}
-          />}
-        
+          {modalVisible && selectedMedico && (
+            <ModalMedico
+              visible={modalVisible}
+              medico={selectedMedico}
+              onClose={handleCloseModal}
+              onBookAppointment={handleBookAppointment}
+            />
+          )}
+        </View>
       </View>
-    </View>
- 
-     
     </View>
   );
 };
@@ -229,7 +214,6 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     marginLeft: 10,
     marginRight: 10,
-  
   },
   detailsContainer: {
     flex: 1,

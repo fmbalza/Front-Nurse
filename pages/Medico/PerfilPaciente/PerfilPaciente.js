@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,24 +9,26 @@ import {
 } from "react-native";
 import BtnAgregar from "../../../components/BtnAgregar";
 import AgendarModal from "../../../components/Modals/AgendarModal";
-import { useNavigation } from "@react-navigation/native";
+// import { useNavigation } from "@react-navigation/native";
 import {
-  useGetPaciente,
+  // useGetPaciente,
   useGetPacienteConsulta,
 } from "../../../utils/hooks/medico/paciente";
 import AgregarTratModal from "../../../components/Modals/AgregarTratModal";
 import useAuthStore from "../../../utils/storage/auth";
 import { useGetPacienteMedico } from "../../../utils/hooks/medico/paciente";
+import { useGetPacienteByCedula } from "../../../utils/hooks/medico/paciente";
 
 const PerfilPaciente = ({ route }) => {
   const { user } = useAuthStore.getState();
   const { cedula } = route.params;
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [modal, setModal] = useState(false);
   const [eventDate, setEventDate] = useState("");
   const [eventTime, setEventTime] = useState("");
-  const { isPending, isError, data, error } = useGetPaciente();
+  // const { isPending, isError, data, error } = useGetPaciente();
+  const { isPending, isError, data, error } = useGetPacienteByCedula(cedula);
   const pacienteConsultaQuery = useGetPacienteConsulta(cedula);
   const pacienteMedicoQuery = useGetPacienteMedico();
 
@@ -69,16 +71,20 @@ const PerfilPaciente = ({ route }) => {
     );
   }
 
-  const pacientes = data
-    .filter((paciente) => paciente.cedula_paciente === cedula)
-    .map((paciente) => ({
-      cedula: paciente.cedula_paciente,
-      nombre: `${paciente.no_paciente} ${paciente.ap_paciente}`,
-      telefono: paciente.telefono,
-      genero: paciente.genero,
-      familiar: paciente.familiar,
-      fechaNacimiento: paciente.fecha_nacimiento,
-    }));
+  // useEffect(() => {
+  //   console.log("Paciente: ", data);
+  // }, [data]);
+
+  // const pacientes = data
+  //   .filter((paciente) => paciente.cedula_paciente === cedula)
+  //   .map((paciente) => ({
+  //     cedula: paciente.cedula_paciente,
+  //     nombre: `${paciente.no_paciente} ${paciente.ap_paciente}`,
+  //     telefono: paciente.telefono,
+  //     genero: paciente.genero,
+  //     familiar: paciente.familiar,
+  //     fechaNacimiento: paciente.fecha_nacimiento,
+  //   }));
 
   if (pacienteConsultaQuery.isPending) {
     return (
@@ -109,23 +115,24 @@ const PerfilPaciente = ({ route }) => {
       <View style={styles.profileInfo}>
         <View style={styles.detailsContainer}>
           <View style={styles.photo}></View>
-          {pacientes.map((paciente, index) => (
-            <View key={index} style={styles.pacienteContainer}>
-              <Text style={styles.label}>Cédula: {paciente.cedula}</Text>
+          {/* {pacientes.map((paciente, index) => ( */}
+          {}
+          <View style={styles.pacienteContainer}>
+            <Text style={styles.label}>Cédula: {data[0]?.cedula_paciente}</Text>
 
-              <Text style={styles.label}>Nombre: {paciente.nombre}</Text>
+            <Text style={styles.label}>
+              Nombre: {data[0]?.no_paciente} {data[0]?.ap_paciente}
+            </Text>
 
-              <Text style={styles.label}>Teléfono: {paciente.telefono}</Text>
+            <Text style={styles.label}>Teléfono: {data[0]?.telefono}</Text>
 
-              <Text style={styles.label}>Género: {paciente.genero}</Text>
+            <Text style={styles.label}>Género: {data[0]?.genero}</Text>
 
-              <Text style={styles.label}>Familiar: {paciente.familiar}</Text>
-
-              <Text style={styles.label}>
-                Fecha de Nacimiento: {paciente.fechaNacimiento}
-              </Text>
-            </View>
-          ))}
+            <Text style={styles.label}>
+              Fecha de Nacimiento: {data[0]?.fecha_nacimiento}
+            </Text>
+          </View>
+          {/* ))} */}
 
           <View style={{ alignItems: "flex-end", top: 10, zIndex: 9 }}>
             <BtnAgregar cedula={cedula} user={user} />
