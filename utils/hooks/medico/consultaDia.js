@@ -2,6 +2,8 @@ import {
   getConsultasDia,
   createConsulta,
   deleteConsulta,
+  updateConsulta,
+  getConsulta,
 } from "../../api/medico/consultaDia";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 // import { jwtDecode } from "jwt-decode";
@@ -23,10 +25,10 @@ export const useCreateConsulta = () => {
     onSuccess: (data) => {
       console.log("Aqui en consultaDia.js: ", data);
       queryClient.invalidateQueries("consultasDia");
-      queryClient.invalidateQueries("getPacienteConsulta");
-      // if (data === "Consulta creada exitosamente") {
-      //   console.log("La consulta se creo exitosamente");
-      // }
+      queryClient.invalidateQueries("getPacienteConsulta", data);
+      if (data === "Consulta creada exitosamente") {
+        console.log("La consulta se creo exitosamente");
+      }
     },
     onError: (error) => {
       console.log(error);
@@ -39,6 +41,33 @@ export const useDeleteConsulta = () => {
 
   return useMutation({
     mutationFn: (data) => deleteConsulta(data),
+    onSuccess: (data) => {
+      if (data) {
+        console.log("mensaje:", data);
+        queryClient.invalidateQueries("consultasDia");
+      } else {
+        console.log(data);
+      }
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+};
+
+export const useGetConsulta = (id_consulta) => {
+  return useQuery({
+    queryKey: ["getConsulta", id_consulta],
+    queryFn: () => getConsulta(id_consulta),
+    // refetchInterval: 30000,
+  });
+};
+
+export const useUpdateConsulta = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ idconsulta, data }) => updateConsulta(idconsulta, data),
     onSuccess: (data) => {
       if (data) {
         console.log("mensaje:", data);
