@@ -35,7 +35,8 @@ const AddMedication = ({ route }) => {
       Examen Físico: ${formData.examenFisico}
       Impresión Diagnóstica: ${formData.impresionDiagnostica}
       Plan de Manejo: ${formData.planManejo}
-    `
+    `,
+    estado:`1`
     };
     console.log(examen);
     await updateConsultaMutation.mutate({ idconsulta, data: examen });
