@@ -15,6 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useGetMisMedicos } from "../../../utils/hooks/paciente/paciente";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import ModalMedico from "../../../components/Modals/ModalMedico";
+import userAccountFigure from "../../../assets/user-account-figure.png";
 
 const MisDoctores = () => {
   const [filteredData, setFilteredData] = useState([]);
@@ -85,8 +86,13 @@ const MisDoctores = () => {
       >
         <View style={styles.photo}>
           <Image
-            source={{ uri: medico.foto }}
-            style={{ width: 50, height: 50, borderRadius: 25 }}
+            source={{ uri: medico.foto } || userAccountFigure}
+            style={{
+              width: 50,
+              height: 50,
+              borderRadius: 25,
+              resizeMode: "cover",
+            }}
           />
         </View>
         <View style={styles.detailsContainer}>
@@ -96,7 +102,7 @@ const MisDoctores = () => {
             name="account-details-outline"
             size={24}
             color="black"
-            style={{ left: 240 }}
+            style={{ left: "80%" }}
           />
         </View>
       </TouchableOpacity>
@@ -138,50 +144,51 @@ const MisDoctores = () => {
   };
 
   const handleBookAppointment = () => {
+    // Que rayos es esto? paciente agenda consulta por medio de whatsapp...
     // Aquí puedes agregar la lógica para agendar una cita con el médico seleccionado
     setModalVisible(false);
     navigation.navigate("AgendarCita", { medico: selectedMedico });
   };
 
   return (
-    <View style={styles.container}>
-      <View>
-        <View style={styles.container}>
-          <TextInput
-            style={{
-              height: 60,
-              borderWidth: 2,
-              paddingLeft: 20,
-              margin: 5,
-              borderColor: "#FAFAFA",
-              backgroundColor: "white",
-              borderRadius: 7,
-              elevation: 3,
-            }}
-            value={search}
-            placeholder="Buscar..."
-            underlineColorAndroid="transparent"
-            onChangeText={(text) => searchFilter(text)}
-          />
-          <FlatList
-            data={filteredData}
-            keyExtractor={(item, index) => index.toString()}
-            ItemSeparatorComponent={ItemSeparatorView}
-            renderItem={({ item }) => <ItemView medico={item} />}
-            style={{ marginTop: 10, width: "100%" }}
-          />
+    // <View style={styles.container}>
+    <View style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <TextInput
+          style={{
+            height: 60,
+            borderWidth: 2,
+            paddingLeft: 20,
+            margin: 5,
+            borderColor: "#FAFAFA",
+            backgroundColor: "white",
+            borderRadius: 7,
+            elevation: 3,
+          }}
+          value={search}
+          placeholder="Buscar..."
+          underlineColorAndroid="transparent"
+          onChangeText={(text) => searchFilter(text)}
+        />
+        <FlatList
+          data={filteredData}
+          keyExtractor={(item, index) => index.toString()}
+          ItemSeparatorComponent={ItemSeparatorView}
+          renderItem={({ item }) => <ItemView medico={item} />}
+          style={{ marginTop: 10, width: "100%" }}
+        />
 
-          {modalVisible && selectedMedico && (
-            <ModalMedico
-              visible={modalVisible}
-              medico={selectedMedico}
-              onClose={handleCloseModal}
-              onBookAppointment={handleBookAppointment}
-            />
-          )}
-        </View>
+        {modalVisible && selectedMedico && (
+          <ModalMedico
+            visible={modalVisible}
+            medico={selectedMedico}
+            onClose={handleCloseModal}
+            onBookAppointment={handleBookAppointment}
+          />
+        )}
       </View>
     </View>
+    // </View>
   );
 };
 
@@ -189,6 +196,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#F5F5F5",
     padding: 10,
+    flex: 1,
   },
   containerr: {
     flexDirection: "row",
@@ -211,7 +219,7 @@ const styles = StyleSheet.create({
   photo: {
     width: 50,
     height: 50,
-    borderRadius: 25,
+    borderRadius: 100,
     marginLeft: 10,
     marginRight: 10,
   },

@@ -1,4 +1,3 @@
-// import React, { useState, useEffect } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   View,
@@ -7,18 +6,17 @@ import {
   TextInput,
   StyleSheet,
   ScrollView,
-  // Switch,
   ActivityIndicator,
+  KeyboardAvoidingView,
 } from "react-native";
 import { SignUpStyles } from "../../styles/globalStyles";
 import DatePicker from "../../components/DatePicker";
 import GenderPicker from "../../components/GenderPicker";
-// import { useNavigation } from "@react-navigation/native";
 // ---------------------------------------------------------------------
 import { useForm, Controller } from "react-hook-form";
 import { useRegisterPaciente } from "../../utils/hooks/paciente/auth.js";
 import { MaskedTextInput } from "react-native-mask-text";
-// import { doRegister } from "../../utils/api/paciente/auth.js";
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
 const PacienteSignUp = () => {
   // const navigation = useNavigation();
@@ -42,11 +40,13 @@ const PacienteSignUp = () => {
   // };
 
   return (
-    <ScrollView>
+    // <KeyboardAvoidingView behavior="height" style={{ flex: 1 }}>
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
       <LinearGradient
         colors={["#FFFFFF", "#D6FFE9"]}
         style={{
-          height: 1000,
+          flexGrow: 1,
+          paddingBottom: 100,
         }}
       >
         <View
@@ -104,7 +104,14 @@ const PacienteSignUp = () => {
               rules={{ required: true }}
               defaultValue={""}
             />
-            {/* {errors.no_paciente && <Text style={{ color: 'red' }}>Nombre requerido</Text> */}
+            <View>
+              {errors.no_paciente && (
+                <Text style={styles.errorMessage}>
+                  <Icon name="alert-circle-outline" color={"red"} />
+                    Este campo es requerido
+                </Text>
+              )}
+            </View>
 
             <Controller
               control={control}
@@ -122,7 +129,14 @@ const PacienteSignUp = () => {
               rules={{ required: true }}
               defaultValue={""}
             />
-            {/* {errors.ap_paciente && <Text style={{ color: 'red' }}>Apellido requerido</Text> */}
+            <View>
+              {errors.ap_paciente && (
+                <Text style={styles.errorMessage}>
+                  <Icon name="alert-circle-outline" color={"red"} />
+                    Este campo es requerido
+                </Text>
+              )}
+            </View>
 
             <Controller
               control={control}
@@ -142,7 +156,14 @@ const PacienteSignUp = () => {
               rules={{ required: true }}
               defaultValue={""}
             />
-            {/* {errors.cedula_paciente && <Text style={{ color: 'red' }}>Cedula requerida</Text>} */}
+            <View>
+              {errors.cedula_paciente && (
+                <Text style={styles.errorMessage}>
+                  <Icon name="alert-circle-outline" color={"red"} />
+                    Este campo es requerido
+                </Text>
+              )}
+            </View>
 
             <Controller
               control={control}
@@ -162,7 +183,14 @@ const PacienteSignUp = () => {
               rules={{ required: true }}
               defaultValue={""}
             />
-            {/* {errors.telefono && <Text style={{ color: 'red' }}>Telefono requerido</Text>} */}
+            <View>
+              {errors.telefono && (
+                <Text style={styles.errorMessage}>
+                  <Icon name="alert-circle-outline" color={"red"} />
+                    Este campo es requerido
+                </Text>
+              )}
+            </View>
 
             <Controller
               control={control}
@@ -174,6 +202,14 @@ const PacienteSignUp = () => {
               name="genero"
               rules={{ required: true }}
             />
+            <View>
+              {errors.genero && (
+                <Text style={[styles.errorMessage, { marginTop: 10 }]}>
+                  <Icon name="alert-circle-outline" color={"red"} />
+                    Este campo es requerido
+                </Text>
+              )}
+            </View>
 
             <Controller
               control={control}
@@ -188,8 +224,7 @@ const PacienteSignUp = () => {
             />
 
             {/* 
-              Fran, el mensaje hay que moverlo a un componente que se muestre al presionar ⓘ
-              un tooltip basicamente
+              Familiar se va a descartar...
             */}
             {/* 
               <View
@@ -261,6 +296,7 @@ const PacienteSignUp = () => {
         )}
       </LinearGradient>
     </ScrollView>
+    // </KeyboardAvoidingView>
   );
 };
 
@@ -285,6 +321,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     color: "#00826B",
     fontSize: 17,
+  },
+  errorMessage: {
+    color: "red",
+    fontSize: 14,
   },
 });
 

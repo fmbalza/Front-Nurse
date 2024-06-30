@@ -59,11 +59,11 @@ const Menu = () => {
     });
   }, [currentCalendarMonth]);
 
-  if (isError) {
-    return <Text>Error:{error.message}</Text>;
-  }
+  // if (isError) {
+  //   return <Text>Error:{error.message}</Text>;
+  // }
 
-  if (isPending) {
+  if (isPending || isError) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color="#0000ff" />
@@ -77,13 +77,13 @@ const Menu = () => {
   // }
 
   return (
-    <>
-      <ScrollView>
-        <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+    <View style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#F1F1F1" }}>
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
           <View style={styles.container}>
-            <View style={styles.header}>
+            {/* <View style={styles.header}>
               <Text style={styles.title}>Mis Eventos</Text>
-            </View>
+            </View> */}
             <View style={styles.pickerContainer}>
               <Pressable
                 style={styles.prevButton}
@@ -186,9 +186,9 @@ const Menu = () => {
               </View>
             </View>
           </View>
-        </SafeAreaView>
-      </ScrollView>
-    </>
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   );
 };
 const styles = StyleSheet.create({
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   container: {
-    marginTop: "10%",
+    // marginTop: "10%",
     flex: 1,
     paddingVertical: 24,
   },
@@ -331,10 +331,11 @@ const styles = StyleSheet.create({
   },
 
   pickerContainer: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginTop: 16,
+    // marginTop: 16,
   },
   calendarContainer: {
     flex: 1,

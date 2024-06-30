@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   TextInput,
@@ -10,7 +10,7 @@ import {
   Switch,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import globalStyles, { LoginStyles } from "../../styles/globalStyles.js";
+import { LoginStyles } from "../../styles/globalStyles.js";
 import { useNavigation } from "@react-navigation/native";
 //---------------------------------------------------------------------
 import { useForm, Controller } from "react-hook-form";
@@ -18,6 +18,8 @@ import { useMedicoLogin } from "../../utils/hooks/medico/auth.js";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import useAuthStore from "../../utils/storage/auth.js";
 import { registerForPushNotificationsAsync } from "../../utils/notifications/notifications.js";
+import { MaskedTextInput } from "react-native-mask-text";
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
 const MedicoLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -49,7 +51,7 @@ const MedicoLogin = () => {
     <LinearGradient colors={["#FFFFFF", "#D6FFE9"]} style={styles.container}>
       <Image
         source={require("../../assets/nurse_logo.png")}
-        style={{ width: 200, height: 230, top: 30 }}
+        style={{ width: 200, height: 230, resizeMode: "contain" }}
       />
 
       <Text
@@ -68,20 +70,30 @@ const MedicoLogin = () => {
         <Controller
           control={control}
           render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
+            <MaskedTextInput
               style={styles.input}
-              placeholder="Cédula"
+              placeholder="Cedula Ej: 29.560.310"
               placeholderTextColor="#00826B"
-              onChangeText={(value) => onChange(value)}
+              onChangeText={(text, rawText) => onChange(rawText)}
               onBlur={onBlur}
               value={value}
               inputMode="numeric"
+              mask={"99.999.999"}
             />
           )}
           name="cedula_medico"
           rules={{ required: true }}
           defaultValue={""}
         />
+      </View>
+
+      <View>
+        {errors.cedula_medico && (
+          <Text style={styles.errorMessage}>
+            <Icon name="alert-circle-outline" color={"red"} />
+              Este campo es requerido
+          </Text>
+        )}
       </View>
 
       <View style={LoginStyles.inputs}>
@@ -118,7 +130,34 @@ const MedicoLogin = () => {
       </View>
 
       <View>
-        <Text style={{ color: "#00826B", fontSize: 20 }}>Recuerdame</Text>
+        {errors.contrasena && (
+          <Text style={styles.errorMessage}>
+            <Icon name="alert-circle-outline" color={"red"} />
+              Este campo es requerido
+          </Text>
+        )}
+      </View>
+
+      <View>
+        {loginMutation.isError && (
+          <Text style={styles.errorMessage}>
+            <Icon name="alert-circle-outline" color={"red"} />
+              Inicio de sesion fallido, revise las credenciales ingresadas
+          </Text>
+        )}
+      </View>
+
+      <View style={{ display: "flex", flexDirection: "row" }}>
+        <Text
+          style={{
+            color: "#00826B",
+            fontSize: 20,
+            paddingTop: 9.5,
+            marginRight: 10,
+          }}
+        >
+          Recuerdame
+        </Text>
         <Switch
           trackColor={{ false: "#767577", true: "#81b0ff" }}
           thumbColor={autoLogin ? "#f5dd4b" : "#f4f3f4"}
@@ -204,6 +243,10 @@ const styles = StyleSheet.create({
   passwordToggleButton: {
     left: "90%",
     bottom: "40%",
+  },
+  errorMessage: {
+    color: "red",
+    fontSize: 14,
   },
 });
 

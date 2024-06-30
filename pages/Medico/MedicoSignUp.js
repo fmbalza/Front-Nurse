@@ -10,7 +10,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { SignUpStyles } from "../../styles/globalStyles";
-// import { useNavigation } from "@react-navigation/native";
 import GenderPicker from "../../components/GenderPicker";
 import SpecialtyPicker from "../../components/SpecialtyPicker";
 import FotoModal from "../../components/Modals/FotoModal";
@@ -18,8 +17,8 @@ import FotoModal from "../../components/Modals/FotoModal";
 import { useForm, Controller } from "react-hook-form";
 import { useRegisterMedico } from "../../utils/hooks/medico/auth.js";
 import { useEspecialidades } from "../../utils/hooks/medico/especialidades";
-// import { doRegister } from "../../utils/api/paciente/auth.js";
 import { MaskedTextInput } from "react-native-mask-text";
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
 const MedicoSignUp = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -48,7 +47,6 @@ const MedicoSignUp = () => {
   }
 
   if (data) {
-    // [{ label: "Cardiologia", value: "1", color: "00826B" }]
     const format = data.map((specialty) => {
       return {
         label: specialty.de_especialidad,
@@ -73,16 +71,18 @@ const MedicoSignUp = () => {
   };
 
   const handleImagePicked = (imageUri) => {
+    // weird/bad fran practice/implementation...
     setSelectedImageUri(imageUri);
     // console.log(selectedImageUri);
   };
 
   return (
-    <ScrollView>
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
       <LinearGradient
         colors={["#FFFFFF", "#D6FFE9"]}
         style={{
-          height: 1300,
+          flexGrow: 1,
+          paddingBottom: 150,
         }}
       >
         <View
@@ -139,7 +139,14 @@ const MedicoSignUp = () => {
               rules={{ required: true }}
               defaultValue={""}
             />
-            {/* {errors.no_medico && <Text style={{ color: 'red' }}>Nombre requerido</Text> */}
+            <View>
+              {errors.no_medico && (
+                <Text style={styles.errorMessage}>
+                  <Icon name="alert-circle-outline" color={"red"} />
+                    Este campo es requerido
+                </Text>
+              )}
+            </View>
 
             <Controller
               control={control}
@@ -157,7 +164,14 @@ const MedicoSignUp = () => {
               rules={{ required: true }}
               defaultValue={""}
             />
-            {/* {errors.ap_medico && <Text style={{ color: 'red' }}>Apellido requerido</Text> */}
+            <View>
+              {errors.ap_medico && (
+                <Text style={styles.errorMessage}>
+                  <Icon name="alert-circle-outline" color={"red"} />
+                    Este campo es requerido
+                </Text>
+              )}
+            </View>
 
             <Controller
               control={control}
@@ -175,7 +189,14 @@ const MedicoSignUp = () => {
               rules={{ required: true }}
               defaultValue={""}
             />
-            {/* {errors. && <Text style={{ color: 'red' }}> requerido</Text> */}
+            <View>
+              {errors.contraseña && (
+                <Text style={styles.errorMessage}>
+                  <Icon name="alert-circle-outline" color={"red"} />
+                    Este campo es requerido
+                </Text>
+              )}
+            </View>
 
             <Controller
               control={control}
@@ -195,20 +216,18 @@ const MedicoSignUp = () => {
               rules={{ required: true }}
               defaultValue={""}
             />
-            {/* {errors. && <Text style={{ color: 'red' }}> requerido</Text> */}
+            <View>
+              {errors.cedula_medico && (
+                <Text style={styles.errorMessage}>
+                  <Icon name="alert-circle-outline" color={"red"} />
+                    Este campo es requerido
+                </Text>
+              )}
+            </View>
 
             <Controller
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
-                // <TextInput
-                //   style={SignUpStyles.inputs}
-                //   placeholderTextColor="#00826B"
-                //   placeholder="Ej: 0123-1234567"
-                //   onBlur={onBlur}
-                //   onChangeText={onChange}
-                //   value={value}
-                //   keyboardType="numeric"
-                // />
                 <MaskedTextInput
                   style={SignUpStyles.inputs}
                   placeholderTextColor="#00826B"
@@ -224,7 +243,14 @@ const MedicoSignUp = () => {
               rules={{ required: true }}
               defaultValue={""}
             />
-            {/* {errors. && <Text style={{ color: 'red' }}> requerido</Text> */}
+            <View>
+              {errors.telefono && (
+                <Text style={styles.errorMessage}>
+                  <Icon name="alert-circle-outline" color={"red"} />
+                    Este campo es requerido
+                </Text>
+              )}
+            </View>
 
             <Controller
               control={control}
@@ -242,7 +268,14 @@ const MedicoSignUp = () => {
               rules={{ required: true }}
               defaultValue={""}
             />
-            {/* {errors. && <Text style={{ color: 'red' }}> requerido</Text> */}
+            <View>
+              {errors.email && (
+                <Text style={styles.errorMessage}>
+                  <Icon name="alert-circle-outline" color={"red"} />
+                    Este campo es requerido
+                </Text>
+              )}
+            </View>
 
             <Controller
               control={control}
@@ -254,6 +287,14 @@ const MedicoSignUp = () => {
               name="genero"
               rules={{ required: true }}
             />
+            <View>
+              {errors.genero && (
+                <Text style={styles.errorMessage}>
+                  <Icon name="alert-circle-outline" color={"red"} />
+                    Este campo es requerido
+                </Text>
+              )}
+            </View>
 
             <Controller
               control={control}
@@ -269,6 +310,14 @@ const MedicoSignUp = () => {
               name="id_especialidad"
               rules={{ required: true }}
             />
+            <View>
+              {errors.id_especialidad && (
+                <Text style={styles.errorMessage}>
+                  <Icon name="alert-circle-outline" color={"red"} />
+                    Este campo es requerido
+                </Text>
+              )}
+            </View>
 
             <TouchableOpacity onPress={openModal} style={SignUpStyles.btnCert}>
               <Text
@@ -281,14 +330,6 @@ const MedicoSignUp = () => {
                 Subir Foto de perfil
               </Text>
             </TouchableOpacity>
-
-            {/* no funciona como deberia */}
-            {/* {selectedImageUri && (
-              <Image
-                source={{ uri: selectedImageUri }}
-                style={{ width: 300, height: 300 }}
-              />
-            )} */}
 
             <Controller
               control={control}
@@ -330,6 +371,8 @@ const MedicoSignUp = () => {
               justifyContent: "center",
               alignItems: "center",
               zIndex: 10,
+              flex: 1,
+              flexGrow: 1,
               backgroundColor: "rgba(0, 0, 0, 0.5)",
             }}
           >
@@ -362,6 +405,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     color: "#00826B",
     fontSize: 17,
+  },
+  errorMessage: {
+    color: "red",
+    fontSize: 14,
   },
 });
 

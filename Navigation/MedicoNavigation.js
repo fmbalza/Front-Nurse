@@ -1,13 +1,12 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
+// import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 //pages
 import Menu from "../pages/Medico/Home/Menu";
 import MisPacientes from "../pages/Medico/Home/MisPacientes";
 import BuscarPaciente from "../pages/Medico/Home/BuscarPaciente";
-import Perfil from "../pages/Medico/Home/Perfil";
 import Testing from "../pages/Medico/Home/testing";
 import AddMedication from "../pages/Medico/PerfilPaciente/AddMedication";
 import Consulta from "../pages/Medico/PerfilPaciente/consulta";
@@ -30,10 +29,10 @@ function MyTabs() {
   return (
     <Tab.Navigator initialRouteName="Menu" id="MedicoTabs">
       <Tab.Screen
-        name="Menu"
+        name="Mis Eventos"
         component={Menu}
         options={{
-          headerShown: false,
+          // headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="home-outline"
@@ -56,7 +55,7 @@ function MyTabs() {
       <Tab.Screen
         name="TabMisPacientes"
         options={{
-          headerShown: false,
+          // headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="account-injury-outline"
@@ -112,7 +111,7 @@ function MyTabs() {
             <Stack.Screen
               name="StackBuscarPaciente"
               component={BuscarPaciente}
-              options={{ headerShown: false }}
+              // options={{ headerShown: false }}
             />
             <Stack.Screen name="PerfilPaciente" component={PerfilPaciente} />
             <Stack.Screen name="AddMedication" component={AddMedication} />
@@ -121,7 +120,7 @@ function MyTabs() {
       </Tab.Screen>
 
       <Tab.Screen
-        name="Testing"
+        name="Perfil"
         component={Testing}
         options={{
           tabBarIcon: ({ color, size }) => (

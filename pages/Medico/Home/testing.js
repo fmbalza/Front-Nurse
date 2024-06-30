@@ -104,7 +104,7 @@ const Testing = () => {
       foto_perfil: values.foto_perfil || userData.foto_perfil,
       id_especialidad: values.id_especialidad || userData.especialidad,
     };
-    console.log("Aqui en Testing.js ", updatedData);
+    // console.log("Aqui en Testing.js ", updatedData);
     updateMutation.mutate(updatedData);
 
     setIsModalVisible(!isModalVisible);
@@ -131,7 +131,7 @@ const Testing = () => {
     return age;
   }
 
-  console.log("Aqui en Testing.js ", getMeQuery.data);
+  // console.log("Aqui en Testing.js ", getMeQuery.data);
 
   return (
     <View style={styles.container}>
@@ -201,6 +201,8 @@ const Testing = () => {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Editar Perfil</Text>
 
+            <Text>Modifique los campos que desee cambiar</Text>
+
             <Controller
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
@@ -252,7 +254,7 @@ const Testing = () => {
               defaultValue={""}
             />
 
-            <Controller
+            {/* <Controller
               control={control}
               render={({ field: { onChange, value } }) => (
                 <View style={styles.componentt}>
@@ -261,12 +263,12 @@ const Testing = () => {
               )}
               name="genero"
               rules={{ required: false }}
-            />
+            /> */}
 
             <Controller
               control={control}
               render={({ field: { onChange, value } }) => (
-                <View style={styles.componentt}>
+                <View style={[styles.componentt, { marginTop: 0 }]}>
                   <SpecialtyPicker
                     onSpecialtyChange={onChange}
                     value={value}
@@ -401,7 +403,7 @@ const styles = StyleSheet.create({
   },
   modalInput: {
     marginTop: 10,
-    width: 270,
+    width: 355,
     height: 64,
     paddingHorizontal: 10,
     borderWidth: 1,

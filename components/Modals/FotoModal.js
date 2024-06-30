@@ -5,7 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Text,
-  Image,
+  ActivityIndicator,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 // ---------------------------------------------------------------------
@@ -14,6 +14,18 @@ import { decode } from "base64-arraybuffer";
 
 const FotoModal = ({ isVisible, onClose, onImagePicked, onChange, value }) => {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isLoadingManually, setManualLoading] = useState(false);
+
+  if (isLoadingManually)
+    return (
+      <Modal visible={true} animationType="slide" transparent>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        </View>
+      </Modal>
+    );
 
   // Método para convertir una base64 a un ArrayBuffer
   // Paquete base64-arraybuffer ya se encarga de esto
@@ -50,6 +62,7 @@ const FotoModal = ({ isVisible, onClose, onImagePicked, onChange, value }) => {
     if (!result.canceled) {
       const selectedImage = result.assets[0];
       try {
+        setManualLoading(true);
         const { data, error } = await supabase.storage
           .from("NURSE")
           .upload(selectedImage.fileName, decode(selectedImage.base64), {
@@ -69,9 +82,21 @@ const FotoModal = ({ isVisible, onClose, onImagePicked, onChange, value }) => {
       } catch (error) {
         console.log("Error uploading image: ", error);
       }
+      setManualLoading(false);
       onClose();
     }
   };
+
+  if (isLoadingManually)
+    return (
+      <Modal visible={true} animationType="slide" transparent>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        </View>
+      </Modal>
+    );
 
   return (
     <Modal visible={isVisible} animationType="slide" transparent>
@@ -137,6 +162,18 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: "white",
     fontWeight: "bold",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalView: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    alignItems: "center",
   },
 });
 

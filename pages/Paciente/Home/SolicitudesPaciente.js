@@ -18,6 +18,7 @@ import GenderPicker from "../../../components/GenderPicker";
 import { useGetMe } from "../../../utils/hooks/paciente/paciente";
 import { useNavigation } from "@react-navigation/native";
 import useAuthStore from "../../../utils/storage/auth";
+import userAccountFigure from "../../../assets/user-account-figure.png";
 
 const SolicitudesPaciente = () => {
   const getMeQuery = useGetMe();
@@ -125,10 +126,7 @@ const SolicitudesPaciente = () => {
             <View key={index} style={styles.pacienteContainer}>
               <View style={styles.header}>
                 <View style={styles.photoContainer}>
-                  <Image
-                    source={{ uri: user.foto_perfil }}
-                    style={styles.photo}
-                  />
+                  <Image source={userAccountFigure} style={styles.photo} />
                 </View>
                 <View style={styles.nameContainer}>
                   <Text style={styles.name}>{paciente.nombre}</Text>
@@ -170,6 +168,8 @@ const SolicitudesPaciente = () => {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Editar Perfil</Text>
+
+            <Text>Modifique los campos que desee cambiar</Text>
 
             <Controller
               control={control}
@@ -222,7 +222,7 @@ const SolicitudesPaciente = () => {
               defaultValue={""}
             />
 
-            <Controller
+            {/* <Controller
               control={control}
               render={({ field: { onChange, value } }) => (
                 <View style={styles.componentt}>
@@ -243,7 +243,7 @@ const SolicitudesPaciente = () => {
               name="fecha_nacimiento"
               defaultValue={new Date().toISOString().split("T")[0]}
               // rules={{ required: true }} // siempre tiene algo asignado por defecto
-            />
+            /> */}
 
             <View style={styles.modalButtons}>
               <TouchableOpacity
@@ -301,6 +301,8 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
+    resizeMode: "contain",
+    backgroundColor: "#F1F1F1",
   },
   nameContainer: {
     flex: 1,
@@ -356,7 +358,7 @@ const styles = StyleSheet.create({
   },
   modalInput: {
     marginTop: 10,
-    width: 270,
+    width: 355,
     height: 64,
     paddingHorizontal: 10,
     borderWidth: 1,

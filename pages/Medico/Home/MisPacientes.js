@@ -7,11 +7,13 @@ import {
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
+  Image,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useGetPacienteMedico } from "../../../utils/hooks/medico/paciente";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import userAccountFigure from "../../../assets/user-account-figure.png";
 
 const MisPacientes = ({ onSearch }) => {
   const { isPending, isError, data, error } = useGetPacienteMedico();
@@ -65,7 +67,7 @@ const MisPacientes = ({ onSearch }) => {
         onPress={() => handlePatientPress(paciente)}
         style={styles.containerr}
       >
-        <View style={styles.photo}></View>
+        <Image source={userAccountFigure} style={styles.photo} />
         <View style={styles.detailsContainer}>
           <Text style={styles.name}>{paciente.nombre}</Text>
           <Text style={styles.cedula}>{paciente.cedula}</Text>
@@ -73,7 +75,7 @@ const MisPacientes = ({ onSearch }) => {
             name="account-details-outline"
             size={24}
             color="black"
-            style={{ left: 240 }}
+            style={{ left: "80%" }}
           />
         </View>
       </TouchableOpacity>
@@ -106,7 +108,7 @@ const MisPacientes = ({ onSearch }) => {
   };
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <View style={styles.container}>
         <TextInput
           style={{
@@ -140,9 +142,10 @@ const MisPacientes = ({ onSearch }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 50,
+    // marginTop: 50,
     backgroundColor: "#F5F5F5",
     padding: 10,
+    flex: 1,
   },
   containerr: {
     flexDirection: "row",
@@ -168,7 +171,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     marginLeft: 10,
     marginRight: 10,
-    backgroundColor: "#00826B",
+    // backgroundColor: "#00826B",
   },
   detailsContainer: {
     flex: 1,

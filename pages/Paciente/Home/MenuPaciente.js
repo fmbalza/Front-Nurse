@@ -38,11 +38,11 @@ const MenuPaciente = () => {
     });
   }, [week]);
 
-  if (isError) {
-    return <Text>Error: {error.message}</Text>;
-  }
+  // if (isError) {
+  //   return <Text>Error: {error.message}</Text>;
+  // }
 
-  if (isPending) {
+  if (isPending || isError) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color="#0000ff" />
@@ -137,9 +137,9 @@ const MenuPaciente = () => {
                       const itemDate = new Date(item.fecha);
                       const selected = new Date(value);
                       return (
-                        itemDate.getUTCDate() === selected.getUTCDate() &&
-                        itemDate.getUTCMonth() === selected.getUTCMonth() &&
-                        itemDate.getUTCFullYear() === selected.getUTCFullYear()
+                        itemDate.getDate() === selected.getUTCDate() &&
+                        itemDate.getMonth() === selected.getUTCMonth() &&
+                        itemDate.getFullYear() === selected.getUTCFullYear()
                       );
                     })
                     .map((item, index) => (

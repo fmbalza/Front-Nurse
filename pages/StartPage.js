@@ -30,7 +30,7 @@ const StartPage = () => {
       >
         <Image
           source={require("../assets/nurse_logo.png")}
-          style={{ width: "51%", height: "35.3%" }}
+          style={{ width: "50%", height: "35%", resizeMode: "contain" }}
         />
 
         <Text
