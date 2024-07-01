@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   StyleSheet,
   Dimensions,
@@ -13,6 +13,7 @@ import { useGetConsultasById } from "../../../utils/hooks/paciente/consultas";
 import moment from "moment";
 import "moment/locale/es";
 import Swiper from "react-native-swiper";
+import { timedNotificationV1 } from "../../../utils/notifications/notifications";
 
 const { width } = Dimensions.get("window");
 
@@ -37,6 +38,11 @@ const MenuPaciente = () => {
       });
     });
   }, [week]);
+
+  // useEffect(() => {
+  //   timedNotificationV1("2024-07-01T21:00:00+00:00");
+  //   console.log(data);
+  // }, [data]);
 
   // if (isError) {
   //   return <Text>Error: {error.message}</Text>;

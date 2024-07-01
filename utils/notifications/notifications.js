@@ -125,3 +125,15 @@ export const sendPushNotificationV3 = async (expoPushToken, fecha, hora) => {
     body: JSON.stringify(message),
   });
 };
+
+export const timedNotificationV1 = async (timestamp) => {
+  console.log("Aqui", new Date(timestamp).toLocaleString());
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "Hey!",
+    },
+    trigger: new Date(timestamp),
+  });
+  // await Notifications.cancelScheduledNotificationAsync(identifier);
+  // await Notifications.cancelAllScheduledNotificationsAsync();
+};

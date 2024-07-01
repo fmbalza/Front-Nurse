@@ -20,8 +20,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.ed0811.nurseApp",
-      "googleServicesFile": "./android/app/google-services.json"
+      "package": "com.ed0811.NURSE",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"

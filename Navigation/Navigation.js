@@ -1,5 +1,5 @@
 import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
@@ -90,6 +90,7 @@ function MyStack() {
         component={HomePaciente}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name="Reinicio de contraseña" component={PasswordM} />
     </Stack.Navigator>
   );
 }

@@ -37,7 +37,9 @@ yarn-error.*
 # dotenv
 .env
 
-# misc
+# misc - temporary allow this files to make the build work
 google-services.json
-android
 eas.json
+android
+
+# app.config.js

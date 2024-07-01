@@ -175,16 +175,13 @@ const MedicoLogin = () => {
           Regístrate aquí
         </Text>
       </Text>
-      {/* 
-      <Text style={styles.registerText}>
-        ¿Olvidaste tu contraseña?{" "}
-        <Text
-          style={styles.registerLink}
-          onPress={() => navigation.navigate("PasswordM")}
-        >
-          Click aquí
-        </Text>
-      </Text> */}
+
+      <Text
+        style={styles.registerLink}
+        onPress={() => navigation.navigate("Reinicio de contraseña")}
+      >
+        ¿Olvidaste tu contraseña?
+      </Text>
 
       <TouchableOpacity
         onPress={handleSubmit((data) => handleLogIn(data))}
