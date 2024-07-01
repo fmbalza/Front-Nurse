@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import BtnAgregar from "../../../components/BtnAgregar";
 import AgendarModal from "../../../components/Modals/AgendarModal";
-// import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import {
   // useGetPaciente,
   useGetPacienteConsulta,
@@ -23,7 +23,7 @@ import ModalConsulta from "../../../components/Modals/modalConsulta";
 const PerfilPaciente = ({ route }) => {
   const { user } = useAuthStore.getState();
   const { cedula } = route.params;
-  // const navigation = useNavigation();
+  const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [modal, setModal] = useState(false);
   const [cmodal, setCModal] = useState(false);
@@ -118,7 +118,6 @@ const PerfilPaciente = ({ route }) => {
 
   handleConsultaPress = (consulta) => {
     const id_consulta = consulta.id_consulta;
-
     navigation.navigate("Consulta", { id_consulta });
   };
 
@@ -207,7 +206,7 @@ const PerfilPaciente = ({ route }) => {
           </View>
 
           <View style={{ marginTop: 10 }}>
-            <Text>: </Text>
+            <Text>Completadas: </Text>
             {typeof consultas === "string" ? (
               <Text>No hay consultas</Text>
             ) : (

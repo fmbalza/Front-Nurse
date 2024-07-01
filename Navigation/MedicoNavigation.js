@@ -7,7 +7,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Menu from "../pages/Medico/Home/Menu";
 import MisPacientes from "../pages/Medico/Home/MisPacientes";
 import BuscarPaciente from "../pages/Medico/Home/BuscarPaciente";
-import Testing from "../pages/Medico/Home/testing";
+import PerfilMedico from "../pages/Medico/Home/PerfilMedico";
 import AddMedication from "../pages/Medico/PerfilPaciente/AddMedication";
 import Consulta from "../pages/Medico/PerfilPaciente/consulta";
 import PerfilPaciente from "../pages/Medico/PerfilPaciente/PerfilPaciente";
@@ -55,7 +55,7 @@ function MyTabs() {
       <Tab.Screen
         name="TabMisPacientes"
         options={{
-          // headerShown: false,
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="account-injury-outline"
@@ -75,13 +75,26 @@ function MyTabs() {
         {() => (
           <Stack.Navigator>
             <Stack.Screen
-              name="StackMisPacientes"
+              name="MisPacientes"
               component={MisPacientes}
-              options={{ headerShown: false }}
+              // options={{ headerShown: false }}
+              options={{ title: "Mis Pacientes" }}
             />
-            <Stack.Screen name="PerfilPaciente" component={PerfilPaciente} />
-            <Stack.Screen name="AddMedication" component={AddMedication} />
-            <Stack.Screen name="Consulta" component={Consulta} />
+            <Stack.Screen
+              name="PerfilPaciente"
+              component={PerfilPaciente}
+              options={{ title: "Perfil Paciente" }}
+            />
+            <Stack.Screen
+              name="AddMedication"
+              component={AddMedication}
+              options={{ title: "Finalizar Consulta" }}
+            />
+            <Stack.Screen
+              name="Consulta"
+              component={Consulta}
+              options={{ title: "Informacion de la Consulta" }}
+            />
           </Stack.Navigator>
         )}
       </Tab.Screen>
@@ -112,16 +125,30 @@ function MyTabs() {
               name="StackBuscarPaciente"
               component={BuscarPaciente}
               // options={{ headerShown: false }}
+              options={{ title: "Buscar Paciente" }}
             />
-            <Stack.Screen name="PerfilPaciente" component={PerfilPaciente} />
-            <Stack.Screen name="AddMedication" component={AddMedication} />
+            <Stack.Screen
+              name="PerfilPaciente"
+              component={PerfilPaciente}
+              options={{ title: "Perfil Paciente" }}
+            />
+            <Stack.Screen
+              name="AddMedication"
+              component={AddMedication}
+              options={{ title: "Finalizar Consulta" }}
+            />
+            <Stack.Screen
+              name="Consulta"
+              component={Consulta}
+              options={{ title: "Informacion de la Consulta" }}
+            />
           </Stack.Navigator>
         )}
       </Tab.Screen>
 
       <Tab.Screen
         name="Perfil"
-        component={Testing}
+        component={PerfilMedico}
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons

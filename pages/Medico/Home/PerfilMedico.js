@@ -21,7 +21,7 @@ import GenderPicker from "../../../components/GenderPicker";
 import { useGetMe } from "../../../utils/hooks/medico/auth";
 import { useEspecialidades } from "../../../utils/hooks/medico/especialidades";
 
-const Testing = () => {
+const PerfilMedico = () => {
   const { isPending, isError, data, error } = useEspecialidades();
   const getMeQuery = useGetMe();
   const updateMutation = useUpdateMedico();
@@ -32,7 +32,6 @@ const Testing = () => {
   const [isModalCRVisible, setIsModalCRVisible] = useState(false);
 
   const doLogOut = () => {
-    // Aquí se debe de hacer el logout
     logout();
     navigation.getParent("MainStack").navigate("StartPage", { logout: true });
   };
@@ -43,7 +42,7 @@ const Testing = () => {
     telefono: user?.telefono,
     genero: user?.genero,
     foto_perfil: user?.foto_perfil,
-    especialidad: user?.id_especialidad.de_especialidad,
+    especialidad: user?.id_especialidad.id_especialidad,
   });
 
   const {
@@ -53,20 +52,20 @@ const Testing = () => {
   } = useForm();
 
   useEffect(() => {
+    // console.log("Aqui en PerfilMedico.js ", user);
     setUserData({
       no_medico: user?.no_medico,
       ap_medico: user?.ap_medico,
       telefono: user?.telefono,
       genero: user?.genero,
       foto_perfil: user?.foto_perfil,
-      especialidad: user?.id_especialidad.de_especialidad,
+      especialidad: user?.id_especialidad.id_especialidad,
     });
   }, [user]);
 
   if (getMeQuery.isError) {
     return <Text>Error:{error.message}</Text>;
   }
-
   if (getMeQuery.isPending) {
     return (
       <View style={styles.container}>
@@ -87,12 +86,12 @@ const Testing = () => {
   }
 
   const medicos = getMeQuery.data.map((medico) => ({
-    cedula: medico.cedula_medico,
+    cedula: medico.cedula_medico || user?.cedula_medico,
     nombre: `${medico.no_medico} ${medico.ap_medico}`,
     telefono: medico.telefono,
     genero: medico.genero,
     foto_perfil: medico.foto_perfil,
-    especialidad: medico.especialidad.de_especialidad,
+    especialidad: medico.id_especialidad || user?.id_especialidad,
   }));
 
   const handleUpdate = (values) => {
@@ -102,9 +101,9 @@ const Testing = () => {
       telefono: values.telefono || userData.telefono,
       genero: values.genero || userData.genero,
       foto_perfil: values.foto_perfil || userData.foto_perfil,
-      id_especialidad: values.id_especialidad || userData.especialidad,
+      id_especialidad: values.id_especialidad || userData.id_especialidad,
     };
-    // console.log("Aqui en Testing.js ", updatedData);
+    // console.log("Aqui en PerfilMedico.js ", updatedData);
     updateMutation.mutate(updatedData);
 
     setIsModalVisible(!isModalVisible);
@@ -131,8 +130,6 @@ const Testing = () => {
     return age;
   }
 
-  // console.log("Aqui en Testing.js ", getMeQuery.data);
-
   return (
     <View style={styles.container}>
       {user && (
@@ -154,7 +151,7 @@ const Testing = () => {
 
               <View style={styles.infoContainer}>
                 <Text style={styles.infoText}>
-                  Especialiadad: {medico.especialidad}
+                  Especialiadad: {specialties[medico.especialidad - 1]?.label}
                 </Text>
                 <Text style={styles.infoText}>Género: {medico.genero}</Text>
                 <Text style={styles.infoText}>Teléfono: {medico.telefono}</Text>
@@ -445,4 +442,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Testing;
+export default PerfilMedico;

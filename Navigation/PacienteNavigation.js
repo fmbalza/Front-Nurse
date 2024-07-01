@@ -7,7 +7,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import BuscarDoctor from "../pages/Paciente/Home/BuscarDoctor";
 import MenuPaciente from "../pages/Paciente/Home/MenuPaciente";
 import MisDoctores from "../pages/Paciente/Home/MisDoctores";
-import SolicitudesPaciente from "../pages/Paciente/Home/SolicitudesPaciente";
+import PerfilPaciente from "../pages/Paciente/Home/PerfilPaciente.js";
 import WelcomePage from "../pages/WelcomePage";
 
 const Stack = createStackNavigator();
@@ -61,7 +61,7 @@ function MyTabs() {
 
       <Tab.Screen
         name="Perfil"
-        component={SolicitudesPaciente}
+        component={PerfilPaciente}
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons

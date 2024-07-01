@@ -20,7 +20,7 @@ import { useNavigation } from "@react-navigation/native";
 import useAuthStore from "../../../utils/storage/auth";
 import userAccountFigure from "../../../assets/user-account-figure.png";
 
-const SolicitudesPaciente = () => {
+const PerfilPaciente = () => {
   const getMeQuery = useGetMe();
   const updateMutation = useUpdatePaciente();
   const { user } = useAuthStore.getState();
@@ -91,7 +91,7 @@ const SolicitudesPaciente = () => {
       genero: values.genero || userData.genero,
       fecha_nacimiento: values.fecha_nacimiento || userData.fecha_nacimiento,
     };
-    console.log("Aqui en SolicitudesPaciente.js: ", updatedData);
+    console.log("Aqui en PerfilPaciente.js: ", updatedData);
     updateMutation.mutate(updatedData);
 
     setIsModalVisible(!isModalVisible);
@@ -383,4 +383,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SolicitudesPaciente;
+export default PerfilPaciente;
