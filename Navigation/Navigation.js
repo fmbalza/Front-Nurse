@@ -31,7 +31,6 @@ function MyStack() {
           headerTintColor: "#006150",
           headerBackTitleVisible: false,
           headerTitleStyle: { display: "none" },
-          headerTitleStyle: { display: "none" },
         }}
       />
       <Stack.Screen
@@ -41,7 +40,6 @@ function MyStack() {
           headerTintColor: "#006150",
           headerBackTitleVisible: false,
           headerTitleStyle: { display: "none" },
-          headerTitleStyle: { display: "none" },
         }}
       />
       <Stack.Screen
@@ -50,7 +48,6 @@ function MyStack() {
         options={{
           headerTintColor: "#006150",
           headerBackTitleVisible: false,
-          headerTitleStyle: { display: "none" },
           headerTitleStyle: { display: "none" },
         }}
       />
@@ -72,7 +69,6 @@ function MyStack() {
           headerTintColor: "#FFFFFF",
           headerBackTitleVisible: false,
           headerTitleStyle: { display: "none" },
-          headerTitleStyle: { display: "none" },
         }}
       />
       <Stack.Screen
@@ -90,7 +86,7 @@ function MyStack() {
         component={HomePaciente}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="Reinicio de contraseña" component={PasswordM} />
+      {/* <Stack.Screen name="Reinicio de contraseña" component={PasswordM} /> */}
     </Stack.Navigator>
   );
 }
