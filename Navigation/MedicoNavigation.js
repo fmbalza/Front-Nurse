@@ -9,9 +9,9 @@ import MisPacientes from "../pages/Medico/Home/MisPacientes";
 import BuscarPaciente from "../pages/Medico/Home/BuscarPaciente";
 import PerfilMedico from "../pages/Medico/Home/PerfilMedico";
 import CompleteConsulta from "../pages/Medico/PerfilPaciente/CompleteConsulta";
-import Consulta from "../pages/Medico/PerfilPaciente/consulta";
 import PerfilPaciente from "../pages/Medico/PerfilPaciente/PerfilPaciente";
 import AssignMedicTreatment from "../pages/Medico/PerfilPaciente/AssignMedicTreatment";
+import DetallesConsulta from "../pages/Medico/PerfilPaciente/DetallesConsulta";
 
 const Stack = createStackNavigator();
 
@@ -55,7 +55,7 @@ function MyTabs() {
             />
             <Stack.Screen
               name="Consulta"
-              component={Consulta}
+              component={DetallesConsulta}
               options={{ title: "Informacion de la Consulta" }}
             />
             <Stack.Screen
@@ -108,7 +108,7 @@ function MyTabs() {
             />
             <Stack.Screen
               name="Consulta"
-              component={Consulta}
+              component={DetallesConsulta}
               options={{ title: "Informacion de la Consulta" }}
             />
             <Stack.Screen
@@ -161,7 +161,7 @@ function MyTabs() {
             />
             <Stack.Screen
               name="Consulta"
-              component={Consulta}
+              component={DetallesConsulta}
               options={{ title: "Informacion de la Consulta" }}
             />
             <Stack.Screen

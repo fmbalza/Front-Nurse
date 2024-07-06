@@ -9,9 +9,9 @@ export default function App() {
 
   const [modalVisible, setModalVisible] = useState(!certified);
 
-  useEffect(() => {
-    console.log("certified", certified);
-  }, [certified]);
+  // useEffect(() => {
+  //   console.log("certified", certified);
+  // }, [certified]);
 
   const handleCloseModal = () => {
     setModalVisible(false);

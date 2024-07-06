@@ -14,12 +14,11 @@ export const usePacienteLogin = () => {
   return useMutation({
     mutationFn: (data) => doLogin(data),
     onSuccess: (data) => {
-   
       const user = jwtDecode(data.jwt);
       login(data.jwt, user);
       setRole("paciente");
       setPushToken(user.push_token);
-     
+      queryClient.invalidateQueries("getConsultasById");
       navigation.reset({
         index: 0,
         routes: [{ name: "HomePaciente" }],

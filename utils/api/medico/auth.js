@@ -57,7 +57,7 @@ export const getMe = async () => {
   const { user } = useAuthStore.getState();
   const cedula = user.cedula_medico;
   try {
-    console.log("Aqui en auth.js: ", cedula);
+    // console.log("Aqui en auth.js: ", cedula);
     const response = await api.get(`/medico/${cedula}`);
     // console.log("sexo",response.data);
     return response.data;

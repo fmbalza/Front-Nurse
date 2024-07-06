@@ -6,14 +6,17 @@ import {
   getConsulta,
 } from "../../api/medico/consultaDia";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import useAuthStore from "../../storage/auth";
 // import { jwtDecode } from "jwt-decode";
 // import { useNavigation } from "@react-navigation/native";
 
 export const useConsultasDia = () => {
+  const { user } = useAuthStore.getState();
   return useQuery({
     queryKey: ["consultasDia"],
     queryFn: () => getConsultasDia(),
-    refetchInterval: 30000,
+    // refetchInterval: 30000,
+    enabled: !!user?.cedula_medico,
   });
 };
 

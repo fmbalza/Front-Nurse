@@ -168,9 +168,10 @@ const Menu = () => {
                             }
                           }}
                         >
-                          <View style={styles.eventContent}>
+                          <View>
                             <Text style={styles.eventTitle}>
-                              Consulta {index + 1}
+                              Consulta {index + 1} -{" "}
+                              {item?.cd_paciente?.cedula_paciente}
                             </Text>
                             <Text key={index}>
                               {" "}
@@ -181,19 +182,21 @@ const Menu = () => {
                                - {estado[item.estado]}
                             </Text>
                           </View>
-                          <Pressable
-                            style={styles.deleteButton}
-                            onPress={() => {
-                              console.log("Aqui en Menu.js ", item);
-                              deleteConsultaMutation.mutate(item.id_consulta);
-                            }}
-                          >
-                            <MaterialCommunityIcons
-                              name="trash-can-outline"
-                              size={24}
-                              color="#00826B"
-                            />
-                          </Pressable>
+                          {item.estado === 2 ? (
+                            <Pressable
+                              style={styles.deleteButton}
+                              onPress={() => {
+                                // console.log("Aqui en Menu.js ", item);
+                                deleteConsultaMutation.mutate(item.id_consulta);
+                              }}
+                            >
+                              <MaterialCommunityIcons
+                                name="trash-can-outline"
+                                size={24}
+                                color="#00826B"
+                              />
+                            </Pressable>
+                          ) : null}
                         </TouchableOpacity>
                       ))}
                   </>
@@ -214,8 +217,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
   },
   deleteButton: {
+    justifyContent: "flex-end",
     marginLeft: 8,
     padding: 4,
   },

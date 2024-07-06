@@ -20,8 +20,10 @@ import SpecialtyPicker from "../../../components/SpecialtyPicker";
 import GenderPicker from "../../../components/GenderPicker";
 import { useGetMe } from "../../../utils/hooks/medico/auth";
 import { useEspecialidades } from "../../../utils/hooks/medico/especialidades";
+import { useQueryClient } from "@tanstack/react-query";
 
 const PerfilMedico = () => {
+  const queryClient = useQueryClient();
   const { isPending, isError, data, error } = useEspecialidades();
   const getMeQuery = useGetMe();
   const updateMutation = useUpdateMedico();
@@ -33,7 +35,13 @@ const PerfilMedico = () => {
 
   const doLogOut = () => {
     logout();
-    navigation.getParent("MainStack").navigate("StartPage", { logout: true });
+    queryClient.cancelQueries();
+    queryClient.removeQueries();
+    queryClient.clear();
+    // navigation.getParent("MainStack").navigate("StartPage", { logout: true });
+    navigation
+      .getParent("MainStack")
+      .reset({ index: 0, routes: [{ name: "StartPage" }] });
   };
 
   const [userData, setUserData] = useState({

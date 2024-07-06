@@ -2,7 +2,6 @@ import api from "../Axios";
 
 export const doLogin = async (data) => {
   try {
-    // console.log("aqui", data);
     const response = await api.post("/paciente/login", data);
     return response.data;
   } catch (error) {

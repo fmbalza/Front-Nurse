@@ -27,7 +27,6 @@ export const useMedicoLogin = () => {
       setRole("medico");
       setCertified(data.certificado);
       setPushToken(user.push_token);
-      // navigation.navigate("HomeMedico"); //metodo por defecto
       queryClient.invalidateQueries("consultasDia");
       navigation.reset({
         index: 0,

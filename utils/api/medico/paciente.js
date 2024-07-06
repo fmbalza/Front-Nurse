@@ -57,7 +57,7 @@ export const postAssignPaciente = async (data) => {
 export const deleteRemovePaciente = async (data) => {
   try {
     const response = await api.delete(`/medico/subject`, { data: data });
-    console.log("Aqui en paciente.js: ", data);
+    // console.log("Aqui en paciente.js: ", data);
     return response.data;
   } catch (error) {
     throw new Error(error);

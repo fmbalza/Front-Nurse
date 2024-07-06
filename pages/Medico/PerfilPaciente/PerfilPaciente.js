@@ -19,7 +19,6 @@ import EndConsultaModal from "../../../components/Modals/EndConsultaModal";
 import useAuthStore from "../../../utils/storage/auth";
 import { useGetPacienteMedico } from "../../../utils/hooks/medico/paciente";
 import { useGetPacienteByCedula } from "../../../utils/hooks/medico/paciente";
-// import ModalConsulta from "../../../components/Modals/modalConsulta";
 import userAccountFigure from "../../../assets/user-account-figure.png";
 
 const PerfilPaciente = ({ route }) => {
@@ -78,21 +77,6 @@ const PerfilPaciente = ({ route }) => {
       </View>
     );
   }
-
-  // Bad practice code from fran, delete this later...
-  // useEffect(() => {
-  //   console.log("Paciente: ", data);
-  // }, [data]);
-  // const pacientes = data
-  //   .filter((paciente) => paciente.cedula_paciente === cedula)
-  //   .map((paciente) => ({
-  //     cedula: paciente.cedula_paciente,
-  //     nombre: `${paciente.no_paciente} ${paciente.ap_paciente}`,
-  //     telefono: paciente.telefono,
-  //     genero: paciente.genero,
-  //     familiar: paciente.familiar,
-  //     fechaNacimiento: paciente.fecha_nacimiento,
-  //   }));
 
   if (pacienteConsultaQuery.isPending) {
     return (

@@ -13,14 +13,16 @@ import { useState, useEffect } from "react";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { useUpdatePaciente } from "../../../utils/hooks/paciente/paciente";
 import { useForm, Controller } from "react-hook-form";
-import DatePicker from "../../../components/DatePicker";
-import GenderPicker from "../../../components/GenderPicker";
+// import DatePicker from "../../../components/DatePicker";
+// import GenderPicker from "../../../components/GenderPicker";
 import { useGetMe } from "../../../utils/hooks/paciente/paciente";
 import { useNavigation } from "@react-navigation/native";
 import useAuthStore from "../../../utils/storage/auth";
 import userAccountFigure from "../../../assets/user-account-figure.png";
+import { useQueryClient } from "@tanstack/react-query";
 
 const PerfilPaciente = () => {
+  const queryClient = useQueryClient();
   const getMeQuery = useGetMe();
   const updateMutation = useUpdatePaciente();
   const { user } = useAuthStore.getState();
@@ -41,7 +43,13 @@ const PerfilPaciente = () => {
   const doLogOut = () => {
     // Aquí se debe de hacer el logout
     logout();
-    navigation.getParent("MainStack").navigate("StartPage", { logout: true });
+    queryClient.cancelQueries();
+    queryClient.removeQueries();
+    queryClient.clear();
+    // navigation.getParent("MainStack").navigate("StartPage", { logout: true });
+    navigation
+      .getParent("MainStack")
+      .reset({ index: 0, routes: [{ name: "StartPage" }] });
   };
 
   const {

@@ -7,14 +7,14 @@ export const useGetMedico = () => {
   return useQuery({
     queryKey: ["getMedico"],
     queryFn: () => getMedico(),
-    staleTime: 30000,
+    // staleTime: 30000,
   });
 };
 
 export const useGetMedicoByName = (name) => {
-    return useQuery({
-      queryKey: ["getMedicoByName", name],
-      queryFn: () => getMedicoByName(name),
-      // staleTime: 5000,
-    });
-  };
+  return useQuery({
+    queryKey: ["getMedicoByName", name],
+    queryFn: () => getMedicoByName(name),
+    // staleTime: 5000,
+  });
+};

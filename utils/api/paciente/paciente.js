@@ -17,7 +17,7 @@ export const getMe = async () => {
   const { user } = useAuthStore.getState();
   const cedula = user.cedula_paciente;
   try {
-    console.log("Aqui en paciente.js: ", cedula);
+    // console.log("Aqui en paciente.js: ", cedula);
     const response = await api.get(`/paciente/${cedula}`);
     // console.log("sexo",response.data);
     return response.data;
@@ -30,7 +30,7 @@ export const getMisMedicos = async () => {
   const { user } = useAuthStore.getState();
   const cedula = user.cedula_paciente;
   try {
-    console.log("Aqui en paciente.js: ", cedula);
+    // console.log("Aqui en paciente.js: ", cedula);
     const response = await api.get(`/paciente/caregiver/${cedula}`);
     // console.log("sexo",response.data);
     return response.data;
