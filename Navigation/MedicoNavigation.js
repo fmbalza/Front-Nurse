@@ -8,20 +8,22 @@ import Menu from "../pages/Medico/Home/Menu";
 import MisPacientes from "../pages/Medico/Home/MisPacientes";
 import BuscarPaciente from "../pages/Medico/Home/BuscarPaciente";
 import PerfilMedico from "../pages/Medico/Home/PerfilMedico";
-import AddMedication from "../pages/Medico/PerfilPaciente/AddMedication";
+import CompleteConsulta from "../pages/Medico/PerfilPaciente/CompleteConsulta";
 import Consulta from "../pages/Medico/PerfilPaciente/consulta";
 import PerfilPaciente from "../pages/Medico/PerfilPaciente/PerfilPaciente";
+import AssignMedicTreatment from "../pages/Medico/PerfilPaciente/AssignMedicTreatment";
 
 const Stack = createStackNavigator();
 
-const StackNavigator = () => {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="PerfilPaciente" component={PerfilPaciente} />
-      <Stack.Screen name="AddMedication" component={AddMedication} />
-    </Stack.Navigator>
-  );
-};
+//  Useless fran code, delete this later...
+// const StackNavigator = () => {
+//   return (
+//     <Stack.Navigator>
+//       <Stack.Screen name="PerfilPaciente" component={PerfilPaciente} />
+//       <Stack.Screen name="CompleteConsulta" component={CompleteConsulta} />
+//     </Stack.Navigator>
+//   );
+// };
 
 const Tab = createBottomTabNavigator();
 
@@ -29,10 +31,10 @@ function MyTabs() {
   return (
     <Tab.Navigator initialRouteName="Menu" id="MedicoTabs">
       <Tab.Screen
-        name="Mis Eventos"
-        component={Menu}
+        name="Menu"
+        // component={Menu}
         options={{
-          // headerShown: false,
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="home-outline"
@@ -41,16 +43,29 @@ function MyTabs() {
             />
           ),
           tabBarActiveTintColor: "#00826B",
+          title: "Mis Eventos",
         }}
-      />
-
-      {/*             
-            <Tab.Screen name="MisPacientes" component={MisPacientes}
-             options={{
-                tabBarIcon: ({ color, size }) => (<MaterialCommunityIcons name="account-injury-outline" size={24} color="#00826B" />), 
-                tabBarActiveTintColor: '#00826B',
-            }}
-            /> */}
+      >
+        {() => (
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Mis Eventos"
+              component={Menu}
+              options={{ title: "Mis Eventos" }}
+            />
+            <Stack.Screen
+              name="Consulta"
+              component={Consulta}
+              options={{ title: "Informacion de la Consulta" }}
+            />
+            <Stack.Screen
+              name="AssignMedicTreatment"
+              component={AssignMedicTreatment}
+              options={{ title: "Asignar Tratamiento" }}
+            />
+          </Stack.Navigator>
+        )}
+      </Tab.Screen>
 
       <Tab.Screen
         name="TabMisPacientes"
@@ -64,6 +79,7 @@ function MyTabs() {
             />
           ),
           tabBarActiveTintColor: "#00826B",
+          title: "Mis Pacientes",
         }}
         listeners={({ navigation }) => ({
           tabPress: (event) => {
@@ -86,14 +102,19 @@ function MyTabs() {
               options={{ title: "Perfil Paciente" }}
             />
             <Stack.Screen
-              name="AddMedication"
-              component={AddMedication}
+              name="CompleteConsulta"
+              component={CompleteConsulta}
               options={{ title: "Finalizar Consulta" }}
             />
             <Stack.Screen
               name="Consulta"
               component={Consulta}
               options={{ title: "Informacion de la Consulta" }}
+            />
+            <Stack.Screen
+              name="AssignMedicTreatment"
+              component={AssignMedicTreatment}
+              options={{ title: "Asignar Tratamiento" }}
             />
           </Stack.Navigator>
         )}
@@ -111,6 +132,7 @@ function MyTabs() {
             />
           ),
           tabBarActiveTintColor: "#00826B",
+          title: "Buscar Paciente",
         }}
         listeners={({ navigation }) => ({
           tabPress: (event) => {
@@ -133,14 +155,19 @@ function MyTabs() {
               options={{ title: "Perfil Paciente" }}
             />
             <Stack.Screen
-              name="AddMedication"
-              component={AddMedication}
+              name="CompleteConsulta"
+              component={CompleteConsulta}
               options={{ title: "Finalizar Consulta" }}
             />
             <Stack.Screen
               name="Consulta"
               component={Consulta}
               options={{ title: "Informacion de la Consulta" }}
+            />
+            <Stack.Screen
+              name="AssignMedicTreatment"
+              component={AssignMedicTreatment}
+              options={{ title: "Asignar Tratamiento" }}
             />
           </Stack.Navigator>
         )}

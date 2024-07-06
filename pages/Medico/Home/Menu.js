@@ -2,28 +2,30 @@ import React, { useState, useCallback, useEffect } from "react";
 import {
   StyleSheet,
   Dimensions,
-  // TouchableWithoutFeedback,
-  SafeAreaView,
   View,
   Text,
   TouchableOpacity,
   ScrollView,
-  // Button,
   ActivityIndicator,
   Pressable,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 //---------------------------------------------------------------------
-// import { FlashList} from "@shopify/flash-list"; //el componente calendario de abajo depende de esta libreria
+// import { FlashList} from "@shopify/flash-list"; // el componente calendario de abajo depende de esta libreria
 import { Calendar, toDateId } from "@marceloterreiro/flash-calendar";
 import {
   useConsultasDia,
   useDeleteConsulta,
 } from "../../../utils/hooks/medico/consultaDia";
+import { useNavigation } from "@react-navigation/native";
+import useManagedStore from "../../../utils/storage/managed";
 
 const { width } = Dimensions.get("window");
+const estado = ["Omitido", "Completado", "Pendiente"];
 
 const Menu = () => {
+  const navigation = useNavigation();
+  const { setManaged } = useManagedStore();
   const [date, setDate] = useState("12/12/2023");
   const today = toDateId(new Date());
   const [selectedDate, setSelectedDate] = useState(today);
@@ -78,116 +80,129 @@ const Menu = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <SafeAreaView style={{ flex: 1, backgroundColor: "#F1F1F1" }}>
-        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
-          <View style={styles.container}>
-            {/* <View style={styles.header}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={styles.container}>
+          {/* <View style={styles.header}>
               <Text style={styles.title}>Mis Eventos</Text>
             </View> */}
-            <View style={styles.pickerContainer}>
-              <Pressable
-                style={styles.prevButton}
-                onPress={handlePreviousMonth}
-              >
-                <MaterialCommunityIcons
-                  name="chevron-left"
-                  size={29}
-                  color="#00826B"
-                />
-              </Pressable>
-              <View style={styles.calendarContainer}>
-                <Calendar
-                  calendarActiveDateRanges={[
-                    { startId: selectedDate, endId: selectedDate },
-                  ]}
-                  calendarMonthId={currentCalendarMonth}
-                  onCalendarDayPress={setSelectedDate}
-                  calendarFormatLocale="es"
-                />
-              </View>
-              <Pressable style={styles.nextButton} onPress={handleNextMonth}>
-                <MaterialCommunityIcons
-                  name="chevron-right"
-                  size={29}
-                  color="#00826B"
-                />
-              </Pressable>
+          <View style={styles.pickerContainer}>
+            <Pressable style={styles.prevButton} onPress={handlePreviousMonth}>
+              <MaterialCommunityIcons
+                name="chevron-left"
+                size={29}
+                color="#00826B"
+              />
+            </Pressable>
+            <View style={styles.calendarContainer}>
+              <Calendar
+                calendarActiveDateRanges={[
+                  { startId: selectedDate, endId: selectedDate },
+                ]}
+                calendarMonthId={currentCalendarMonth}
+                onCalendarDayPress={setSelectedDate}
+                calendarFormatLocale="es"
+              />
             </View>
+            <Pressable style={styles.nextButton} onPress={handleNextMonth}>
+              <MaterialCommunityIcons
+                name="chevron-right"
+                size={29}
+                color="#00826B"
+              />
+            </Pressable>
+          </View>
 
-            <View
-              style={{
-                marginTop: 220,
-                flex: 1,
-                paddingHorizontal: 16,
-                paddingVertical: 24,
-              }}
-            >
-              {selectedDate && (
-                <Text style={styles.subtitle}>{selectedDate}</Text>
-              )}
-              <View style={styles.placeholder}>
-                <View style={styles.placeholderInset}>
-                  {typeof data === "string" ? (
-                    <View style={styles.noEventsContainer}>
-                      <Text style={styles.noEventsText}>{data}</Text>
-                    </View>
-                  ) : (
-                    <>
-                      {data
-                        .filter((item) => {
-                          // console.log("Item: ", new Date(item.fecha).getDate());
-                          // console.log(
-                          //   "Selected date: ",
-                          //   new Date(selectedDate).getUTCDate()
-                          // );
-                          const itemDate = new Date(item.fecha);
-                          const selected = new Date(selectedDate);
-                          return (
-                            itemDate.getDate() === selected.getUTCDate() &&
-                            itemDate.getMonth() === selected.getUTCMonth() &&
-                            itemDate.getFullYear() === selected.getUTCFullYear()
-                          );
-                        })
-                        .map((item, index) => (
-                          <TouchableOpacity
-                            key={index}
-                            style={styles.eventContainer}
+          <View
+            style={{
+              marginTop: 220,
+              flex: 1,
+              paddingHorizontal: 16,
+              paddingVertical: 24,
+            }}
+          >
+            {selectedDate && (
+              <Text style={styles.subtitle}>{selectedDate}</Text>
+            )}
+            <View style={styles.placeholder}>
+              <View style={styles.placeholderInset}>
+                {typeof data === "string" ? (
+                  <View style={styles.noEventsContainer}>
+                    <Text style={styles.noEventsText}>{data}</Text>
+                  </View>
+                ) : (
+                  <>
+                    {data
+                      .filter((item) => {
+                        // console.log("Item: ", new Date(item.fecha).getDate());
+                        // console.log(
+                        //   "Selected date: ",
+                        //   new Date(selectedDate).getUTCDate()
+                        // );
+                        const itemDate = new Date(item.fecha);
+                        const selected = new Date(selectedDate);
+                        return (
+                          itemDate.getDate() === selected.getUTCDate() &&
+                          itemDate.getMonth() === selected.getUTCMonth() &&
+                          itemDate.getFullYear() === selected.getUTCFullYear()
+                        );
+                      })
+                      .map((item, index) => (
+                        <TouchableOpacity
+                          key={index}
+                          style={styles.eventContainer}
+                          onPress={() => {
+                            // console.log(
+                            //   "Aqui en Menu.js: ",
+                            //   item?.id_consulta,
+                            //   item?.fecha,
+                            //   item?.estado,
+                            //   item?.de_consulta,
+                            //   item?.cd_paciente
+                            // );
+                            if (item.estado !== 2) {
+                              setManaged(item?.cd_paciente);
+                              navigation.navigate("Consulta", {
+                                id_consulta: item.id_consulta,
+                                paciente: item.cd_paciente,
+                              });
+                            }
+                          }}
+                        >
+                          <View style={styles.eventContent}>
+                            <Text style={styles.eventTitle}>
+                              Consulta {index + 1}
+                            </Text>
+                            <Text key={index}>
+                              {" "}
+                              {new Date(item.fecha).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                               - {estado[item.estado]}
+                            </Text>
+                          </View>
+                          <Pressable
+                            style={styles.deleteButton}
+                            onPress={() => {
+                              console.log("Aqui en Menu.js ", item);
+                              deleteConsultaMutation.mutate(item.id_consulta);
+                            }}
                           >
-                            <View style={styles.eventContent}>
-                              <Text style={styles.eventTitle}>
-                                Consulta {index + 1}
-                              </Text>
-                              <Text key={index}>
-                                {" "}
-                                {new Date(item.fecha).toLocaleTimeString([], {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}
-                              </Text>
-                            </View>
-                            <Pressable
-                              style={styles.deleteButton}
-                              onPress={() => {
-                                console.log("Aqui en Menu.js ", item);
-                                deleteConsultaMutation.mutate(item.id_consulta);
-                              }}
-                            >
-                              <MaterialCommunityIcons
-                                name="trash-can-outline"
-                                size={24}
-                                color="#00826B"
-                              />
-                            </Pressable>
-                          </TouchableOpacity>
-                        ))}
-                    </>
-                  )}
-                </View>
+                            <MaterialCommunityIcons
+                              name="trash-can-outline"
+                              size={24}
+                              color="#00826B"
+                            />
+                          </Pressable>
+                        </TouchableOpacity>
+                      ))}
+                  </>
+                )}
               </View>
             </View>
           </View>
-        </ScrollView>
-      </SafeAreaView>
+        </View>
+      </ScrollView>
     </View>
   );
 };

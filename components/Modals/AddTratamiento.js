@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-const AddMedicamento = () => {
+const AddTratamiento = () => {
   return (
     <View>
-      <Text>AddMedicamento</Text>
+      <Text>Addtratamiento</Text>
     </View>
   );
 };
 
-export default AddMedicamento;
+export default AddTratamiento;
 
 const styles = StyleSheet.create({});

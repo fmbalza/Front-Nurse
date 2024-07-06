@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import { Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { View, Text, TouchableOpacity } from "react-native";
@@ -8,7 +8,7 @@ import useAuthStore from "../utils/storage/auth";
 
 const StartPage = () => {
   const navigation = useNavigation();
-  const { logout } = useAuthStore();
+  // const { logout } = useAuthStore();
 
   // useEffect(() => {
   //   logout();

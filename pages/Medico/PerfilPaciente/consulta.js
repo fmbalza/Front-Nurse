@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -11,12 +11,16 @@ import { useNavigation } from "@react-navigation/native";
 import { useGetConsulta } from "../../../utils/hooks/medico/consultaDia";
 
 const Consulta = ({ route }) => {
-  const { id_consulta } = route.params;
+  const { id_consulta, paciente } = route.params;
   const navigation = useNavigation();
   const getConsultaQuery = useGetConsulta(id_consulta);
-  // console.log(id_consulta)
 
-  if (getConsultaQuery.isPending) {
+  // useEffect(() => {
+  //   console.log(id_consulta);
+  //   console.log(getConsultaQuery.data);
+  // }, [getConsultaQuery.data]);
+
+  if (getConsultaQuery.isPending || getConsultaQuery.isLoading) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color="#0000ff" />
@@ -24,13 +28,12 @@ const Consulta = ({ route }) => {
     );
   }
 
-  const consultas = getConsultaQuery.data;
-
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-        {consultas &&
-          consultas.map((consulta, index) => (
+        {getConsultaQuery.data &&
+          Array.isArray(getConsultaQuery.data) &&
+          getConsultaQuery.data.map((consulta, index) => (
             <View key={index} style={styles.consultaContainer}>
               <Text style={styles.title}>{consulta.de_consulta}</Text>
               <View style={styles.infoContainer}>
@@ -61,6 +64,25 @@ const Consulta = ({ route }) => {
               <View style={styles.infoContainer}>
                 <Text style={styles.value}>{consulta.examen}</Text>
               </View>
+
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "#00826B",
+                  padding: 10,
+                  borderRadius: 8,
+                  marginTop: 16,
+                }}
+                onPress={() => {
+                  navigation.navigate("AssignMedicTreatment", {
+                    id_consulta: id_consulta,
+                    paciente: paciente,
+                  });
+                }}
+              >
+                <Text style={{ color: "white", textAlign: "center" }}>
+                  Asignar Tratamiento
+                </Text>
+              </TouchableOpacity>
             </View>
           ))}
       </ScrollView>

@@ -18,7 +18,7 @@ const AgendarModal = ({
   visible,
   onClose,
   onSave,
-  doctorId, 
+  doctorId,
   pacienteId,
   expoToken,
 }) => {
@@ -130,33 +130,6 @@ const AgendarModal = ({
           <Text style={styles.modalTitle}>
             Selecciona la fecha y hora del evento
           </Text>
-          {/* Fran, si creas componentes son para usarlos deja de depender tanto de las I.A 😡 */}
-          {/* <TouchableOpacity onPress={showDatepicker}>
-            <Text>Fecha: {date.toLocaleDateString()}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={showTimepicker}>
-            <Text>Hora: {date.toLocaleTimeString()}</Text>
-          </TouchableOpacity> */}
-          {/* {show && (
-            <Controller
-              control={control}
-              render={({ field: { value } }) => (
-                <View style={styles.componentt}>
-                  <DateTimePicker
-                    testID="dateTimePicker"
-                    value={value}
-                    mode={mode}
-                    display="spinner"
-                    onChange={onChange}
-                  />
-                </View>
-              )}
-              name="fecha"
-              defaultValue={new Date()}
-
-              // rules={{ required: true }} // siempre tiene algo asignado por defecto
-            />
-          )} */}
           <Controller
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -259,6 +232,7 @@ const styles = StyleSheet.create({
     height: 64,
     paddingHorizontal: 10,
     marginTop: 10,
+    marginBottom: 10,
     borderWidth: 1,
     borderRadius: 15,
     borderColor: "#A4D4BB",

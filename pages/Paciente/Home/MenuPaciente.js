@@ -3,7 +3,6 @@ import {
   StyleSheet,
   Dimensions,
   TouchableWithoutFeedback,
-  SafeAreaView,
   View,
   Text,
   TouchableOpacity,
@@ -61,114 +60,106 @@ const MenuPaciente = () => {
   // }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <View style={styles.header}></View>
-        <View style={styles.picker}>
-          <Swiper
-            index={1}
-            ref={swiper}
-            loop={false}
-            showsPagination={false}
-            onIndexChanged={(ind) => {
-              if (ind === 1 || isManualChange) {
-                setIsManualChange(false);
-                return;
-              }
-              setTimeout(() => {
-                const newIndex = ind - 1;
-                const newWeek = week + newIndex;
-                setWeek(newWeek);
-                setValue(moment(value).add(newIndex, "week").toDate());
-                setIsManualChange(true);
-                swiper.current.scrollTo(1, false);
-              }, 100);
-            }}
-          >
-            {weeks.map((dates, index) => (
-              <View style={styles.itemRow} key={index}>
-                {dates.map((item, dateIndex) => {
-                  const isActive =
-                    value.toDateString() === item.date.toDateString();
-                  return (
-                    <TouchableWithoutFeedback
-                      key={dateIndex}
-                      onPress={() => setValue(item.date)}
+    <View style={styles.container}>
+      <View style={styles.header}></View>
+      <View style={styles.picker}>
+        <Swiper
+          index={1}
+          ref={swiper}
+          loop={false}
+          showsPagination={false}
+          onIndexChanged={(ind) => {
+            if (ind === 1 || isManualChange) {
+              setIsManualChange(false);
+              return;
+            }
+            setTimeout(() => {
+              const newIndex = ind - 1;
+              const newWeek = week + newIndex;
+              setWeek(newWeek);
+              setValue(moment(value).add(newIndex, "week").toDate());
+              setIsManualChange(true);
+              swiper.current.scrollTo(1, false);
+            }, 100);
+          }}
+        >
+          {weeks.map((dates, index) => (
+            <View style={styles.itemRow} key={index}>
+              {dates.map((item, dateIndex) => {
+                const isActive =
+                  value.toDateString() === item.date.toDateString();
+                return (
+                  <TouchableWithoutFeedback
+                    key={dateIndex}
+                    onPress={() => setValue(item.date)}
+                  >
+                    <View
+                      style={[
+                        styles.item,
+                        isActive && {
+                          backgroundColor: "#111",
+                          borderColor: "#111",
+                        },
+                      ]}
                     >
-                      <View
+                      <Text
                         style={[
-                          styles.item,
-                          isActive && {
-                            backgroundColor: "#111",
-                            borderColor: "#111",
-                          },
+                          styles.itemWeekday,
+                          isActive && { color: "#fff" },
                         ]}
                       >
-                        <Text
-                          style={[
-                            styles.itemWeekday,
-                            isActive && { color: "#fff" },
-                          ]}
-                        >
-                          {item.weekday}
-                        </Text>
-                        <Text
-                          style={[
-                            styles.itemDate,
-                            isActive && { color: "#fff" },
-                          ]}
-                        >
-                          {item.date.getDate()}
-                        </Text>
-                      </View>
-                    </TouchableWithoutFeedback>
-                  );
-                })}
-              </View>
-            ))}
-          </Swiper>
-        </View>
-        <View style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 24 }}>
-          <Text style={styles.subtitle}>{value.toLocaleDateString()}</Text>
-          <View style={styles.placeholder}>
-            <View style={styles.placeholderInset}>
-              {typeof data === "string" ? (
-                <View style={styles.noEventsContainer}>
-                  <Text style={styles.noEventsText}>{data}</Text>
-                </View>
-              ) : (
-                <>
-                  {data
-                    .filter((item) => {
-                      const itemDate = new Date(item.fecha);
-                      const selected = new Date(value);
-                      return (
-                        itemDate.getDate() === selected.getUTCDate() &&
-                        itemDate.getMonth() === selected.getUTCMonth() &&
-                        itemDate.getFullYear() === selected.getUTCFullYear()
-                      );
-                    })
-                    .map((item, index) => (
-                      <TouchableOpacity
-                        key={index}
-                        style={styles.eventContainer}
+                        {item.weekday}
+                      </Text>
+                      <Text
+                        style={[styles.itemDate, isActive && { color: "#fff" }]}
                       >
-                        <Text style={styles.eventTitle}>
-                          Consulta {index + 1}
-                        </Text>
-                        <Text>Descripcion: {item.de_consulta}</Text>
-                        <Text>
-                          fecha: {new Date(item.fecha).toLocaleString()}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                </>
-              )}
+                        {item.date.getDate()}
+                      </Text>
+                    </View>
+                  </TouchableWithoutFeedback>
+                );
+              })}
             </View>
+          ))}
+        </Swiper>
+      </View>
+      <View style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 24 }}>
+        <Text style={styles.subtitle}>{value.toLocaleDateString()}</Text>
+        <View style={styles.placeholder}>
+          <View style={styles.placeholderInset}>
+            {typeof data === "string" ? (
+              <View style={styles.noEventsContainer}>
+                <Text style={styles.noEventsText}>{data}</Text>
+              </View>
+            ) : (
+              <>
+                {data
+                  .filter((item) => {
+                    const itemDate = new Date(item.fecha);
+                    const selected = new Date(value);
+                    return (
+                      itemDate.getDate() === selected.getUTCDate() &&
+                      itemDate.getMonth() === selected.getUTCMonth() &&
+                      itemDate.getFullYear() === selected.getUTCFullYear()
+                    );
+                  })
+                  .map((item, index) => (
+                    <TouchableOpacity key={index} style={styles.eventContainer}>
+                      <Text style={styles.eventTitle}>
+                        Consulta {index + 1}
+                      </Text>
+                      <Text>Descripcion: {item.de_consulta}</Text>
+                      <Text>
+                        fecha: {new Date(item.fecha).toLocaleString()}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+              </>
+            )}
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

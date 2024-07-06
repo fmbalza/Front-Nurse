@@ -14,8 +14,10 @@ import { useNavigation } from "@react-navigation/native";
 import { useGetPacienteMedico } from "../../../utils/hooks/medico/paciente";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import userAccountFigure from "../../../assets/user-account-figure.png";
+import useManagedStore from "../../../utils/storage/managed";
 
 const MisPacientes = ({ onSearch }) => {
+  const { setManaged } = useManagedStore();
   const { isPending, isError, data, error } = useGetPacienteMedico();
   const [filteredData, setFilteredData] = useState([]);
   const [masterData, setMasterData] = useState([]);
@@ -44,12 +46,12 @@ const MisPacientes = ({ onSearch }) => {
 
   const fetchPosts = () => {
     const pacientes = data.map((paciente) => ({
-      cedula: paciente.cedula_paciente,
-      nombre: `${paciente.no_paciente} ${paciente.ap_paciente}`,
+      cedula_paciente: paciente.cedula_paciente,
+      no_paciente: `${paciente.no_paciente} ${paciente.ap_paciente}`,
       telefono: paciente.telefono,
       genero: paciente.genero,
       familiar: paciente.familiar,
-      fechaNacimiento: paciente.fecha_nacimiento,
+      fecha_nacimiento: paciente.fecha_nacimiento,
       push_token: paciente.push_token,
     }));
     setFilteredData(pacientes);
@@ -57,8 +59,9 @@ const MisPacientes = ({ onSearch }) => {
   };
 
   const handlePatientPress = (paciente) => {
-    const cedula = paciente.cedula;
-    navigation.navigate("PerfilPaciente", { cedula });
+    const cedula = paciente.cedula_paciente;
+    setManaged(paciente);
+    navigation.navigate("PerfilPaciente", { cedula, paciente });
   };
 
   const ItemView = ({ paciente, handlePatientPress }) => {
@@ -69,8 +72,8 @@ const MisPacientes = ({ onSearch }) => {
       >
         <Image source={userAccountFigure} style={styles.photo} />
         <View style={styles.detailsContainer}>
-          <Text style={styles.name}>{paciente.nombre}</Text>
-          <Text style={styles.cedula}>{paciente.cedula}</Text>
+          <Text style={styles.name}>{paciente.no_paciente}</Text>
+          <Text style={styles.cedula}>{paciente.cedula_paciente}</Text>
           <MaterialCommunityIcons
             name="account-details-outline"
             size={24}
