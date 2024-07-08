@@ -41,9 +41,13 @@ export default function PickMedicamento({ onChange, onClose }) {
   //     filteredMeds && console.log(filteredMeds);
   //   }, [filteredMeds]);
 
-  if (isLoading || isFetching || isPending) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
-  }
+  // if (isLoading || isFetching || isPending) {
+  //   return (
+  //     <View style={styles.container}>
+  //       <ActivityIndicator size="large" color="#0000ff" />
+  //     </View>
+  //   );
+  // }
 
   if (isError) {
     return <Text>Error: {error.message}</Text>;
@@ -65,30 +69,42 @@ export default function PickMedicamento({ onChange, onClose }) {
             style={styles.input}
           />
 
-          <FlashList
-            data={filteredMeds}
-            renderItem={({ item }) => (
-              <View style={styles.listItem}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setSelectedMed(item);
-                    onChange(item);
-                  }}
-                >
-                  <Text style={styles.dataTitle}>
-                    {item?.cp_medicamento} - {item?.pr_medicamento} (
-                    {item?.mg_medicamento})
-                  </Text>
-                  <Text style={styles.dataText}>
-                    {item?.fn_medicamento?.no_funcion}:{" "}
-                    {item?.fn_medicamento?.de_funcion}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
-            estimatedItemSize={200}
-            keyExtractor={(item) => item.id_medicamento.toString()}
-          />
+          {isFetching || isLoading || isPending ? (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+          ) : (
+            <FlashList
+              data={filteredMeds}
+              renderItem={({ item }) => (
+                <View style={styles.listItem}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSelectedMed(item);
+                      onChange(item);
+                    }}
+                  >
+                    <Text style={styles.dataTitle}>
+                      {item?.cp_medicamento} - {item?.pr_medicamento} (
+                      {item?.mg_medicamento})
+                    </Text>
+                    <Text style={styles.dataText}>
+                      {item?.fn_medicamento?.no_funcion}:{" "}
+                      {item?.fn_medicamento?.de_funcion}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+              estimatedItemSize={200}
+              keyExtractor={(item) => item.id_medicamento.toString()}
+            />
+          )}
         </View>
       )}
     </View>

@@ -5,12 +5,15 @@ import RNDateTimePicker from "@react-native-community/datetimepicker";
 // ---------------------------------------------------------------------
 
 const DatePicker = ({ onDateChange, value }) => {
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date(new Date().setHours(12, 0, 0, 0)));
   const [showPicker, setShowPicker] = useState(false);
-  // value = date;
+  value = date;
 
   const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
+    // const currentDate =
+    //   new Date(new Date(selectedDate).setHours(12, 0, 0, 0)) ||
+    //   new Date(new Date().setHours(12, 0, 0, 0));
+    const currentDate = new Date(new Date(selectedDate).setHours(12, 0, 0, 0));
     setShowPicker(false);
     setDate(currentDate);
     onDateChange(currentDate);

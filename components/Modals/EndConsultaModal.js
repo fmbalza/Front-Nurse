@@ -8,6 +8,7 @@ const EndConsultaModal = ({ visible, onClose, onSave, id_consulta }) => {
 
   const handleYesPress = () => {
     onClose();
+    console.log(id_consulta);
     const idconsulta = id_consulta;
     navigation.navigate("CompleteConsulta", { idconsulta });
   };

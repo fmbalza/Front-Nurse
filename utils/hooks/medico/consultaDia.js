@@ -11,12 +11,13 @@ import useAuthStore from "../../storage/auth";
 // import { useNavigation } from "@react-navigation/native";
 
 export const useConsultasDia = () => {
-  const { user } = useAuthStore.getState();
+  const { role } = useAuthStore.getState();
+  const canFetch = role === "medico" && !!role;
   return useQuery({
     queryKey: ["consultasDia"],
     queryFn: () => getConsultasDia(),
-    // refetchInterval: 30000,
-    enabled: !!user?.cedula_medico,
+    refetchInterval: 30000,
+    enabled: canFetch,
   });
 };
 
@@ -26,12 +27,12 @@ export const useCreateConsulta = () => {
   return useMutation({
     mutationFn: (data) => createConsulta(data),
     onSuccess: (data) => {
-      console.log("Aqui en consultaDia.js: ", data);
+      // console.log("Aqui en consultaDia.js: ", data);
       queryClient.invalidateQueries("consultasDia");
       queryClient.invalidateQueries("getPacienteConsulta", data);
-      if (data === "Consulta creada exitosamente") {
-        console.log("La consulta se creo exitosamente");
-      }
+      // if (data === "Consulta creada exitosamente") {
+      //   console.log("La consulta se creo exitosamente");
+      // }
     },
     onError: (error) => {
       console.log(error);

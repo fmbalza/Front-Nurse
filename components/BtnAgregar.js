@@ -57,8 +57,8 @@ const BtnAgregar = ({ cedula, user }) => {
     setShowModal(false);
 
     try {
-      console.log("Aqui en BtnAgregar.js: ", user.cedula_medico);
-      console.log("Aqui en BtnAgregar.js: ", cedula);
+      // console.log("Aqui en BtnAgregar.js: ", user.cedula_medico);
+      // console.log("Aqui en BtnAgregar.js: ", cedula);
       await removePacienteMutation.mutate({
         cedula_medico: `${user.cedula_medico}`,
         cedula_paciente: `${cedula}`,

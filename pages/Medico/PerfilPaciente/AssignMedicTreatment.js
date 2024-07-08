@@ -8,10 +8,11 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Swiper from "react-native-swiper";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import useAuthStore from "../../../utils/storage/auth";
 import useManagedStore from "../../../utils/storage/managed";
 import MedicamentoSlot from "../../../components/MedicamentoSlot";
+import TratamientoSlot from "../../../components/TratamientoSlot";
 
 /* Example of the JSON to be send to the API
 {
@@ -71,24 +72,87 @@ export default function AssignMedicTreatment({ route }) {
     control,
     handleSubmit,
     formState: { errors },
+    getValues,
+    setValue,
   } = useForm();
+
+  const watchingMeds = useWatch({
+    control,
+    name: "medicamentos",
+  });
+  const watchingTreatments = useWatch({
+    control,
+    name: "tratamientos",
+  });
 
   const [medicamentos, setMedicamentos] = useState(0);
   const [tratamientos, setTratamientos] = useState(0);
+  const [scrollable, setScrollable] = useState(false);
 
   const { user } = useAuthStore();
   const { managed } = useManagedStore();
   const { id_consulta, paciente } = route.params;
 
+  const allowScroll = () => {
+    let values = getValues();
+
+    if (values?.medicamentos?.length > 0) {
+      let medicamentosValid = values.medicamentos.every((medicamento) => {
+        return (
+          medicamento.dias_semana.length > 0 &&
+          medicamento.repeticiones.length > 0 &&
+          medicamento.fecha_inicio &&
+          medicamento.fecha_fin &&
+          medicamento.id_medicamento
+        );
+      });
+
+      if (medicamentosValid) {
+        setScrollable(true);
+      } else {
+        setScrollable(false);
+      }
+    }
+
+    if (values?.tratamientos?.length > 0) {
+      let tratamientosValid = values.tratamientos.every((tratamiento) => {
+        return (
+          tratamiento.dias_semana.length > 0 &&
+          tratamiento.repeticiones.length > 0 &&
+          tratamiento.fecha_inicio &&
+          tratamiento.fecha_fin &&
+          tratamiento.id_tratamiento
+        );
+      });
+
+      if (tratamientosValid) {
+        setScrollable(true);
+      } else {
+        setScrollable(false);
+      }
+    }
+
+    if (
+      values?.medicamentos?.length === 0 &&
+      values?.tratamientos?.length === 0
+    ) {
+      setScrollable(false);
+    }
+  };
+
   const handleHorario = (values) => {
     console.log(values);
   };
+
+  useEffect(() => {
+    allowScroll();
+  }, [medicamentos, watchingMeds, watchingTreatments]);
 
   return (
     <Swiper
       scrollEnabled={false}
       loop={false}
-      showsButtons={true}
+      showsButtons={scrollable}
       activeDotColor="#00826B"
       buttonWrapperStyle={{
         backgroundColor: "transparent",
@@ -123,6 +187,8 @@ export default function AssignMedicTreatment({ route }) {
             onPress={() => {
               if (medicamentos > 0) {
                 setMedicamentos((prev) => prev - 1);
+                let medicamentoValue = getValues("medicamentos");
+                medicamentoValue.pop();
               }
             }}
           >
@@ -149,11 +215,54 @@ export default function AssignMedicTreatment({ route }) {
       </View>
 
       <View style={styles.slide2}>
-        <Text style={styles.text}>Tratamientos</Text>
+        <View style={styles.header}>
+          <Text style={styles.text}>Tratamientos</Text>
+          <TouchableOpacity
+            Style={{}}
+            onPress={() => {
+              setTratamientos((prev) => prev + 1);
+            }}
+          >
+            <Text style={styles.addbtn}>Añadir</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            Style={{}}
+            onPress={() => {
+              if (tratamientos > 0) {
+                setTratamientos((prev) => prev - 1);
+                let tratamientoValue = getValues("tratamientos");
+                tratamientoValue.pop();
+              }
+            }}
+          >
+            <Text style={styles.removebtn}>Eliminar</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.MainContainer}>
+          <ScrollView style={styles.medicamentos}>
+            {[...Array(tratamientos)].map((_, index) => (
+              <Controller
+                key={index}
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TratamientoSlot onChange={onChange} value={value} />
+                )}
+                name={`tratamientos[${index}]`}
+                rules={{ required: true }}
+                defaultValue=""
+              />
+            ))}
+          </ScrollView>
+        </View>
       </View>
 
       <View style={styles.slide3}>
         <Text style={styles.text}>Resumen</Text>
+        <TouchableOpacity onPress={handleSubmit(handleHorario)}>
+          <Text>Submit</Text>
+        </TouchableOpacity>
       </View>
     </Swiper>
   );

@@ -24,10 +24,11 @@ import userAccountFigure from "../../../assets/user-account-figure.png";
 const PerfilPaciente = ({ route }) => {
   const { user } = useAuthStore.getState();
   const { cedula, paciente } = route.params;
+  const [selectedConsulta, setSelectedConsulta] = useState(null);
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [modal, setModal] = useState(false);
-  const [cmodal, setCModal] = useState(false);
+  // const [cmodal, setCModal] = useState(false);
   const [eventDate, setEventDate] = useState("");
   const [eventTime, setEventTime] = useState("");
   // const { isPending, isError, data, error } = useGetPaciente();
@@ -45,9 +46,9 @@ const PerfilPaciente = ({ route }) => {
 
   const estado = ["Omitido", "Completado", "Pendiente"];
 
-  const toggleCModal = () => {
-    setCModal(!cmodal);
-  };
+  // const toggleCModal = () => {
+  //   setCModal(!cmodal);
+  // };
 
   const toggleModal = () => {
     setModal(!modal);
@@ -103,6 +104,7 @@ const PerfilPaciente = ({ route }) => {
         }));
 
   handleConsultaPress = (consulta) => {
+    console.log(consulta.id_consulta);
     const id_consulta = consulta.id_consulta;
     navigation.navigate("Consulta", { id_consulta, paciente });
   };
@@ -168,7 +170,10 @@ const PerfilPaciente = ({ route }) => {
                     <TouchableOpacity
                       key={index}
                       style={styles.card}
-                      onPress={toggleModal}
+                      onPress={() => {
+                        setSelectedConsulta(consulta.id_consulta);
+                        toggleModal();
+                      }}
                     >
                       <Text style={styles.cardTitle}>
                         {" "}
@@ -190,20 +195,18 @@ const PerfilPaciente = ({ route }) => {
                         {" "}
                         Estado: {estado[consulta.estado]}
                       </Text>
-                      <Text style={styles.cardlabel}> </Text>
-
-                      <EndConsultaModal
-                        visible={modal}
-                        onClose={toggleModal}
-                        id_consulta={consulta.id_consulta}
-                      />
                     </TouchableOpacity>
                   ))
               )}
             </View>
 
             <View style={{ marginTop: 10 }}>
-              <Text>Completadas: </Text>
+              {typeof consultas === "string" ||
+              consultas.every((consulta) => consulta.estado !== 1) ? (
+                <Text></Text>
+              ) : (
+                <Text>Completadas: </Text>
+              )}
               {typeof consultas === "string" ? (
                 <Text>No hay consultas</Text>
               ) : (
@@ -244,6 +247,12 @@ const PerfilPaciente = ({ route }) => {
           </View>
         </ScrollView>
       </View>
+
+      <EndConsultaModal
+        visible={modal}
+        onClose={toggleModal}
+        id_consulta={selectedConsulta}
+      />
 
       <TouchableOpacity style={styles.agendar} onPress={handleOpenModal}>
         <AgendarModal

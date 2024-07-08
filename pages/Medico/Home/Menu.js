@@ -19,6 +19,8 @@ import {
 } from "../../../utils/hooks/medico/consultaDia";
 import { useNavigation } from "@react-navigation/native";
 import useManagedStore from "../../../utils/storage/managed";
+import { sendPushNotificationV2 } from "../../../utils/notifications/notifications";
+import { deleteConsulta } from "../../../utils/api/medico/consultaDia";
 
 const { width } = Dimensions.get("window");
 const estado = ["Omitido", "Completado", "Pendiente"];
@@ -26,19 +28,30 @@ const estado = ["Omitido", "Completado", "Pendiente"];
 const Menu = () => {
   const navigation = useNavigation();
   const { setManaged } = useManagedStore();
+  const [deletedItem, setDeletedItem] = useState(null);
   const [date, setDate] = useState("12/12/2023");
   const today = toDateId(new Date());
   const [selectedDate, setSelectedDate] = useState(today);
   const [currentCalendarMonth, setCurrentCalendarMonth] = useState(
     toDateId(new Date())
   );
-
-  // useEffect(() => {
-  //   console.log("Selected date: ", selectedDate);
-  // }, [selectedDate]);
-
   const { isPending, isError, data, error } = useConsultasDia();
   const deleteConsultaMutation = useDeleteConsulta();
+
+  useEffect(() => {
+    if (
+      deleteConsultaMutation.isSuccess &&
+      deletedItem &&
+      deleteConsultaMutation.data === "Consulta eliminada exitosamente"
+    ) {
+      console.log("Consulta eliminada: ", deletedItem);
+      sendPushNotificationV2(
+        deletedItem?.cd_paciente?.push_token,
+        new Date(deletedItem.fecha).toLocaleDateString(),
+        new Date(deletedItem.fecha).toLocaleTimeString()
+      );
+    }
+  }, [deleteConsultaMutation.isSuccess]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -187,6 +200,7 @@ const Menu = () => {
                               style={styles.deleteButton}
                               onPress={() => {
                                 // console.log("Aqui en Menu.js ", item);
+                                setDeletedItem(item);
                                 deleteConsultaMutation.mutate(item.id_consulta);
                               }}
                             >

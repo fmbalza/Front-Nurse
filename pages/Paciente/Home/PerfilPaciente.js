@@ -13,8 +13,6 @@ import { useState, useEffect } from "react";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { useUpdatePaciente } from "../../../utils/hooks/paciente/paciente";
 import { useForm, Controller } from "react-hook-form";
-// import DatePicker from "../../../components/DatePicker";
-// import GenderPicker from "../../../components/GenderPicker";
 import { useGetMe } from "../../../utils/hooks/paciente/paciente";
 import { useNavigation } from "@react-navigation/native";
 import useAuthStore from "../../../utils/storage/auth";
@@ -229,29 +227,6 @@ const PerfilPaciente = () => {
               rules={{ required: false }}
               defaultValue={""}
             />
-
-            {/* <Controller
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <View style={styles.componentt}>
-                  <GenderPicker onGenderChange={onChange} value={value} />
-                </View>
-              )}
-              name="genero"
-              rules={{ required: false }}
-            />
-
-            <Controller
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <View style={styles.componentt}>
-                  <DatePicker onDateChange={onChange} value={value} />
-                </View>
-              )}
-              name="fecha_nacimiento"
-              defaultValue={new Date().toISOString().split("T")[0]}
-              // rules={{ required: true }} // siempre tiene algo asignado por defecto
-            /> */}
 
             <View style={styles.modalButtons}>
               <TouchableOpacity

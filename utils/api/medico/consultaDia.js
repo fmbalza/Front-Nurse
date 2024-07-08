@@ -14,7 +14,7 @@ export const createConsulta = async (data) => {
   try {
     // console.log("aqui", data);
     const response = await api.post("/consulta", data);
-    return data;
+    return response.data;
   } catch (error) {
     throw new Error(error);
   }
@@ -22,7 +22,7 @@ export const createConsulta = async (data) => {
 
 export const deleteConsulta = async (data) => {
   try {
-    console.log("Aqui en consultaDia.js: ", data);
+    // console.log("Aqui en consultaDia.js: ", data);
     const response = await api.delete(`/consulta/${data}`, data);
     return response.data;
   } catch (error) {
@@ -32,8 +32,8 @@ export const deleteConsulta = async (data) => {
 
 export const updateConsulta = async (idconsulta, data) => {
   try {
-    console.log("aqui idconsulta", idconsulta);
-    console.log("aqui data", data);
+    // console.log("aqui idconsulta", idconsulta);
+    // console.log("aqui data", data);
     const response = await api.put(`/consulta/${idconsulta}`, data);
     return response.data;
   } catch (error) {

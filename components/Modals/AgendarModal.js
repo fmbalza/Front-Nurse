@@ -32,6 +32,8 @@ const AgendarModal = ({
     control,
     handleSubmit,
     formState: { errors },
+    reset,
+    resetField,
   } = useForm();
 
   const convertTo24Hour = (time) => {
@@ -67,33 +69,18 @@ const AgendarModal = ({
   // };
 
   const handleAgendar = async (values) => {
-    // console.log(expoToken);
-    // console.log(values);
     const { fecha, hora, descripcion } = values;
-
-    const localeDate = new Date(fecha).toLocaleDateString();
+    const formattedDate = new Date(fecha);
     const to24Hours = convertTo24Hour(hora);
-    const [month, day, year] = localeDate.split("/");
     const [hours, minutes, seconds] = to24Hours.split(":");
-    // console.log("Aqui: ", month, day, year);
-    // console.log("Aqui: ", hours, minutes, seconds);
-    setDate(localeDate);
+
+    setDate(new Date(fecha).toLocaleDateString());
     setTime(hora);
-    // console.log(convertTo24Hour(hora));
-    const formattedDate = new Date();
-    formattedDate.setFullYear(year);
-    formattedDate.setMonth(month - 1);
-    formattedDate.setDate(day);
-    formattedDate.setHours(hours);
-    formattedDate.setMinutes(minutes);
-    formattedDate.setSeconds(0);
 
-    // formattedDate.setHours(values.hora.split(":")[0]);
-    // formattedDate.setMinutes(values.hora.split(":")[1]);
+    formattedDate.setHours(hours, minutes, seconds, 0);
 
-    // console.log(formattedDate.toUTCString());
-    // console.log(formattedDate.toISOString());
-    // console.log(formattedDate.toLocaleString());
+    // console.log("formattedDate", formattedDate);
+    // console.log("localeFormattedDate", formattedDate.toLocaleString());
 
     const request = {
       cd_medico: doctorId,
@@ -101,15 +88,13 @@ const AgendarModal = ({
       de_consulta: descripcion || `Consulta con ${pacienteId}`,
       examen: "null",
       estado: 2,
-      fecha: formattedDate.toUTCString(),
+      fecha: formattedDate,
     };
     // "locale and current timezones" depends on the device's language and location so be careful when choosing which one to use...
     consultaMutation.mutate(request);
   };
 
   useEffect(() => {
-    // console.log(consultaMutation.data);
-
     if (consultaMutation.data === "Ya existe una consulta en este horario") {
       alert("Ya existe una consulta en este horario");
     }
@@ -120,6 +105,7 @@ const AgendarModal = ({
 
     if (consultaMutation.isSuccess) {
       onClose();
+      reset();
     }
   }, [consultaMutation.isSuccess]);
 
@@ -155,7 +141,7 @@ const AgendarModal = ({
               </View>
             )}
             name="fecha"
-            defaultValue={new Date().toISOString().split("T")[0]}
+            defaultValue={new Date(new Date().setHours(12, 0, 0, 0))}
             // rules={{ required: true }} // siempre tiene algo asignado por defecto
           />
           <Controller

@@ -8,7 +8,7 @@ export const useGetConsultasById = () => {
   return useQuery({
     queryKey: ["getConsultasById"],
     queryFn: () => getConsultasById(),
-    // refetchInterval: 30000,
+    refetchInterval: 30000,
     enabled: canFetch,
   });
 };

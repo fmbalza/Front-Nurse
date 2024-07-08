@@ -102,11 +102,12 @@ const UniqueTimePicker = ({ onTimeChange }) => {
 };
 
 const UniqueDatePicker = ({ onDateChange }) => {
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date(new Date().setHours(12, 0, 0, 0)));
   const [showPicker, setShowPicker] = useState(false);
 
   const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
+    // const currentDate = selectedDate || date;
+    const currentDate = new Date(new Date(selectedDate).setHours(12, 0, 0, 0));
     setShowPicker(false);
     setDate(currentDate);
     onDateChange(currentDate);
@@ -195,15 +196,19 @@ const WeekdayPicker = ({ onWeekdayChange }) => {
 
 const MedicamentoSlot = ({ onChange, value }) => {
   //   const { data, isLoading, isError, error } = useGetMedicamento();
-  const [repeticiones, setRepeticiones] = useState(0);
-  const [horas, setHoras] = useState([]);
+  const [repeticiones, setRepeticiones] = useState(1);
+  const [horas, setHoras] = useState([new Date().toLocaleTimeString()]);
   const [id_medicamento, setIdMedicamento] = useState();
   const [no_medicamento, setNoMedicamento] = useState(
     "presiona aqui para seleccionar"
   );
   const [dias_semana, setDiasSemana] = useState([]);
-  const [fecha_inicio, setFechaInicio] = useState();
-  const [fecha_fin, setFechaFin] = useState();
+  const [fecha_inicio, setFechaInicio] = useState(
+    new Date(new Date().setHours(12, 0, 0, 0))
+  );
+  const [fecha_fin, setFechaFin] = useState(
+    new Date(new Date().setDate(new Date().getDate() + 1))
+  );
   const [showMedModal, setShowMedModal] = useState(false);
 
   useEffect(() => {
@@ -211,11 +216,13 @@ const MedicamentoSlot = ({ onChange, value }) => {
       dias_semana: dias_semana,
       repeticiones: horas,
       fecha_inicio: fecha_inicio,
+      // fecha_inicio: new Date(fecha_inicio).toLocaleDateString(),
       fecha_fin: fecha_fin,
+      // fecha_fin: new Date(fecha_fin).toLocaleDateString(),
       id_medicamento: id_medicamento,
     };
     onChange(value);
-    console.log(value);
+    // console.log(value);
   }, [dias_semana, horas, fecha_inicio, fecha_fin, id_medicamento]);
 
   return (
@@ -247,7 +254,7 @@ const MedicamentoSlot = ({ onChange, value }) => {
             <TouchableOpacity
               Style={{}}
               onPress={() => {
-                if (repeticiones > 0) {
+                if (repeticiones > 1) {
                   setRepeticiones((prev) => prev - 1);
                   setHoras((prev) => prev.slice(0, -1));
                 }
@@ -300,7 +307,7 @@ const MedicamentoSlot = ({ onChange, value }) => {
         </View>
       </View>
 
-      <Modal visible={showMedModal} animationType="slide" transparent={true}>
+      <Modal visible={showMedModal} animationType="fade" transparent={true}>
         <PickMedicamento
           onClose={() => setShowMedModal(false)}
           onChange={(medicamento) => {

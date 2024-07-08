@@ -19,21 +19,15 @@ const DetallesConsulta = ({ route }) => {
   const [horarios, setHorarios] = useState([]);
   const [adjuntos, setAdjuntos] = useState([]);
 
-  useEffect(() => {
-    // if (data) console.log(data[0]);
-    if (data && data[0] && isSuccess) {
-      if (data[0].horariosAsignados) {
-        setHorarios(data[0].horariosAsignados);
-      }
-      if (data[0].archivos) {
-        setAdjuntos(data[0].archivos);
-      }
-    }
-  }, [data, isSuccess]);
-
   if (isPending || isLoading || isFetching) {
     return (
-      <View style={styles.container}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
