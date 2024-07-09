@@ -139,6 +139,41 @@ const UniqueDatePicker = ({ onDateChange }) => {
   );
 };
 
+const NumberOfWeeks = ({ onDateChange }) => {
+  const [weeks, setWeeks] = useState(1);
+
+  useEffect(() => {
+    onDateChange(weeks);
+  }, [weeks]);
+
+  return (
+    <View style={styles.container}>
+      <View style={{ flexDirection: "row" }}>
+        <Text>Semanas: {weeks}</Text>
+        <TouchableOpacity
+          Style={{}}
+          onPress={() => {
+            setWeeks((prev) => prev + 1);
+          }}
+        >
+          <Text style={styles.addbtn}>Incrementar</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          Style={{}}
+          onPress={() => {
+            if (weeks > 1) {
+              setWeeks((prev) => prev - 1);
+            }
+          }}
+        >
+          <Text style={styles.removebtn}>Reducir</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
 const WeekdayPicker = ({ onWeekdayChange }) => {
   const [selectedWeekdays, setSelectedWeekdays] = useState([]);
 
@@ -203,11 +238,12 @@ const MedicamentoSlot = ({ onChange, value }) => {
     "presiona aqui para seleccionar"
   );
   const [dias_semana, setDiasSemana] = useState([]);
+  const [weeks, setWeeks] = useState(1);
   const [fecha_inicio, setFechaInicio] = useState(
     new Date(new Date().setHours(12, 0, 0, 0))
   );
   const [fecha_fin, setFechaFin] = useState(
-    new Date(new Date().setDate(new Date().getDate() + 1))
+    new Date(new Date().setHours(12, 0, 0, 0))
   );
   const [showMedModal, setShowMedModal] = useState(false);
 
@@ -220,10 +256,21 @@ const MedicamentoSlot = ({ onChange, value }) => {
       fecha_fin: fecha_fin,
       // fecha_fin: new Date(fecha_fin).toLocaleDateString(),
       id_medicamento: id_medicamento,
+      no_medicamento: no_medicamento,
     };
     onChange(value);
     // console.log(value);
   }, [dias_semana, horas, fecha_inicio, fecha_fin, id_medicamento]);
+
+  useEffect(() => {
+    setFechaFin(
+      new Date(
+        new Date(fecha_inicio).setDate(
+          new Date(fecha_inicio).getDate() + weeks * 7
+        )
+      )
+    );
+  }, [weeks, fecha_inicio]);
 
   return (
     <View style={styles.container}>
@@ -297,13 +344,22 @@ const MedicamentoSlot = ({ onChange, value }) => {
           />
         </View>
 
-        <View style={styles.item}>
+        {/* <View style={styles.item}>
           <Text>Fecha de Fin</Text>
           <UniqueDatePicker
             onDateChange={(date) => {
               setFechaFin(date);
             }}
           />
+        </View> */}
+
+        <View style={styles.item}>
+          <NumberOfWeeks
+            onDateChange={(weeks) => {
+              setWeeks(weeks);
+            }}
+          />
+          <Text>Fecha de Fin: {fecha_fin.toLocaleDateString()}</Text>
         </View>
       </View>
 

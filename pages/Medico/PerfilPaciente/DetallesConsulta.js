@@ -19,6 +19,10 @@ const DetallesConsulta = ({ route }) => {
   const [horarios, setHorarios] = useState([]);
   const [adjuntos, setAdjuntos] = useState([]);
 
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
+
   if (isPending || isLoading || isFetching) {
     return (
       <View
@@ -60,10 +64,10 @@ const DetallesConsulta = ({ route }) => {
                   {new Date(consulta.fecha).toLocaleString()}
                 </Text>
               </View>
-              <View style={styles.infoContainer}>
+              {/* <View style={styles.infoContainer}>
                 <Text style={styles.label}>Descripción:</Text>
                 <Text style={styles.value}>{consulta.de_consulta}</Text>
-              </View>
+              </View> */}
               <Text style={styles.label}>Datos:</Text>
               {""}
               <View style={styles.infoContainer}>

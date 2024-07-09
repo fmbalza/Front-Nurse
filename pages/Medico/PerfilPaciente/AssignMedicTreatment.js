@@ -3,8 +3,9 @@ import {
   Text,
   TouchableOpacity,
   View,
-  TextInput,
   ScrollView,
+  Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Swiper from "react-native-swiper";
@@ -13,6 +14,8 @@ import useAuthStore from "../../../utils/storage/auth";
 import useManagedStore from "../../../utils/storage/managed";
 import MedicamentoSlot from "../../../components/MedicamentoSlot";
 import TratamientoSlot from "../../../components/TratamientoSlot";
+import { useCreateHorario } from "../../../utils/hooks/medico/horario";
+import { useNavigation } from "@react-navigation/native";
 
 /* Example of the JSON to be send to the API
 {
@@ -68,12 +71,16 @@ import TratamientoSlot from "../../../components/TratamientoSlot";
 */
 
 export default function AssignMedicTreatment({ route }) {
+  const navigation = useNavigation();
+  const [screenHeight, setScreenHeight] = useState(
+    Dimensions.get("window").height
+  );
+  const createHorarioMutation = useCreateHorario();
   const {
     control,
     handleSubmit,
     formState: { errors },
     getValues,
-    setValue,
   } = useForm();
 
   const watchingMeds = useWatch({
@@ -87,34 +94,35 @@ export default function AssignMedicTreatment({ route }) {
 
   const [medicamentos, setMedicamentos] = useState(0);
   const [tratamientos, setTratamientos] = useState(0);
-  const [scrollable, setScrollable] = useState(false);
+  const [canSubmit, setSubmitEnabled] = useState(false);
 
   const { user } = useAuthStore();
   const { managed } = useManagedStore();
   const { id_consulta, paciente } = route.params;
 
-  const allowScroll = () => {
-    let values = getValues();
+  const allowSubmit = () => {
+    const values = getValues();
+    // console.log(medicamentos, tratamientos);
 
-    if (values?.medicamentos?.length > 0) {
+    if (values?.medicamentos?.length > 0 && medicamentos > 0) {
       let medicamentosValid = values.medicamentos.every((medicamento) => {
         return (
           medicamento.dias_semana.length > 0 &&
           medicamento.repeticiones.length > 0 &&
           medicamento.fecha_inicio &&
           medicamento.fecha_fin &&
+          new Date(medicamento.fecha_fin) >
+            new Date(medicamento.fecha_inicio) &&
           medicamento.id_medicamento
         );
       });
 
       if (medicamentosValid) {
-        setScrollable(true);
+        setSubmitEnabled(true);
       } else {
-        setScrollable(false);
+        setSubmitEnabled(false);
       }
-    }
-
-    if (values?.tratamientos?.length > 0) {
+    } else if (values?.tratamientos?.length > 0 && tratamientos > 0) {
       let tratamientosValid = values.tratamientos.every((tratamiento) => {
         return (
           tratamiento.dias_semana.length > 0 &&
@@ -126,145 +134,255 @@ export default function AssignMedicTreatment({ route }) {
       });
 
       if (tratamientosValid) {
-        setScrollable(true);
+        setSubmitEnabled(true);
       } else {
-        setScrollable(false);
+        setSubmitEnabled(false);
       }
     }
 
-    if (
-      values?.medicamentos?.length === 0 &&
-      values?.tratamientos?.length === 0
-    ) {
-      setScrollable(false);
+    if (medicamentos === 0 && tratamientos === 0) {
+      setSubmitEnabled(false);
     }
   };
 
   const handleHorario = (values) => {
-    console.log(values);
+    const response = {
+      cedula_medico: user.cedula_medico,
+      cedula_paciente: paciente.cedula_paciente,
+      id_consulta: id_consulta,
+      medicamentos: values.medicamentos || [],
+      tratamientos: values.tratamientos || [],
+    };
+
+    // console.log(response);
+    createHorarioMutation.mutate(response);
   };
 
   useEffect(() => {
-    allowScroll();
-  }, [medicamentos, watchingMeds, watchingTreatments]);
+    allowSubmit();
+  }, [medicamentos, tratamientos, watchingMeds, watchingTreatments]);
+
+  useEffect(() => {
+    if (createHorarioMutation.isError) {
+      console.log(createHorarioMutation.error);
+    }
+
+    if (createHorarioMutation.data) {
+      console.log(createHorarioMutation.data);
+    }
+
+    if (createHorarioMutation.isSuccess) {
+      // navigation.navigate("Consultas");
+      navigation.goBack();
+    }
+  }, [createHorarioMutation.isSuccess]);
+
+  if (createHorarioMutation.isLoading || createHorarioMutation.isPending) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgb(0,0,0,0.1)",
+        }}
+      >
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
-    <Swiper
-      scrollEnabled={false}
-      loop={false}
-      showsButtons={scrollable}
-      activeDotColor="#00826B"
-      buttonWrapperStyle={{
-        backgroundColor: "transparent",
-        flexDirection: "row",
-        position: "absolute",
-        top: 0,
-        left: 0,
-        flex: 1,
-        paddingHorizontal: 10,
-        paddingVertical: 10,
-        justifyContent: "space-between",
-        alignItems: "flex-end",
-        zIndex: 9999,
-      }}
-      nextButton={<Text style={styles.navButton}>Next</Text>}
-      prevButton={<Text style={styles.navButton}>Back</Text>}
-    >
-      <View style={styles.slide1}>
-        <View style={styles.header}>
-          <Text style={styles.text}>Medicamentos</Text>
-          <TouchableOpacity
-            Style={{}}
-            onPress={() => {
-              setMedicamentos((prev) => prev + 1);
-            }}
-          >
-            <Text style={styles.addbtn}>Añadir</Text>
-          </TouchableOpacity>
+    <ScrollView style={{ flex: 1 }}>
+      <Swiper
+        scrollEnabled={false}
+        loop={false}
+        showsButtons={true}
+        activeDotColor="#00826B"
+        buttonWrapperStyle={{
+          backgroundColor: "transparent",
+          flexDirection: "row",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          flex: 1,
+          paddingHorizontal: 10,
+          paddingVertical: 10,
+          justifyContent: "space-between",
+          alignItems: "flex-end",
+          zIndex: 9999,
+        }}
+        nextButton={<Text style={styles.navButton}>Next</Text>}
+        prevButton={<Text style={styles.navButton}>Back</Text>}
+        height={screenHeight * 0.89}
+      >
+        <View style={styles.slide1}>
+          <View style={styles.header}>
+            <Text style={styles.text}>Medicamentos</Text>
+            <TouchableOpacity
+              Style={{}}
+              onPress={() => {
+                setMedicamentos((prev) => prev + 1);
+              }}
+            >
+              <Text style={styles.addbtn}>Añadir</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            Style={{}}
-            onPress={() => {
-              if (medicamentos > 0) {
-                setMedicamentos((prev) => prev - 1);
-                let medicamentoValue = getValues("medicamentos");
-                medicamentoValue.pop();
-              }
-            }}
-          >
-            <Text style={styles.removebtn}>Eliminar</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              Style={{}}
+              onPress={() => {
+                if (medicamentos > 0) {
+                  setMedicamentos((prev) => prev - 1);
+                  let medicamentoValue = getValues("medicamentos");
+                  medicamentoValue.pop();
+                  watchingMeds.pop();
+                }
+              }}
+            >
+              <Text style={styles.removebtn}>Eliminar</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.MainContainer}>
+            <ScrollView>
+              {[...Array(medicamentos)].map((_, index) => (
+                <Controller
+                  key={index}
+                  control={control}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <MedicamentoSlot onChange={onChange} value={value} />
+                  )}
+                  name={`medicamentos[${index}]`}
+                  rules={{ required: true }}
+                  defaultValue={[]}
+                />
+              ))}
+            </ScrollView>
+          </View>
         </View>
 
-        <View style={styles.MainContainer}>
-          <ScrollView style={styles.medicamentos}>
-            {[...Array(medicamentos)].map((_, index) => (
-              <Controller
-                key={index}
-                control={control}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <MedicamentoSlot onChange={onChange} value={value} />
-                )}
-                name={`medicamentos[${index}]`}
-                rules={{ required: true }}
-                defaultValue=""
-              />
-            ))}
-          </ScrollView>
-        </View>
-      </View>
+        <View style={styles.slide2}>
+          <View style={styles.header}>
+            <Text style={styles.text}>Tratamientos</Text>
+            <TouchableOpacity
+              Style={{}}
+              onPress={() => {
+                setTratamientos((prev) => prev + 1);
+              }}
+            >
+              <Text style={styles.addbtn}>Añadir</Text>
+            </TouchableOpacity>
 
-      <View style={styles.slide2}>
-        <View style={styles.header}>
-          <Text style={styles.text}>Tratamientos</Text>
+            <TouchableOpacity
+              Style={{}}
+              onPress={() => {
+                if (tratamientos > 0) {
+                  setTratamientos((prev) => prev - 1);
+                  let tratamientoValue = getValues("tratamientos");
+                  tratamientoValue.pop();
+                  watchingTreatments.pop();
+                }
+              }}
+            >
+              <Text style={styles.removebtn}>Eliminar</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.MainContainer}>
+            <ScrollView>
+              {[...Array(tratamientos)].map((_, index) => (
+                <Controller
+                  key={index}
+                  control={control}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TratamientoSlot onChange={onChange} value={value} />
+                  )}
+                  name={`tratamientos[${index}]`}
+                  rules={{ required: true }}
+                  defaultValue={[]}
+                />
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+
+        <View style={styles.slide3}>
+          <View style={styles.header}>
+            <Text style={styles.text}>Resumen</Text>
+          </View>
+
           <TouchableOpacity
-            Style={{}}
-            onPress={() => {
-              setTratamientos((prev) => prev + 1);
-            }}
+            style={styles.submitctn}
+            onPress={handleSubmit(handleHorario)}
+            disabled={!canSubmit}
           >
-            <Text style={styles.addbtn}>Añadir</Text>
+            <Text style={canSubmit ? styles.submitbtnEna : styles.submitbtnDis}>
+              Submit
+            </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            Style={{}}
-            onPress={() => {
-              if (tratamientos > 0) {
-                setTratamientos((prev) => prev - 1);
-                let tratamientoValue = getValues("tratamientos");
-                tratamientoValue.pop();
-              }
-            }}
-          >
-            <Text style={styles.removebtn}>Eliminar</Text>
-          </TouchableOpacity>
-        </View>
+          <View style={styles.MainContainer}>
+            <ScrollView>
+              {watchingMeds?.length > 0 && (
+                <View
+                  style={{
+                    flexDirection: "column",
+                    gap: 15,
+                    marginBottom: 15,
+                  }}
+                >
+                  <Text>Medicamentos</Text>
+                  {watchingMeds.map((medicamento, index) => (
+                    <View key={index} style={styles.resume}>
+                      <Text>Medicamento: {medicamento.no_medicamento}</Text>
+                      <Text>
+                        Fecha de inicio:{" "}
+                        {medicamento.fecha_inicio.toLocaleDateString()}
+                      </Text>
+                      <Text>
+                        Fecha de fin:{" "}
+                        {medicamento.fecha_fin.toLocaleDateString()}
+                      </Text>
+                      <Text>
+                        Dias a la semana: {medicamento.dias_semana.join(", ")}
+                      </Text>
+                      <Text>
+                        Repeticiones {medicamento.repeticiones.join(", ")}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              )}
 
-        <View style={styles.MainContainer}>
-          <ScrollView style={styles.medicamentos}>
-            {[...Array(tratamientos)].map((_, index) => (
-              <Controller
-                key={index}
-                control={control}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TratamientoSlot onChange={onChange} value={value} />
-                )}
-                name={`tratamientos[${index}]`}
-                rules={{ required: true }}
-                defaultValue=""
-              />
-            ))}
-          </ScrollView>
+              {watchingTreatments?.length > 0 && (
+                <View style={{ flexDirection: "column", gap: 15 }}>
+                  <Text>Tratamientos</Text>
+                  {watchingTreatments.map((tratamiento, index) => (
+                    <View key={index} style={styles.resume}>
+                      <Text>Tratamiento: {tratamiento.no_tratamiento}</Text>
+                      <Text>
+                        Fecha de inicio:{" "}
+                        {tratamiento.fecha_inicio.toLocaleDateString()}
+                      </Text>
+                      <Text>
+                        Fecha de fin:{" "}
+                        {tratamiento.fecha_fin.toLocaleDateString()}
+                      </Text>
+                      <Text>
+                        Dias a la semana: {tratamiento.dias_semana.join(", ")}
+                      </Text>
+                      <Text>
+                        Repeticiones: {tratamiento.repeticiones.join(", ")}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+            </ScrollView>
+          </View>
         </View>
-      </View>
-
-      <View style={styles.slide3}>
-        <Text style={styles.text}>Resumen</Text>
-        <TouchableOpacity onPress={handleSubmit(handleHorario)}>
-          <Text>Submit</Text>
-        </TouchableOpacity>
-      </View>
-    </Swiper>
+      </Swiper>
+    </ScrollView>
   );
 }
 
@@ -279,12 +397,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   slide2: {
-    flex: 1,
+    height: "90%",
     justifyContent: "center",
     alignItems: "center",
   },
   slide3: {
-    flex: 1,
+    height: "90%",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -324,5 +442,25 @@ const styles = StyleSheet.create({
     height: "70%",
     padding: 10,
     borderRadius: 10,
+  },
+  resume: {
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    padding: 10,
+    borderRadius: 10,
+  },
+  submitbtnEna: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#00826B",
+  },
+  submitbtnDis: {
+    fontSize: 30,
+    fontWeight: "bold",
+  },
+  submitctn: {
+    zIndex: 9999,
+    position: "absolute",
+    top: "105.2%",
+    left: "81%",
   },
 });

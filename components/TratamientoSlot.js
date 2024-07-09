@@ -6,11 +6,62 @@ import {
   Modal,
   TouchableOpacity,
 } from "react-native";
-// import TimePicker from "./TimePicker";
-// import DatePicker from "./DatePicker";
 import { useState, useEffect } from "react";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
-// import PickMedicamento from "./Modals/PickMedicamento";
+import PickTratamiento from "./Modals/PickTratamiento";
+
+/* Example of the JSON to be send to the API
+{
+  "cedula_medico": "29633652",
+  "cedula_paciente": "50000000",
+  "id_consulta": "99",
+  "medicamentos": [
+    {
+      "dias_semana": [
+        "lunes",
+        "martes"
+      ],
+      "repeticiones": [
+        "12:00:00 PM",
+        "4:35:00 PM",
+        "8:10:00 PM"
+      ],
+      "fecha_inicio": "2024-06-16T00:00:00-04:00",
+      "fecha_fin": "2024-06-22T00:00:00-04:00",
+      "id_medicamento": "4"
+    },
+    {
+      "dias_semana": [
+        "miercoles",
+        "jueves"
+      ],
+      "repeticiones": [
+        "12:00:00 PM",
+        "4:35:00 PM",
+        "8:10:00 PM"
+      ],
+      "fecha_inicio": "2024-06-16T00:00:00-04:00",
+      "fecha_fin": "2024-06-22T00:00:00-04:00",
+      "id_medicamento": "5"
+    }
+  ],
+  "tratamientos": [
+    {
+      "dias_semana": [
+        "jueves",
+        "viernes"
+      ],
+      "repeticiones": [
+        "12:00:00 PM",
+        "8:10:00 PM"
+      ],
+      "fecha_inicio": "2024-06-24T00:00:00-04:00",
+      "fecha_fin": "2024-06-28T00:00:00-04:00",
+      "id_tratamiento": "2"
+    }
+  ]
+}
+*/
 
 const UniqueTimePicker = ({ onTimeChange }) => {
   const [time, setTime] = useState(new Date());
@@ -86,6 +137,41 @@ const UniqueDatePicker = ({ onDateChange }) => {
   );
 };
 
+const NumberOfWeeks = ({ onDateChange }) => {
+  const [weeks, setWeeks] = useState(1);
+
+  useEffect(() => {
+    onDateChange(weeks);
+  }, [weeks]);
+
+  return (
+    <View style={styles.container}>
+      <View style={{ flexDirection: "row" }}>
+        <Text>Semanas: {weeks}</Text>
+        <TouchableOpacity
+          Style={{}}
+          onPress={() => {
+            setWeeks((prev) => prev + 1);
+          }}
+        >
+          <Text style={styles.addbtn}>Incrementar</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          Style={{}}
+          onPress={() => {
+            if (weeks > 1) {
+              setWeeks((prev) => prev - 1);
+            }
+          }}
+        >
+          <Text style={styles.removebtn}>Reducir</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
 const WeekdayPicker = ({ onWeekdayChange }) => {
   const [selectedWeekdays, setSelectedWeekdays] = useState([]);
 
@@ -145,15 +231,16 @@ const TratamientoSlot = ({ onChange, value }) => {
   const [repeticiones, setRepeticiones] = useState(1);
   const [horas, setHoras] = useState([new Date().toLocaleTimeString()]);
   const [id_tratamiento, setIdTratamiento] = useState();
-  const [no_Tratamiento, setNoTratamiento] = useState(
+  const [no_tratamiento, setNoTratamiento] = useState(
     "presiona aqui para seleccionar"
   );
   const [dias_semana, setDiasSemana] = useState([]);
+  const [weeks, setWeeks] = useState(1);
   const [fecha_inicio, setFechaInicio] = useState(
     new Date(new Date().setHours(12, 0, 0, 0))
   );
   const [fecha_fin, setFechaFin] = useState(
-    new Date(new Date().setDate(new Date().getDate() + 1))
+    new Date(new Date().setDate(12, 0, 0, 0))
   );
   const [showMedModal, setShowMedModal] = useState(false);
 
@@ -166,18 +253,182 @@ const TratamientoSlot = ({ onChange, value }) => {
       fecha_fin: fecha_fin,
       // fecha_fin: new Date(fecha_fin).toLocaleDateString(),
       id_tratamiento: id_tratamiento,
+      no_tratamiento: no_tratamiento,
     };
     onChange(value);
     // console.log(value);
   }, [dias_semana, horas, fecha_inicio, fecha_fin, id_tratamiento]);
 
+  useEffect(() => {
+    setFechaFin(
+      new Date(
+        new Date(fecha_inicio).setDate(
+          new Date(fecha_inicio).getDate() + weeks * 7
+        )
+      )
+    );
+  }, [weeks, fecha_inicio]);
+
   return (
-    <View>
-      <Text>TratamientoSlot</Text>
+    <View style={styles.container}>
+      <View style={styles.slotItem}>
+        <View style={styles.item}>
+          <TouchableOpacity
+            onPress={() => {
+              setShowMedModal(true);
+            }}
+          >
+            <Text>Tratamiento: {no_tratamiento}</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.item}>
+          <View style={{ flexDirection: "row" }}>
+            <Text>Repeticiones</Text>
+            <TouchableOpacity
+              Style={{}}
+              onPress={() => {
+                setRepeticiones((prev) => prev + 1);
+                setHoras((prev) => [...prev, new Date().toLocaleTimeString()]);
+              }}
+            >
+              <Text style={styles.addbtn}>Añadir</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              Style={{}}
+              onPress={() => {
+                if (repeticiones > 1) {
+                  setRepeticiones((prev) => prev - 1);
+                  setHoras((prev) => prev.slice(0, -1));
+                }
+              }}
+            >
+              <Text style={styles.removebtn}>Eliminar</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={{ flexDirection: "column" }}>
+            {[...Array(repeticiones)].map((_, index) => (
+              <UniqueTimePicker
+                key={index}
+                onTimeChange={(hora) => {
+                  setHoras((prev) => {
+                    prev[index] = hora;
+                    return prev;
+                  });
+                }}
+              />
+            ))}
+          </View>
+        </View>
+
+        <View style={styles.item}>
+          <Text>Dias de la Semana</Text>
+          <WeekdayPicker
+            onWeekdayChange={(weekday) => {
+              setDiasSemana(weekday);
+            }}
+          />
+        </View>
+
+        <View style={styles.item}>
+          <Text>Fecha de Inicio</Text>
+          <UniqueDatePicker
+            onDateChange={(date) => {
+              setFechaInicio(date);
+            }}
+          />
+        </View>
+
+        {/* <View style={styles.item}>
+          <Text>Fecha de Fin</Text>
+          <UniqueDatePicker
+            onDateChange={(date) => {
+              setFechaFin(date);
+            }}
+          />
+        </View> */}
+
+        <View style={styles.item}>
+          <NumberOfWeeks
+            onDateChange={(weeks) => {
+              setWeeks(weeks);
+            }}
+          />
+          <Text>Fecha de Fin: {fecha_fin.toLocaleDateString()}</Text>
+        </View>
+      </View>
+
+      <Modal visible={showMedModal} animationType="fade" transparent={true}>
+        <PickTratamiento
+          onClose={() => setShowMedModal(false)}
+          onChange={(tratamiento) => {
+            setIdTratamiento(tratamiento.id_tratamiento);
+            setNoTratamiento(tratamiento.no_tratamiento);
+            setShowMedModal(false);
+          }}
+        />
+      </Modal>
     </View>
   );
 };
 
 export default TratamientoSlot;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  slotItem: {
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    width: "100%",
+    backgroundColor: "#A4D4BB",
+    borderRadius: 15,
+    marginBottom: 15,
+  },
+  addbtn: {
+    color: "white",
+    backgroundColor: "#00826B",
+    borderRadius: 5,
+    padding: 5,
+    marginLeft: 5,
+  },
+  removebtn: {
+    color: "white",
+    backgroundColor: "#FF4545",
+    borderRadius: 5,
+    padding: 5,
+    marginLeft: 5,
+  },
+  item: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+    width: "100%",
+    padding: 10,
+  },
+  input: {
+    fontSize: 17,
+    fontWeight: "bold",
+  },
+  weekdayPicker: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    marginTop: 10,
+  },
+  selectedWeekday: {
+    backgroundColor: "#00826B",
+    padding: 5,
+    borderRadius: 5,
+  },
+  unselectedWeekday: {
+    backgroundColor: "white",
+    padding: 5,
+    borderRadius: 5,
+  },
+});
