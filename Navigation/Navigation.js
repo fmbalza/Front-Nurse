@@ -1,5 +1,4 @@
 import React from "react";
-// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
@@ -8,7 +7,6 @@ import StartPage from "../pages/StartPage";
 import MedicoSignUp from "../pages/Medico/MedicoSignUp";
 import PacienteSignUp from "../pages/Paciente/PacienteSignUp";
 import WelcomePage from "../pages/WelcomePage";
-import PasswordM from "../pages/Medico/PasswordM";
 import HomeMedico from "../pages/Medico/Home/HomeMedico";
 import PacienteLogin from "../pages/Paciente/PacienteLogin";
 import MedicoLogin from "../pages/Medico/MedicoLogIn";
@@ -72,11 +70,6 @@ function MyStack() {
         }}
       />
       <Stack.Screen
-        name="PasswordM"
-        component={PasswordM}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
         name="HomeMedico"
         component={HomeMedico}
         options={{ headerShown: false }}
@@ -86,14 +79,12 @@ function MyStack() {
         component={HomePaciente}
         options={{ headerShown: false }}
       />
-      {/* <Stack.Screen name="Reinicio de contraseña" component={PasswordM} /> */}
     </Stack.Navigator>
   );
 }
 
 export default function Navigation() {
   return (
-    // <NavigationContainer independent={true}>
     <NavigationContainer>
       <MyStack />
     </NavigationContainer>

@@ -50,3 +50,13 @@ export const getConsulta = async (id_consulta) => {
     throw new Error(error);
   }
 };
+
+export const appendToConsulta = async (id_consulta, data) => {
+  try {
+    // console.log("aqui", data);
+    const response = await api.post(`/consulta/archivo/${id_consulta}`, data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};

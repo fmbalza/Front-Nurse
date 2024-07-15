@@ -91,7 +91,6 @@ export const useGetMe = () => {
   return useQuery({
     queryKey: ["getMeMedico"],
     queryFn: () => getMe(),
-    // staleTime: 5000,
   });
 };
 
@@ -102,7 +101,6 @@ export const useUpdateMedico = () => {
   return useMutation({
     mutationFn: (data) => doUpdate(data),
     onSuccess: (data) => {
-      // console.log("aqui", data);
       const user = jwtDecode(data.jwt);
       login(data.jwt, user);
       if (data.msg === "Medico actualizado exitosamente") {

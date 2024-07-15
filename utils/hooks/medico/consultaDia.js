@@ -4,6 +4,7 @@ import {
   deleteConsulta,
   updateConsulta,
   getConsulta,
+  appendToConsulta,
 } from "../../api/medico/consultaDia";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuthStore from "../../storage/auth";
@@ -73,12 +74,31 @@ export const useUpdateConsulta = () => {
   return useMutation({
     mutationFn: ({ idconsulta, data }) => updateConsulta(idconsulta, data),
     onSuccess: (data) => {
-      if (data) {
-        console.log("mensaje:", data);
-        queryClient.invalidateQueries("consultasDia");
-      } else {
-        console.log(data);
-      }
+      // if (data) {
+      // console.log("mensaje:", data);
+      queryClient.invalidateQueries("consultasDia");
+      // } else {
+      //   console.log(data);
+      // }
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+};
+
+export const useAppendToConsulta = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id_consulta, data) => appendToConsulta(id_consulta, data),
+    onSuccess: (data) => {
+      // if (data) {
+      //   console.log("mensaje:", data);
+      queryClient.invalidateQueries("consultasDia");
+      // } else {
+      //   console.log(data);
+      // }
     },
     onError: (error) => {
       console.log(error);

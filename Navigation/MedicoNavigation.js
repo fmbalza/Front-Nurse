@@ -15,16 +15,6 @@ import DetallesConsulta from "../pages/Medico/PerfilPaciente/DetallesConsulta";
 
 const Stack = createStackNavigator();
 
-//  Useless fran code, delete this later...
-// const StackNavigator = () => {
-//   return (
-//     <Stack.Navigator>
-//       <Stack.Screen name="PerfilPaciente" component={PerfilPaciente} />
-//       <Stack.Screen name="CompleteConsulta" component={CompleteConsulta} />
-//     </Stack.Navigator>
-//   );
-// };
-
 const Tab = createBottomTabNavigator();
 
 function MyTabs() {
@@ -32,7 +22,6 @@ function MyTabs() {
     <Tab.Navigator initialRouteName="Menu" id="MedicoTabs">
       <Tab.Screen
         name="Menu"
-        // component={Menu}
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
@@ -192,9 +181,5 @@ function MyTabs() {
 }
 
 export default function MedicoNavigation() {
-  return (
-    // <NavigationContainer independent={true}>
-    <MyTabs />
-    // </NavigationContainer>
-  );
+  return <MyTabs />;
 }

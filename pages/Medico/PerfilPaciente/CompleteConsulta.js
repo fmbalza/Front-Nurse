@@ -8,10 +8,15 @@ import {
   ActivityIndicator,
   Modal,
   TextInput,
+  Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useUpdateConsulta } from "../../../utils/hooks/medico/consultaDia";
-import { useForm, Controller } from "react-hook-form";
+// import { useForm, Controller } from "react-hook-form";
+import ImageViewer from "../../../components/ImageViewer.js";
+import * as ImagePicker from "expo-image-picker";
+import { supabase } from "../../../utils/storage/supabase.js";
+import { decode } from "base64-arraybuffer";
 
 const CompleteConsulta = ({ route }) => {
   const { idconsulta } = route.params;
@@ -33,6 +38,9 @@ const CompleteConsulta = ({ route }) => {
     impresionDiagnostica: "",
     planManejo: "",
   });
+  const [addedImages, setAddedImages] = useState([]);
+  // const [selectedImage, setSelectedImage] = useState([]);
+  const [isLoadingManually, setManualLoading] = useState(false);
   // const {
   //   control,
   //   handleSubmit,
@@ -57,6 +65,7 @@ const CompleteConsulta = ({ route }) => {
       Plan de Manejo: ${formData.planManejo}
     `,
       estado: `1`,
+      url: addedImages,
     };
     // console.log(examen);
     await updateConsultaMutation.mutate({ idconsulta, data: examen });
@@ -72,12 +81,70 @@ const CompleteConsulta = ({ route }) => {
     setShowModal(false);
   };
 
+  const openImagePicker = async () => {
+    // Pedir permiso para acceder a la galería
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") return;
+
+    // Abrir el ImagePicker
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      //   allowsEditing: true,
+      //   aspect: [16, 9],
+      quality: 1,
+      base64: true,
+    });
+
+    if (!result.canceled) {
+      const selectedImage = result.assets[0];
+      // setSelectedImage((prev) => [...prev, selectedImage.uri]);
+
+      try {
+        setManualLoading(true);
+        const rnd = Math.floor(Math.random() * 1000000);
+        const { data, error } = await supabase.storage
+          .from("NURSE")
+          .upload(
+            `${rnd}${selectedImage.fileName}`,
+            decode(selectedImage.base64),
+            {
+              contentType: "image/png",
+            }
+          );
+        if (error) console.log("Error uploading image: ", error);
+        if (data) {
+          const imageUrl =
+            process.env.EXPO_PUBLIC_SUPABASE_URL +
+            "/storage/v1/object/public/NURSE/" +
+            data.path;
+          //   console.log(imageUrl);
+          //   setSelectedImage(imageUrl);
+          //   setUrl(imageUrl);
+          setAddedImages((prev) => [...prev, imageUrl]);
+        }
+      } catch (error) {
+        console.log("Error uploading image: ", error);
+      }
+      setManualLoading(false);
+      // onClose();
+    }
+  };
+
+  handleRemoveImage = (index) => {
+    setAddedImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
   useEffect(() => {
     if (updateConsultaMutation.isSuccess) {
       // navigation.navigate("Consulta", { idconsulta }); // Going too soon is problematic
       navigation.goBack(); // So we go back instead, which is more reliable
     }
   }, [updateConsultaMutation.isSuccess]);
+
+  // useEffect(() => {
+  //   console.log(addedImages);
+  //   // console.log(selectedImage);
+  // }, [addedImages]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -89,14 +156,6 @@ const CompleteConsulta = ({ route }) => {
       <View style={styles.container}>
         <ScrollView style={{ flex: 1 }}>
           <Text style={styles.sectionTitle}>Consulta</Text>
-
-          {/* <TextInput
-          style={styles.textArea}
-          placeholder="Ocupación"
-          value={formData.ocupacion}
-          onChangeText={(text) => setFormData({ ...formData, ocupacion: text })}
-          multiline
-        /> */}
           <TextInput
             style={styles.textArea}
             placeholder="Motivos de Consulta"
@@ -142,10 +201,66 @@ const CompleteConsulta = ({ route }) => {
             }
             multiline
           />
+
+          <View style={{ height: 50 }} />
+          <Text style={styles.label}>Adjuntos:</Text>
+          {addedImages.length > 0 ? (
+            <View style={{ flexDirection: "row", gap: 10 }}>
+              {addedImages.map((image, index) => (
+                <View
+                  key={index}
+                  style={{
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <ImageViewer imageUri={image} />
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: "#ff3b30",
+                      padding: 5,
+                      marginTop: 5,
+                      borderRadius: 4,
+                      justifyContent: "center",
+                    }}
+                    onPress={() => handleRemoveImage(index)}
+                  >
+                    <Text style={{ color: "#fff" }}>Eliminar</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
+          ) : (
+            <>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text style={{ color: "#ccc" }}>No se han subido imágenes</Text>
+              </View>
+            </>
+          )}
+
+          {/* {selectedImage && (
+            <View>
+              <Image
+                source={{ uri: selectedImage }}
+                style={{ width: 200, height: 200 }}
+              />
+              <ImageViewer imageUri={selectedImage} />
+            </View>
+          )} */}
+
+          <View style={{ height: 50 }} />
         </ScrollView>
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.uploadButton}>
+          <TouchableOpacity
+            style={styles.uploadButton}
+            onPress={openImagePicker}
+          >
             <Text style={styles.buttonText}>Subir Imágenes</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
@@ -165,8 +280,13 @@ const CompleteConsulta = ({ route }) => {
               </Text>
               <View style={styles.modalButtonContainer}>
                 <TouchableOpacity
-                  style={styles.modalButton}
+                  style={
+                    isLoadingManually
+                      ? styles.modalButtonDis
+                      : styles.modalButton
+                  }
                   onPress={() => handleConfirmSave()}
+                  disabled={isLoadingManually}
                 >
                   <Text style={styles.modalButtonText}>Guardar</Text>
                 </TouchableOpacity>
@@ -216,7 +336,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginVertical: 16,
+    marginVertical: 12,
   },
   uploadButton: {
     backgroundColor: "#007AFF",
@@ -261,6 +381,13 @@ const styles = StyleSheet.create({
   },
   modalButton: {
     backgroundColor: "#007AFF",
+    borderRadius: 4,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginHorizontal: 8,
+  },
+  modalButtonDis: {
+    backgroundColor: "#797979",
     borderRadius: 4,
     paddingVertical: 12,
     paddingHorizontal: 16,

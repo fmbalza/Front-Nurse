@@ -17,21 +17,26 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { useUpdateMedico } from "../../../utils/hooks/medico/auth";
 import { useForm, Controller } from "react-hook-form";
 import SpecialtyPicker from "../../../components/SpecialtyPicker";
-import GenderPicker from "../../../components/GenderPicker";
+// import GenderPicker from "../../../components/GenderPicker";
 import { useGetMe } from "../../../utils/hooks/medico/auth";
-import { useEspecialidades } from "../../../utils/hooks/medico/especialidades";
+// import { useEspecialidades } from "../../../utils/hooks/medico/especialidades";
 import { useQueryClient } from "@tanstack/react-query";
+import * as ImagePicker from "expo-image-picker";
+import { supabase } from "../../../utils/storage/supabase.js";
+import { decode } from "base64-arraybuffer";
+import userAccountFigure from "../../../assets/user-account-figure.png";
 
 const PerfilMedico = () => {
   const queryClient = useQueryClient();
-  const { isPending, isError, data, error } = useEspecialidades();
+  // const { isPending, isError, data, error } = useEspecialidades();
   const getMeQuery = useGetMe();
   const updateMutation = useUpdateMedico();
   const navigation = useNavigation();
   const { user, logout, certified } = useAuthStore.getState();
-  const specialties = [];
+  // const [specialties, setSpecialties] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalCRVisible, setIsModalCRVisible] = useState(false);
+  const [isLoadingManually, setManualLoading] = useState(false);
 
   const doLogOut = () => {
     logout();
@@ -71,6 +76,10 @@ const PerfilMedico = () => {
     });
   }, [user]);
 
+  // useEffect(() => {
+  //   console.log(user.id_especialidad);
+  // }, []);
+
   if (getMeQuery.isError) {
     return <Text>Error:{error.message}</Text>;
   }
@@ -80,17 +89,6 @@ const PerfilMedico = () => {
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
-  }
-  if (data) {
-    // [{ label: "Cardiologia", value: "1", color: "00826B" }]
-    const format = data.map((specialty) => {
-      return {
-        label: specialty.de_especialidad,
-        value: specialty.id_especialidad.toString(),
-        color: "#00826B",
-      };
-    });
-    specialties.push(...format);
   }
 
   const medicos = getMeQuery.data.map((medico) => ({
@@ -121,22 +119,69 @@ const PerfilMedico = () => {
     setIsModalVisible(!isModalVisible);
   };
 
-  function calculateAge(birthDate) {
-    const today = new Date();
-    const birthDateObj = new Date(birthDate);
-    let age = today.getFullYear() - birthDateObj.getFullYear();
+  // function calculateAge(birthDate) {
+  //   const today = new Date();
+  //   const birthDateObj = new Date(birthDate);
+  //   let age = today.getFullYear() - birthDateObj.getFullYear();
 
-    // Ajusta la edad si el cumpleaños aún no ha pasado este año
-    const monthDiff = today.getMonth() - birthDateObj.getMonth();
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birthDateObj.getDate())
-    ) {
-      age--;
+  //   // Ajusta la edad si el cumpleaños aún no ha pasado este año
+  //   const monthDiff = today.getMonth() - birthDateObj.getMonth();
+  //   if (
+  //     monthDiff < 0 ||
+  //     (monthDiff === 0 && today.getDate() < birthDateObj.getDate())
+  //   ) {
+  //     age--;
+  //   }
+
+  //   return age;
+  // }
+
+  const openImagePicker = async () => {
+    // Pedir permiso para acceder a la galería
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") return;
+
+    // Abrir el ImagePicker
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      //   allowsEditing: true,
+      //   aspect: [16, 9],
+      quality: 1,
+      base64: true,
+    });
+
+    if (!result.canceled) {
+      const selectedImage = result.assets[0];
+      try {
+        setManualLoading(true);
+        const rnd = Math.floor(Math.random() * 1000000);
+        const { data, error } = await supabase.storage
+          .from("NURSE")
+          .upload(
+            `${rnd}${selectedImage.fileName}`,
+            decode(selectedImage.base64),
+            {
+              contentType: "image/png",
+            }
+          );
+        if (error) console.log("Error uploading image: ", error);
+        if (data) {
+          const imageUrl =
+            process.env.EXPO_PUBLIC_SUPABASE_URL +
+            "/storage/v1/object/public/NURSE/" +
+            data.path;
+          //   console.log(imageUrl);
+          //   setSelectedImage(imageUrl);
+          //   setUrl(imageUrl);
+          updateMutation.mutate({ foto_perfil: imageUrl });
+        }
+      } catch (error) {
+        console.log("Error uploading image: ", error);
+      }
+      setManualLoading(false);
+      // onClose();
     }
-
-    return age;
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -146,10 +191,16 @@ const PerfilMedico = () => {
             <View key={index} style={styles.medicoContainer}>
               <View style={styles.header}>
                 <View style={styles.photoContainer}>
-                  <Image
-                    source={{ uri: medico.foto_perfil }}
-                    style={styles.photo}
-                  />
+                  <TouchableOpacity onPress={openImagePicker}>
+                    <Image
+                      source={
+                        medico?.foto_perfil
+                          ? { uri: medico.foto_perfil }
+                          : userAccountFigure
+                      }
+                      style={styles.photo}
+                    />
+                  </TouchableOpacity>
                 </View>
                 <View style={styles.nameContainer}>
                   <Text style={styles.name}>{medico.nombre}</Text>
@@ -159,7 +210,8 @@ const PerfilMedico = () => {
 
               <View style={styles.infoContainer}>
                 <Text style={styles.infoText}>
-                  Especialiadad: {specialties[medico.especialidad - 1]?.label}
+                  Especialidad:{" "}
+                  {user.id_especialidad.de_especialidad || medico.especialidad}
                 </Text>
                 <Text style={styles.infoText}>Género: {medico.genero}</Text>
                 <Text style={styles.infoText}>Teléfono: {medico.telefono}</Text>
