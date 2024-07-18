@@ -26,8 +26,18 @@ export default function App() {
         // console.log("aqui en App.js", notification.request.content.data);
 
         if (notification.request.content.data?.key) {
-          // console.log("aqui en App.js", notification.request.content.data.key);
+          console.log("aqui en App.js", notification.request.content.data.key);
           queryClient.invalidateQueries(notification.request.content.data.key);
+        }
+
+        if (notification.request.content.data?.identifier) {
+          console.log(
+            "aqui en App.js",
+            notification.request.content.data.identifier
+          );
+          Notifications.dismissNotificationAsync(
+            notification.request.content.data.identifier
+          );
         }
       });
 

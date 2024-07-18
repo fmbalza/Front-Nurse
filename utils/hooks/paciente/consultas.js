@@ -1,5 +1,10 @@
 import { getConsultasById } from "../../api/paciente/consultas";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  keepPreviousData,
+} from "@tanstack/react-query";
 import useAuthStore from "../../storage/auth";
 
 export const useGetConsultasById = () => {
@@ -10,5 +15,6 @@ export const useGetConsultasById = () => {
     queryFn: () => getConsultasById(),
     refetchInterval: 30000,
     enabled: canFetch,
+    placeholderData: keepPreviousData,
   });
 };

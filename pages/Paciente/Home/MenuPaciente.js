@@ -7,13 +7,24 @@ import {
   Text,
   TouchableOpacity,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import { useGetConsultasById } from "../../../utils/hooks/paciente/consultas";
 import moment from "moment";
 import "moment/locale/es";
 import Swiper from "react-native-swiper";
-import { timedNotificationV1 } from "../../../utils/notifications/notifications";
+import {
+  timedNotificationV1,
+  timedNotificationV2,
+} from "../../../utils/notifications/notifications";
+import {
+  useGetRecordatoriosByPaciente,
+  useSetReminderAsDone,
+  useSetReminderAsSkipped,
+} from "../../../utils/hooks/paciente/horarios";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+const estado = ["Omitido", "Completado", "Pendiente"];
 const { width } = Dimensions.get("window");
 
 const MenuPaciente = () => {
@@ -23,6 +34,9 @@ const MenuPaciente = () => {
   const [isManualChange, setIsManualChange] = useState(false);
 
   const { isPending, isError, data, error } = useGetConsultasById();
+  const recordatorios = useGetRecordatoriosByPaciente();
+  const setReminderAsDone = useSetReminderAsDone();
+  const setReminderAsSkipped = useSetReminderAsSkipped();
   moment.locale("es");
 
   const weeks = React.useMemo(() => {
@@ -38,14 +52,35 @@ const MenuPaciente = () => {
     });
   }, [week]);
 
-  // useEffect(() => {
-  //   timedNotificationV1("2024-07-01T21:00:00+00:00");
-  //   console.log(data);
-  // }, [data]);
+  useEffect(() => {
+    if (Array.isArray(data) && data.length > 0) {
+      const pendingConsultas = data.filter((item) => {
+        // console.log(
+        //   "Item: ",
+        //   item.estado === 2 && new Date(item.fecha) > new Date()
+        // );
+        return item.estado === 2 && new Date(item.fecha) > new Date();
+      });
 
-  // if (isError) {
-  //   return <Text>Error: {error.message}</Text>;
-  // }
+      pendingConsultas.forEach((item) => {
+        timedNotificationV1(item.fecha, item.id_consulta);
+      });
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (Array.isArray(recordatorios.data) && recordatorios.data.length > 0) {
+      const pendingRecordatorios = recordatorios.data.filter((item) => {
+        return item.estado === 2 && new Date(item.fecha) > new Date();
+      });
+
+      console.log(pendingRecordatorios.length);
+
+      pendingRecordatorios.forEach((item) => {
+        timedNotificationV2(item.fecha, item);
+      });
+    }
+  }, [recordatorios.data]);
 
   if (isPending || isError) {
     return (
@@ -59,106 +94,211 @@ const MenuPaciente = () => {
   //   const fechas = data.map((consulta) => consulta.fecha);
   // }
 
+  // useEffect(() => {
+  //   console.log(recordatorios.data);
+  // }, [recordatorios.data]);
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}></View>
-      <View style={styles.picker}>
-        <Swiper
-          index={1}
-          ref={swiper}
-          loop={false}
-          showsPagination={false}
-          onIndexChanged={(ind) => {
-            if (ind === 1 || isManualChange) {
-              setIsManualChange(false);
-              return;
-            }
-            setTimeout(() => {
-              const newIndex = ind - 1;
-              const newWeek = week + newIndex;
-              setWeek(newWeek);
-              setValue(moment(value).add(newIndex, "week").toDate());
-              setIsManualChange(true);
-              swiper.current.scrollTo(1, false);
-            }, 100);
-          }}
-        >
-          {weeks.map((dates, index) => (
-            <View style={styles.itemRow} key={index}>
-              {dates.map((item, dateIndex) => {
-                const isActive =
-                  value.toDateString() === item.date.toDateString();
-                return (
-                  <TouchableWithoutFeedback
-                    key={dateIndex}
-                    onPress={() => setValue(item.date)}
-                  >
-                    <View
-                      style={[
-                        styles.item,
-                        isActive && {
-                          backgroundColor: "#111",
-                          borderColor: "#111",
-                        },
-                      ]}
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={styles.header}></View>
+        <View style={styles.picker}>
+          <Swiper
+            index={1}
+            ref={swiper}
+            loop={false}
+            showsPagination={false}
+            onIndexChanged={(ind) => {
+              if (ind === 1 || isManualChange) {
+                setIsManualChange(false);
+                return;
+              }
+              setTimeout(() => {
+                const newIndex = ind - 1;
+                const newWeek = week + newIndex;
+                setWeek(newWeek);
+                setValue(moment(value).add(newIndex, "week").toDate());
+                setIsManualChange(true);
+                swiper.current.scrollTo(1, false);
+              }, 100);
+            }}
+          >
+            {weeks.map((dates, index) => (
+              <View style={styles.itemRow} key={index}>
+                {dates.map((item, dateIndex) => {
+                  const isActive =
+                    value.toDateString() === item.date.toDateString();
+                  return (
+                    <TouchableWithoutFeedback
+                      key={dateIndex}
+                      onPress={() => setValue(item.date)}
                     >
-                      <Text
+                      <View
                         style={[
-                          styles.itemWeekday,
-                          isActive && { color: "#fff" },
+                          styles.item,
+                          isActive && {
+                            backgroundColor: "#111",
+                            borderColor: "#111",
+                          },
                         ]}
                       >
-                        {item.weekday}
-                      </Text>
-                      <Text
-                        style={[styles.itemDate, isActive && { color: "#fff" }]}
-                      >
-                        {item.date.getDate()}
-                      </Text>
-                    </View>
-                  </TouchableWithoutFeedback>
-                );
-              })}
-            </View>
-          ))}
-        </Swiper>
-      </View>
-      <View style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 24 }}>
-        <Text style={styles.subtitle}>{value.toLocaleDateString()}</Text>
-        <View style={styles.placeholder}>
-          <View style={styles.placeholderInset}>
-            {typeof data === "string" ? (
-              <View style={styles.noEventsContainer}>
-                <Text style={styles.noEventsText}>{data}</Text>
+                        <Text
+                          style={[
+                            styles.itemWeekday,
+                            isActive && { color: "#fff" },
+                          ]}
+                        >
+                          {item.weekday}
+                        </Text>
+                        <Text
+                          style={[
+                            styles.itemDate,
+                            isActive && { color: "#fff" },
+                          ]}
+                        >
+                          {item.date.getDate()}
+                        </Text>
+                      </View>
+                    </TouchableWithoutFeedback>
+                  );
+                })}
               </View>
-            ) : (
-              <>
-                {data
-                  .filter((item) => {
-                    const itemDate = new Date(item.fecha);
-                    const selected = new Date(value);
-                    return (
-                      itemDate.getDate() === selected.getUTCDate() &&
-                      itemDate.getMonth() === selected.getUTCMonth() &&
-                      itemDate.getFullYear() === selected.getUTCFullYear()
-                    );
-                  })
-                  .map((item, index) => (
-                    <TouchableOpacity key={index} style={styles.eventContainer}>
-                      <Text style={styles.eventTitle}>
-                        Consulta {index + 1}
-                      </Text>
-                      <Text>Descripcion: {item.de_consulta}</Text>
-                      <Text>
-                        fecha: {new Date(item.fecha).toLocaleString()}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-              </>
-            )}
+            ))}
+          </Swiper>
+        </View>
+        <View style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 24 }}>
+          <Text style={styles.subtitle}>{value.toLocaleDateString()}</Text>
+          <View style={styles.placeholder}>
+            <View style={styles.placeholderInset}>
+              <ScrollView
+                style={{ flex: 1 }}
+                contentContainerStyle={{ flexGrow: 1 }}
+              >
+                {typeof data === "string" || !Array.isArray(data) ? (
+                  <View style={styles.noEventsContainer}>
+                    <Text style={styles.noEventsText}>{data}</Text>
+                  </View>
+                ) : (
+                  <>
+                    {data
+                      .filter((item) => {
+                        const itemDate = new Date(item.fecha);
+                        const selected = new Date(value);
+                        return (
+                          itemDate.getDate() === selected.getUTCDate() &&
+                          itemDate.getMonth() === selected.getUTCMonth() &&
+                          itemDate.getFullYear() === selected.getUTCFullYear()
+                        );
+                      })
+                      .map((item, index) => (
+                        <TouchableOpacity
+                          key={index}
+                          style={styles.eventContainer}
+                          onPress={() => {
+                            console.log(item);
+                          }}
+                        >
+                          <View>
+                            <Text style={styles.eventTitle}>
+                              Consulta {index + 1} - {estado[item.estado]}
+                            </Text>
+                            <Text>
+                              Medico: {item.cd_medico.no_medico} 
+                              {item.cd_medico.ap_medico}
+                            </Text>
+                            <Text>Descripcion: {item.de_consulta}</Text>
+                            <Text>
+                              Fecha: {new Date(item.fecha).toLocaleString()}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      ))}
+                  </>
+                )}
+                {typeof recordatorios.data === "string" ||
+                !Array.isArray(recordatorios.data) ? (
+                  <View style={styles.noEventsContainer}>
+                    <Text style={styles.noEventsText}>
+                      {recordatorios.data}
+                    </Text>
+                  </View>
+                ) : (
+                  <>
+                    {recordatorios.data
+                      .filter((item) => {
+                        const itemDate = new Date(item.fecha);
+                        const selected = new Date(value);
+                        return (
+                          itemDate.getDate() === selected.getUTCDate() &&
+                          itemDate.getMonth() === selected.getUTCMonth() &&
+                          itemDate.getFullYear() === selected.getUTCFullYear()
+                        );
+                      })
+                      .map((item, index) => (
+                        <TouchableOpacity
+                          key={index}
+                          style={styles.eventContainer}
+                          onPress={() => {
+                            console.log(item);
+                          }}
+                        >
+                          <View>
+                            <Text style={styles.eventTitle}>
+                              {item.id_horario?.id_medicamento
+                                ?.cp_medicamento ||
+                                item.id_horario?.id_tratamiento
+                                  ?.no_tratamiento}{" "}
+                              - {estado[item.estado]}
+                            </Text>
+                            <Text>
+                              Fecha: {new Date(item.fecha).toLocaleString()}
+                            </Text>
+                          </View>
+                          <View style={{ flexDirection: "row", gap: 20 }}>
+                            <TouchableOpacity
+                              style={{
+                                justifyContent: "flex-end",
+                              }}
+                              onPress={() => {
+                                // console.log("done");
+                                setReminderAsDone.mutate(item.id_recordatorio);
+                              }}
+                            >
+                              {/* <Text style={styles.btnText}>Completar</Text> */}
+                              <MaterialCommunityIcons
+                                name="check"
+                                size={24}
+                                color="black"
+                              />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              style={{
+                                justifyContent: "flex-end",
+                              }}
+                              onPress={() => {
+                                // console.log("skip");
+                                setReminderAsSkipped.mutate(
+                                  item.id_recordatorio
+                                );
+                              }}
+                            >
+                              {/* <Text style={styles.btnText}>Omitir</Text> */}
+                              <MaterialCommunityIcons
+                                name="skip-next"
+                                size={24}
+                                color="black"
+                              />
+                            </TouchableOpacity>
+                          </View>
+                        </TouchableOpacity>
+                      ))}
+                  </>
+                )}
+              </ScrollView>
+            </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -194,7 +334,6 @@ const styles = StyleSheet.create({
     marginTop: "auto",
     paddingHorizontal: 16,
   },
-  /** Item */
   item: {
     flex: 1,
     height: 50,
@@ -224,7 +363,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#111",
   },
-  /** Placeholder */
   placeholder: {
     flexGrow: 1,
     flexShrink: 1,
@@ -243,7 +381,6 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     flexBasis: 0,
   },
-  /** Button */
   btn: {
     flexDirection: "row",
     alignItems: "center",
@@ -271,6 +408,20 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     textAlign: "center",
+  },
+  eventContainer: {
+    backgroundColor: "#F5F5F5",
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  eventTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 4,
   },
 });
 

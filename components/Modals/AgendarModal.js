@@ -100,6 +100,7 @@ const AgendarModal = ({
     }
 
     if (consultaMutation.data === "Consulta creada exitosamente") {
+      // console.log(expoToken);
       sendPushNotificationV1(expoToken, date, time);
     }
 

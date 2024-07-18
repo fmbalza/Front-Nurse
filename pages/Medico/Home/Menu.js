@@ -19,8 +19,10 @@ import {
 } from "../../../utils/hooks/medico/consultaDia";
 import { useNavigation } from "@react-navigation/native";
 import useManagedStore from "../../../utils/storage/managed";
-import { sendPushNotificationV2 } from "../../../utils/notifications/notifications";
-import { deleteConsulta } from "../../../utils/api/medico/consultaDia";
+import {
+  sendPushNotificationV2,
+  timedNotificationV1,
+} from "../../../utils/notifications/notifications";
 
 const { width } = Dimensions.get("window");
 const estado = ["Omitido", "Completado", "Pendiente"];
@@ -35,7 +37,7 @@ const Menu = () => {
   const [currentCalendarMonth, setCurrentCalendarMonth] = useState(
     toDateId(new Date())
   );
-  const { isPending, isError, data, error } = useConsultasDia();
+  const { isFetching, isPending, isError, data, error } = useConsultasDia();
   const deleteConsultaMutation = useDeleteConsulta();
 
   useEffect(() => {
@@ -47,11 +49,28 @@ const Menu = () => {
       console.log("Consulta eliminada: ", deletedItem);
       sendPushNotificationV2(
         deletedItem?.cd_paciente?.push_token,
+        deletedItem?.id_consulta,
         new Date(deletedItem.fecha).toLocaleDateString(),
         new Date(deletedItem.fecha).toLocaleTimeString()
       );
     }
   }, [deleteConsultaMutation.isSuccess]);
+
+  useEffect(() => {
+    if (Array.isArray(data) && data.length > 0) {
+      const pendingConsultas = data.filter((item) => {
+        // console.log(
+        //   "Item: ",
+        //   item.estado === 2 && new Date(item.fecha) > new Date()
+        // );
+        return item.estado === 2 && new Date(item.fecha) > new Date();
+      });
+
+      pendingConsultas.forEach((item) => {
+        timedNotificationV1(item.fecha, item.id_consulta);
+      });
+    }
+  }, [data]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -74,10 +93,6 @@ const Menu = () => {
     });
   }, [currentCalendarMonth]);
 
-  // if (isError) {
-  //   return <Text>Error:{error.message}</Text>;
-  // }
-
   if (isPending || isError) {
     return (
       <View style={styles.container}>
@@ -85,11 +100,6 @@ const Menu = () => {
       </View>
     );
   }
-
-  // if (Array.isArray(data) && data.length > 0) {
-  //   // console.log(data);
-  //   const fechas = data.map((consulta) => consulta.fecha);
-  // }
 
   return (
     <View style={{ flex: 1 }}>

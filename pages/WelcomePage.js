@@ -7,6 +7,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useVerifyPaciente } from "../utils/hooks/paciente/auth.js";
 import { useVerifyMedico } from "../utils/hooks/medico/auth.js";
 import useAuthStore from "../utils/storage/auth.js";
+import * as Notifications from "expo-notifications";
 
 const StartPage = () => {
   const navigation = useNavigation();
@@ -15,10 +16,12 @@ const StartPage = () => {
   const verifyMedicoQuery = useVerifyMedico();
   const { rememberMe, role, user, logout } = useAuthStore();
 
-  useEffect(() => {
-    // console.log(rememberMe, role);
-    // logout();
+  const doLogOut = async () => {
+    await Notifications.cancelAllScheduledNotificationsAsync();
+    logout();
+  };
 
+  useEffect(() => {
     if (verifyPacienteQuery.isSuccess && rememberMe && role === "paciente") {
       navigation.reset({
         index: 0,
@@ -37,7 +40,7 @@ const StartPage = () => {
       !rememberMe ||
       !role
     ) {
-      logout();
+      doLogOut();
     }
   }, [verifyPacienteQuery.isSuccess, verifyMedicoQuery.isSuccess]);
 

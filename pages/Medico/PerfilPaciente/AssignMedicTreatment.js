@@ -95,6 +95,7 @@ export default function AssignMedicTreatment({ route }) {
   const [medicamentos, setMedicamentos] = useState(0);
   const [tratamientos, setTratamientos] = useState(0);
   const [canSubmit, setSubmitEnabled] = useState(false);
+  const [loadingManually, setLoadingManually] = useState(false);
 
   const { user } = useAuthStore();
   const { managed } = useManagedStore();
@@ -146,6 +147,7 @@ export default function AssignMedicTreatment({ route }) {
   };
 
   const handleHorario = (values) => {
+    setLoadingManually(true);
     const response = {
       cedula_medico: user.cedula_medico,
       cedula_paciente: paciente.cedula_paciente,
@@ -174,10 +176,15 @@ export default function AssignMedicTreatment({ route }) {
     if (createHorarioMutation.isSuccess) {
       // navigation.navigate("Consultas");
       navigation.goBack();
+      setLoadingManually(false);
     }
   }, [createHorarioMutation.isSuccess]);
 
-  if (createHorarioMutation.isLoading || createHorarioMutation.isPending) {
+  if (
+    createHorarioMutation.isLoading ||
+    createHorarioMutation.isPending ||
+    loadingManually
+  ) {
     return (
       <View
         style={{

@@ -104,7 +104,7 @@ const PerfilPaciente = ({ route }) => {
         }));
 
   handleConsultaPress = (consulta) => {
-    console.log(consulta.id_consulta);
+    // console.log(consulta.id_consulta);
     const id_consulta = consulta.id_consulta;
     navigation.navigate("Consulta", { id_consulta, paciente });
   };
@@ -252,6 +252,7 @@ const PerfilPaciente = ({ route }) => {
         visible={modal}
         onClose={toggleModal}
         id_consulta={selectedConsulta}
+        // paciente={paciente}
       />
 
       <TouchableOpacity style={styles.agendar} onPress={handleOpenModal}>
@@ -261,7 +262,7 @@ const PerfilPaciente = ({ route }) => {
           onSave={handleSaveEvent}
           pacienteId={cedula}
           doctorId={user.cedula_medico}
-          expoToken={user.push_token}
+          expoToken={paciente.push_token}
         />
 
         <Text style={{ color: "#FFFFFF" }}>Agendar Consulta</Text>

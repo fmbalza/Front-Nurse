@@ -7,9 +7,19 @@ import { useEspecialidades } from "../utils/hooks/medico/especialidades";
 const SpecialtyPicker = ({ onSpecialtyChange, value, specialties }) => {
   const [selectedSpecialty, setSelectedSpecialty] = useState("");
   const [inputValue, setInputValue] = useState("");
-  // const especialidadQuery = useEspecialidades();
-  // console.log("specialties", specialties);
-  const options = specialties;
+  const especialidadQuery = useEspecialidades();
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    if (especialidadQuery.isSuccess && especialidadQuery.data.length > 0) {
+      setOptions(
+        especialidadQuery.data.map((especialidad) => ({
+          label: especialidad.de_especialidad,
+          value: especialidad.id_especialidad.toString(),
+        }))
+      );
+    }
+  }, [especialidadQuery.isSuccess]);
 
   const handleSpecialtySelection = (specialty) => {
     setSelectedSpecialty(specialty);

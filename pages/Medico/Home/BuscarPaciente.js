@@ -15,7 +15,7 @@ import { useGetPaciente } from "../../../utils/hooks/medico/paciente";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import userAccountFigure from "../../../assets/user-account-figure.png";
 import useManagedStore from "../../../utils/storage/managed";
-import { set } from "react-hook-form";
+import { MaskedText } from "react-native-mask-text";
 
 const BuscarPaciente = ({ onSearch }) => {
   const { setManaged } = useManagedStore();
@@ -49,7 +49,7 @@ const BuscarPaciente = ({ onSearch }) => {
       no_paciente: `${paciente.no_paciente} ${paciente.ap_paciente}`,
       telefono: paciente.telefono,
       genero: paciente.genero,
-      familiar: paciente.familiar,
+      // familiar: paciente.familiar,
       fecha_nacimiento: paciente.fecha_nacimiento,
       push_token: paciente.push_token,
     }));
@@ -72,7 +72,9 @@ const BuscarPaciente = ({ onSearch }) => {
         <Image source={userAccountFigure} style={styles.photo} />
         <View style={styles.detailsContainer}>
           <Text style={styles.name}>{paciente.no_paciente}</Text>
-          <Text style={styles.cedula}>{paciente.cedula_paciente}</Text>
+          <MaskedText style={styles.cedula} mask={"99.999.999"}>
+            {paciente.cedula_paciente}
+          </MaskedText>
           <MaterialCommunityIcons
             name="account-details-outline"
             size={24}
@@ -85,21 +87,16 @@ const BuscarPaciente = ({ onSearch }) => {
   };
 
   const ItemSeparatorView = () => {
-    return (
-      <View
-        style={{ height: 0.5, width: "100%", backgroundColor: "#c8c8c8" }}
-      />
-    );
+    return <View style={{ height: 0.5, width: "100%" }} />;
   };
 
   const searchFilter = (text) => {
-    const searchText = text.toUpperCase();
-
-    if (searchText) {
-      const newData = masterData.filter((paciente) => {
-        const itemData = paciente.nombre.toUpperCase();
-
-        return itemData.includes(searchText);
+    const query = text.toLowerCase();
+    if (text) {
+      const newData = masterData.filter((patient) => {
+        const name = patient.no_paciente.toLowerCase();
+        const cedula = patient.cedula_paciente.toString();
+        return name.includes(query) || cedula.includes(query);
       });
       setFilteredData(newData);
       setSearch(text);

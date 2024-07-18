@@ -19,9 +19,10 @@ const DetallesConsulta = ({ route }) => {
   const [horarios, setHorarios] = useState([]);
   const [adjuntos, setAdjuntos] = useState([]);
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+  // useEffect(() => {
+  //   // console.log(data);
+  //   // console.log(id_consulta, paciente);
+  // }, [data]);
 
   if (isPending || isLoading || isFetching) {
     return (
@@ -149,7 +150,7 @@ const DetallesConsulta = ({ route }) => {
                 }}
               >
                 <Text style={{ color: "white", textAlign: "center" }}>
-                  Asignar Tratamiento
+                  Asignar Medicamento/Tratamiento
                 </Text>
               </TouchableOpacity>
             </View>

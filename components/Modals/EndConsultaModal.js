@@ -2,13 +2,19 @@ import React, { useState } from "react";
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const EndConsultaModal = ({ visible, onClose, onSave, id_consulta }) => {
+const EndConsultaModal = ({
+  visible,
+  onClose,
+  onSave,
+  id_consulta,
+  paciente,
+}) => {
   // console.log(id_consulta);
   const navigation = useNavigation();
 
   const handleYesPress = () => {
     onClose();
-    console.log(id_consulta);
+    // console.log(id_consulta);
     const idconsulta = id_consulta;
     navigation.navigate("CompleteConsulta", { idconsulta });
   };

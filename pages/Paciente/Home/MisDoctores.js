@@ -60,7 +60,7 @@ const MisDoctores = () => {
         email: medico.medico.email,
         especialidad: medico.medico.especialidad.de_especialidad,
       }));
-      console.log("Aqui en MisDoctores.js: ", medicos);
+      // console.log("Aqui en MisDoctores.js: ", medicos);
       setFilteredData(medicos);
       setMasterData(medicos);
     }
@@ -110,21 +110,33 @@ const MisDoctores = () => {
   };
 
   const ItemSeparatorView = () => {
-    return (
-      <View
-        style={{ height: 0.5, width: "100%", backgroundColor: "#c8c8c8" }}
-      />
-    );
+    return <View style={{ height: 0.5, width: "100%" }} />;
   };
 
+  // const searchFilter = (text) => {
+  //   const searchText = text.toUpperCase();
+
+  //   if (searchText) {
+  //     const newData = masterData.filter((medico) => {
+  //       const itemData = medico.nombre.toUpperCase();
+
+  //       return itemData.includes(searchText);
+  //     });
+  //     setFilteredData(newData);
+  //     setSearch(text);
+  //   } else {
+  //     setFilteredData(masterData);
+  //     setSearch(text);
+  //   }
+  // };
+
   const searchFilter = (text) => {
-    const searchText = text.toUpperCase();
-
-    if (searchText) {
-      const newData = masterData.filter((medico) => {
-        const itemData = medico.nombre.toUpperCase();
-
-        return itemData.includes(searchText);
+    const query = text.toLowerCase();
+    if (text) {
+      const newData = masterData.filter((patient) => {
+        const name = patient.nombre.toLowerCase();
+        // const cedula = patient.cedula_paciente.toString();
+        return name.includes(query);
       });
       setFilteredData(newData);
       setSearch(text);
@@ -143,12 +155,12 @@ const MisDoctores = () => {
     setModalVisible(false);
   };
 
-  const handleBookAppointment = () => {
-    // Que rayos es esto? paciente agenda consulta por medio de whatsapp...
-    // Aquí puedes agregar la lógica para agendar una cita con el médico seleccionado
-    setModalVisible(false);
-    navigation.navigate("AgendarCita", { medico: selectedMedico });
-  };
+  // const handleBookAppointment = () => {
+  //   // Que rayos es esto? paciente agenda consulta por medio de whatsapp...
+  //   // Aquí puedes agregar la lógica para agendar una cita con el médico seleccionado
+  //   setModalVisible(false);
+  //   navigation.navigate("AgendarCita", { medico: selectedMedico });
+  // };
 
   return (
     // <View style={styles.container}>
@@ -183,7 +195,7 @@ const MisDoctores = () => {
             visible={modalVisible}
             medico={selectedMedico}
             onClose={handleCloseModal}
-            onBookAppointment={handleBookAppointment}
+            // onBookAppointment={handleBookAppointment}
           />
         )}
       </View>

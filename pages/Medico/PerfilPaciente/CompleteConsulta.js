@@ -136,7 +136,7 @@ const CompleteConsulta = ({ route }) => {
 
   useEffect(() => {
     if (updateConsultaMutation.isSuccess) {
-      // navigation.navigate("Consulta", { idconsulta }); // Going too soon is problematic
+      // navigation.navigate("Consulta", { idconsulta, paciente }); // Going too soon is problematic
       navigation.goBack(); // So we go back instead, which is more reliable
     }
   }, [updateConsultaMutation.isSuccess]);
@@ -263,7 +263,10 @@ const CompleteConsulta = ({ route }) => {
           >
             <Text style={styles.buttonText}>Subir Imágenes</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+          <TouchableOpacity
+            style={isLoadingManually ? styles.saveButtonDis : styles.saveButton}
+            onPress={handleSave}
+          >
             <Text style={styles.buttonText}>Guardar</Text>
           </TouchableOpacity>
         </View>
@@ -346,6 +349,12 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     backgroundColor: "#007AFF",
+    borderRadius: 4,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  saveButtonDis: {
+    backgroundColor: "#797979",
     borderRadius: 4,
     paddingVertical: 12,
     paddingHorizontal: 16,

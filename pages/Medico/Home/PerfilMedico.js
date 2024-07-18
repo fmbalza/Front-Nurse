@@ -25,6 +25,8 @@ import * as ImagePicker from "expo-image-picker";
 import { supabase } from "../../../utils/storage/supabase.js";
 import { decode } from "base64-arraybuffer";
 import userAccountFigure from "../../../assets/user-account-figure.png";
+import * as Notifications from "expo-notifications";
+import { MaskedText } from "react-native-mask-text";
 
 const PerfilMedico = () => {
   const queryClient = useQueryClient();
@@ -33,13 +35,14 @@ const PerfilMedico = () => {
   const updateMutation = useUpdateMedico();
   const navigation = useNavigation();
   const { user, logout, certified } = useAuthStore.getState();
-  // const [specialties, setSpecialties] = useState([]);
+  const [specialties, setSpecialties] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalCRVisible, setIsModalCRVisible] = useState(false);
   const [isLoadingManually, setManualLoading] = useState(false);
 
-  const doLogOut = () => {
+  const doLogOut = async () => {
     logout();
+    await Notifications.cancelAllScheduledNotificationsAsync();
     queryClient.cancelQueries();
     queryClient.removeQueries();
     queryClient.clear();
@@ -204,7 +207,12 @@ const PerfilMedico = () => {
                 </View>
                 <View style={styles.nameContainer}>
                   <Text style={styles.name}>{medico.nombre}</Text>
-                  <Text style={styles.cedula}>C.I: {user?.cedula_medico}</Text>
+                  <Text style={styles.cedula}>
+                    Cédula: 
+                    <MaskedText style={styles.cedula} mask={"99.999.999"}>
+                      {user?.cedula_medico}
+                    </MaskedText>
+                  </Text>
                 </View>
               </View>
 
@@ -214,7 +222,12 @@ const PerfilMedico = () => {
                   {user.id_especialidad.de_especialidad || medico.especialidad}
                 </Text>
                 <Text style={styles.infoText}>Género: {medico.genero}</Text>
-                <Text style={styles.infoText}>Teléfono: {medico.telefono}</Text>
+                <Text style={styles.infoText}>
+                  Teléfono: 
+                  <MaskedText style={styles.infoText} mask="+99 999-9999999">
+                    {medico.telefono}
+                  </MaskedText>
+                </Text>
               </View>
             </View>
           ))}
@@ -222,7 +235,7 @@ const PerfilMedico = () => {
           <TouchableOpacity
             onPress={doLogOut}
             style={styles.logoutButton}
-            titleStyle={styles.logoutButtonText}
+            // titleStyle={styles.logoutButtonText}
           >
             <Text>Cerrar Sesion</Text>
           </TouchableOpacity>
@@ -232,7 +245,7 @@ const PerfilMedico = () => {
               <TouchableOpacity
                 onPress={() => setIsModalCRVisible(true)}
                 style={styles.buttonCR}
-                titleStyle={styles.buttonText}
+                // titleStyle={styles.buttonText}
               >
                 <Text>Completar Registro</Text>
               </TouchableOpacity>
@@ -460,7 +473,7 @@ const styles = StyleSheet.create({
   },
   modalInput: {
     marginTop: 10,
-    width: 355,
+    width: "100%",
     height: 64,
     paddingHorizontal: 10,
     borderWidth: 1,
@@ -478,6 +491,7 @@ const styles = StyleSheet.create({
   },
   modalButton: {
     marginLeft: 10,
+    alignItems: "center",
   },
   modalButtonText: {
     color: "#00826B",
@@ -494,6 +508,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 }, // Desplazamiento de la sombra (solo para iOS)
     shadowOpacity: 0.25, // Opacidad de la sombra (solo para iOS)
     shadowRadius: 3.84, // Radio de la sombra (solo para iOS)
+    alignItems: "center", // Alineación horizontal de los elementos hijos
   },
   buttonText: {
     color: "#FFFFFF", // Color del texto del botón

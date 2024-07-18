@@ -12,12 +12,16 @@ import CompleteConsulta from "../pages/Medico/PerfilPaciente/CompleteConsulta";
 import PerfilPaciente from "../pages/Medico/PerfilPaciente/PerfilPaciente";
 import AssignMedicTreatment from "../pages/Medico/PerfilPaciente/AssignMedicTreatment";
 import DetallesConsulta from "../pages/Medico/PerfilPaciente/DetallesConsulta";
+import Knowledge from "../pages/Medico/Home/Knowledge";
+import useAuthStore from "../utils/storage/auth";
 
 const Stack = createStackNavigator();
 
 const Tab = createBottomTabNavigator();
 
 function MyTabs() {
+  const { certified } = useAuthStore();
+
   return (
     <Tab.Navigator initialRouteName="Menu" id="MedicoTabs">
       <Tab.Screen
@@ -57,110 +61,130 @@ function MyTabs() {
       </Tab.Screen>
 
       <Tab.Screen
-        name="TabMisPacientes"
+        name="Knowledge"
+        component={Knowledge}
         options={{
-          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
-              name="account-injury-outline"
+              name="book-open-outline"
               size={24}
               color="#00826B"
             />
           ),
           tabBarActiveTintColor: "#00826B",
-          title: "Mis Pacientes",
+          title: "Medicamentos y Tratamientos",
         }}
-        listeners={({ navigation }) => ({
-          tabPress: (event) => {
-            event.preventDefault();
-            navigation.navigate("TabMisPacientes");
-          },
-        })}
-      >
-        {() => (
-          <Stack.Navigator>
-            <Stack.Screen
-              name="MisPacientes"
-              component={MisPacientes}
-              // options={{ headerShown: false }}
-              options={{ title: "Mis Pacientes" }}
-            />
-            <Stack.Screen
-              name="PerfilPaciente"
-              component={PerfilPaciente}
-              options={{ title: "Perfil Paciente" }}
-            />
-            <Stack.Screen
-              name="CompleteConsulta"
-              component={CompleteConsulta}
-              options={{ title: "Finalizar Consulta" }}
-            />
-            <Stack.Screen
-              name="Consulta"
-              component={DetallesConsulta}
-              options={{ title: "Informacion de la Consulta" }}
-            />
-            <Stack.Screen
-              name="AssignMedicTreatment"
-              component={AssignMedicTreatment}
-              options={{ title: "Asignar Tratamiento" }}
-            />
-          </Stack.Navigator>
-        )}
-      </Tab.Screen>
+      />
 
-      <Tab.Screen
-        name="TabBuscarPaciente"
-        options={{
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              name="account-injury-outline"
-              size={24}
-              color="#00826B"
-            />
-          ),
-          tabBarActiveTintColor: "#00826B",
-          title: "Buscar Paciente",
-        }}
-        listeners={({ navigation }) => ({
-          tabPress: (event) => {
-            event.preventDefault();
-            navigation.navigate("TabBuscarPaciente");
-          },
-        })}
-      >
-        {() => (
-          <Stack.Navigator>
-            <Stack.Screen
-              name="StackBuscarPaciente"
-              component={BuscarPaciente}
-              // options={{ headerShown: false }}
-              options={{ title: "Buscar Paciente" }}
-            />
-            <Stack.Screen
-              name="PerfilPaciente"
-              component={PerfilPaciente}
-              options={{ title: "Perfil Paciente" }}
-            />
-            <Stack.Screen
-              name="CompleteConsulta"
-              component={CompleteConsulta}
-              options={{ title: "Finalizar Consulta" }}
-            />
-            <Stack.Screen
-              name="Consulta"
-              component={DetallesConsulta}
-              options={{ title: "Informacion de la Consulta" }}
-            />
-            <Stack.Screen
-              name="AssignMedicTreatment"
-              component={AssignMedicTreatment}
-              options={{ title: "Asignar Tratamiento" }}
-            />
-          </Stack.Navigator>
-        )}
-      </Tab.Screen>
+      {certified && (
+        <Tab.Screen
+          name="TabMisPacientes"
+          options={{
+            headerShown: false,
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons
+                name="account-injury-outline"
+                size={24}
+                color="#00826B"
+              />
+            ),
+            tabBarActiveTintColor: "#00826B",
+            title: "Mis Pacientes",
+          }}
+          listeners={({ navigation }) => ({
+            tabPress: (event) => {
+              event.preventDefault();
+              navigation.navigate("TabMisPacientes");
+            },
+          })}
+        >
+          {() => (
+            <Stack.Navigator>
+              <Stack.Screen
+                name="MisPacientes"
+                component={MisPacientes}
+                // options={{ headerShown: false }}
+                options={{ title: "Mis Pacientes" }}
+              />
+              <Stack.Screen
+                name="PerfilPaciente"
+                component={PerfilPaciente}
+                options={{ title: "Perfil Paciente" }}
+              />
+              <Stack.Screen
+                name="CompleteConsulta"
+                component={CompleteConsulta}
+                options={{ title: "Finalizar Consulta" }}
+              />
+              <Stack.Screen
+                name="Consulta"
+                component={DetallesConsulta}
+                options={{ title: "Informacion de la Consulta" }}
+              />
+              <Stack.Screen
+                name="AssignMedicTreatment"
+                component={AssignMedicTreatment}
+                options={{ title: "Asignar Tratamiento" }}
+              />
+            </Stack.Navigator>
+          )}
+        </Tab.Screen>
+      )}
+
+      {certified && (
+        <Tab.Screen
+          name="TabBuscarPaciente"
+          options={{
+            headerShown: false,
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons
+                name="account-injury-outline"
+                size={24}
+                color="#00826B"
+              />
+            ),
+            tabBarActiveTintColor: "#00826B",
+            title: "Buscar Paciente",
+          }}
+          listeners={({ navigation }) => ({
+            tabPress: (event) => {
+              event.preventDefault();
+              navigation.navigate("TabBuscarPaciente");
+            },
+          })}
+        >
+          {() => (
+            <Stack.Navigator>
+              <Stack.Screen
+                name="StackBuscarPaciente"
+                component={BuscarPaciente}
+                // options={{ headerShown: false }}
+                options={{ title: "Buscar Paciente" }}
+              />
+              <Stack.Screen
+                name="PerfilPaciente"
+                component={PerfilPaciente}
+                options={{ title: "Perfil Paciente" }}
+              />
+              <Stack.Screen
+                name="CompleteConsulta"
+                component={CompleteConsulta}
+                options={{ title: "Finalizar Consulta" }}
+              />
+              <Stack.Screen
+                name="Consulta"
+                component={DetallesConsulta}
+                options={{ title: "Informacion de la Consulta" }}
+              />
+              <Stack.Screen
+                name="AssignMedicTreatment"
+                component={AssignMedicTreatment}
+                options={{ title: "Asignar Tratamiento" }}
+              />
+            </Stack.Navigator>
+          )}
+        </Tab.Screen>
+      )}
 
       <Tab.Screen
         name="Perfil"

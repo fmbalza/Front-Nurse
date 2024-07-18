@@ -10,8 +10,9 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import userAccountFigure from "../../assets/user-account-figure.png";
+import { MaskedText } from "react-native-mask-text";
 
-const ModalMedico = ({ visible, medico, onClose, onBookAppointment }) => {
+const ModalMedico = ({ visible, medico, onClose }) => {
   const handlePress = () => {
     const url = `whatsapp://send?phone=${medico.medico.telefono}`;
     Linking.canOpenURL(url)
@@ -46,9 +47,12 @@ const ModalMedico = ({ visible, medico, onClose, onBookAppointment }) => {
               <View style={styles.contactInfo}>
                 <View style={styles.contactItem}>
                   <MaterialCommunityIcons name="phone" size={20} color="#333" />
-                  <Text style={styles.contactText}>
+                  <MaskedText
+                    style={styles.contactText}
+                    mask={"+99 999-9999999"}
+                  >
                     {medico.medico.telefono}
-                  </Text>
+                  </MaskedText>
                 </View>
                 <View style={styles.contactItem}>
                   <MaterialCommunityIcons name="email" size={20} color="#333" />

@@ -18,6 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 import useAuthStore from "../../../utils/storage/auth";
 import userAccountFigure from "../../../assets/user-account-figure.png";
 import { useQueryClient } from "@tanstack/react-query";
+import { MaskedText } from "react-native-mask-text";
 
 const PerfilPaciente = () => {
   const queryClient = useQueryClient();
@@ -136,7 +137,10 @@ const PerfilPaciente = () => {
                 </View>
                 <View style={styles.nameContainer}>
                   <Text style={styles.name}>{paciente.nombre}</Text>
-                  <Text style={styles.cedula}>C.I: {paciente.cedula}</Text>
+                  <Text style={styles.cedula}>
+                    Cédula: 
+                    <MaskedText mask="99.999.999">{paciente.cedula}</MaskedText>
+                  </Text>
                 </View>
               </View>
 
@@ -146,7 +150,10 @@ const PerfilPaciente = () => {
                 </Text>
                 <Text style={styles.infoText}>Género: {paciente.genero}</Text>
                 <Text style={styles.infoText}>
-                  Teléfono: {paciente.telefono}
+                  Teléfono: 
+                  <MaskedText mask="+99 999-9999999">
+                    {paciente.telefono}
+                  </MaskedText>
                 </Text>
               </View>
             </View>
@@ -341,7 +348,7 @@ const styles = StyleSheet.create({
   },
   modalInput: {
     marginTop: 10,
-    width: 355,
+    width: "100%",
     height: 64,
     paddingHorizontal: 10,
     borderWidth: 1,

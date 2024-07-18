@@ -263,13 +263,20 @@ const MedicamentoSlot = ({ onChange, value }) => {
   }, [dias_semana, horas, fecha_inicio, fecha_fin, id_medicamento]);
 
   useEffect(() => {
-    setFechaFin(
-      new Date(
-        new Date(fecha_inicio).setDate(
-          new Date(fecha_inicio).getDate() + weeks * 7
-        )
-      )
-    );
+    // setFechaFin(
+    //   new Date(
+    //     new Date(fecha_inicio).setDate(
+    //       new Date(fecha_inicio).getDate() + weeks * 7
+    //     )
+    //   )
+    // );
+    let endDate = new Date(fecha_inicio);
+    endDate.setDate(endDate.getDate() + weeks * 7);
+
+    let daysUntilEndOfWeek = (7 - endDate.getDay()) % 7;
+    endDate.setDate(endDate.getDate() + daysUntilEndOfWeek);
+
+    setFechaFin(endDate);
   }, [weeks, fecha_inicio]);
 
   return (

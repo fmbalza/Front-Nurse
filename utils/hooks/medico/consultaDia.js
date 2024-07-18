@@ -6,7 +6,12 @@ import {
   getConsulta,
   appendToConsulta,
 } from "../../api/medico/consultaDia";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  keepPreviousData,
+} from "@tanstack/react-query";
 import useAuthStore from "../../storage/auth";
 // import { jwtDecode } from "jwt-decode";
 // import { useNavigation } from "@react-navigation/native";
@@ -19,6 +24,7 @@ export const useConsultasDia = () => {
     queryFn: () => getConsultasDia(),
     refetchInterval: 30000,
     enabled: canFetch,
+    placeholderData: keepPreviousData,
   });
 };
 
