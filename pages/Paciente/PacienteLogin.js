@@ -110,8 +110,8 @@ const PacienteLogin = () => {
           Recuerdame
         </Text>
         <Switch
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={autoLogin ? "#f5dd4b" : "#f4f3f4"}
+          trackColor={{ false: "#767577", true: "#25573c" }}
+          thumbColor={autoLogin ? "#37b06e" : "#f4f3f4"}
           onValueChange={toggleSwitch}
           value={autoLogin}
         />

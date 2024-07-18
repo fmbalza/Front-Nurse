@@ -134,7 +134,6 @@ const Menu = () => {
               />
             </Pressable>
           </View>
-
           <View
             style={{
               marginTop: 220,
@@ -148,83 +147,90 @@ const Menu = () => {
             )}
             <View style={styles.placeholder}>
               <View style={styles.placeholderInset}>
-                {typeof data === "string" ? (
-                  <View style={styles.noEventsContainer}>
-                    <Text style={styles.noEventsText}>{data}</Text>
-                  </View>
-                ) : (
-                  <>
-                    {data
-                      .filter((item) => {
-                        // console.log("Item: ", new Date(item.fecha).getDate());
-                        // console.log(
-                        //   "Selected date: ",
-                        //   new Date(selectedDate).getUTCDate()
-                        // );
-                        const itemDate = new Date(item.fecha);
-                        const selected = new Date(selectedDate);
-                        return (
-                          itemDate.getDate() === selected.getUTCDate() &&
-                          itemDate.getMonth() === selected.getUTCMonth() &&
-                          itemDate.getFullYear() === selected.getUTCFullYear()
-                        );
-                      })
-                      .map((item, index) => (
-                        <TouchableOpacity
-                          key={index}
-                          style={styles.eventContainer}
-                          onPress={() => {
-                            // console.log(
-                            //   "Aqui en Menu.js: ",
-                            //   item?.id_consulta,
-                            //   item?.fecha,
-                            //   item?.estado,
-                            //   item?.de_consulta,
-                            //   item?.cd_paciente
-                            // );
-                            if (item.estado !== 2) {
-                              setManaged(item?.cd_paciente);
-                              navigation.navigate("Consulta", {
-                                id_consulta: item.id_consulta,
-                                paciente: item.cd_paciente,
-                              });
-                            }
-                          }}
-                        >
-                          <View>
-                            <Text style={styles.eventTitle}>
-                              Consulta {index + 1} -{" "}
-                              {item?.cd_paciente?.cedula_paciente}
-                            </Text>
-                            <Text key={index}>
-                              {" "}
-                              {new Date(item.fecha).toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                               - {estado[item.estado]}
-                            </Text>
-                          </View>
-                          {item.estado === 2 ? (
-                            <Pressable
-                              style={styles.deleteButton}
-                              onPress={() => {
-                                // console.log("Aqui en Menu.js ", item);
-                                setDeletedItem(item);
-                                deleteConsultaMutation.mutate(item.id_consulta);
-                              }}
-                            >
-                              <MaterialCommunityIcons
-                                name="trash-can-outline"
-                                size={24}
-                                color="#00826B"
-                              />
-                            </Pressable>
-                          ) : null}
-                        </TouchableOpacity>
-                      ))}
-                  </>
-                )}
+                <ScrollView
+                  style={{ flex: 1 }}
+                  contentContainerStyle={{ flexGrow: 1 }}
+                >
+                  {typeof data === "string" ? (
+                    <View style={styles.noEventsContainer}>
+                      <Text style={styles.noEventsText}>{data}</Text>
+                    </View>
+                  ) : (
+                    <>
+                      {data
+                        .filter((item) => {
+                          // console.log("Item: ", new Date(item.fecha).getDate());
+                          // console.log(
+                          //   "Selected date: ",
+                          //   new Date(selectedDate).getUTCDate()
+                          // );
+                          const itemDate = new Date(item.fecha);
+                          const selected = new Date(selectedDate);
+                          return (
+                            itemDate.getDate() === selected.getUTCDate() &&
+                            itemDate.getMonth() === selected.getUTCMonth() &&
+                            itemDate.getFullYear() === selected.getUTCFullYear()
+                          );
+                        })
+                        .map((item, index) => (
+                          <TouchableOpacity
+                            key={index}
+                            style={styles.eventContainer}
+                            onPress={() => {
+                              // console.log(
+                              //   "Aqui en Menu.js: ",
+                              //   item?.id_consulta,
+                              //   item?.fecha,
+                              //   item?.estado,
+                              //   item?.de_consulta,
+                              //   item?.cd_paciente
+                              // );
+                              if (item.estado !== 2) {
+                                setManaged(item?.cd_paciente);
+                                navigation.navigate("Consulta", {
+                                  id_consulta: item.id_consulta,
+                                  paciente: item.cd_paciente,
+                                });
+                              }
+                            }}
+                          >
+                            <View>
+                              <Text style={styles.eventTitle}>
+                                Consulta {index + 1} -{" "}
+                                {item?.cd_paciente?.cedula_paciente}
+                              </Text>
+                              <Text key={index}>
+                                {" "}
+                                {new Date(item.fecha).toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                                 - {estado[item.estado]}
+                              </Text>
+                            </View>
+                            {item.estado === 2 ? (
+                              <Pressable
+                                style={styles.deleteButton}
+                                onPress={() => {
+                                  // console.log("Aqui en Menu.js ", item);
+                                  setDeletedItem(item);
+                                  deleteConsultaMutation.mutate(
+                                    item.id_consulta
+                                  );
+                                }}
+                              >
+                                <MaterialCommunityIcons
+                                  name="trash-can-outline"
+                                  size={24}
+                                  color="#00826B"
+                                />
+                              </Pressable>
+                            ) : null}
+                          </TouchableOpacity>
+                        ))}
+                    </>
+                  )}
+                </ScrollView>
               </View>
             </View>
           </View>

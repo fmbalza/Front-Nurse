@@ -23,11 +23,13 @@ import {
   useSetReminderAsSkipped,
 } from "../../../utils/hooks/paciente/horarios";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const estado = ["Omitido", "Completado", "Pendiente"];
 const { width } = Dimensions.get("window");
 
 const MenuPaciente = () => {
+  const navigation = useNavigation();
   const swiper = useRef();
   const [value, setValue] = useState(new Date());
   const [week, setWeek] = useState(0);
@@ -195,7 +197,13 @@ const MenuPaciente = () => {
                           key={index}
                           style={styles.eventContainer}
                           onPress={() => {
-                            console.log(item);
+                            if (item.estado !== 2) {
+                              // console.log(item);
+                              navigation.navigate("Consulta", {
+                                id_consulta: item.id_consulta,
+                                paciente: item.cd_paciente,
+                              });
+                            }
                           }}
                         >
                           <View>
