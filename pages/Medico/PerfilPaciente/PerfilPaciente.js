@@ -39,7 +39,7 @@ const PerfilPaciente = ({ route }) => {
   if (pacienteMedicoQuery.isPending) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#00826B" />
       </View>
     );
   }
@@ -74,7 +74,7 @@ const PerfilPaciente = ({ route }) => {
   if (isPending) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#00826B" />
       </View>
     );
   }
@@ -82,7 +82,7 @@ const PerfilPaciente = ({ route }) => {
   if (pacienteConsultaQuery.isPending) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#00826B" />
       </View>
     );
   }

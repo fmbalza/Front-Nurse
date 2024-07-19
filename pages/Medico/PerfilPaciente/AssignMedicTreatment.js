@@ -194,7 +194,7 @@ export default function AssignMedicTreatment({ route }) {
           backgroundColor: "rgb(0,0,0,0.1)",
         }}
       >
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#00826B" />
       </View>
     );
   }

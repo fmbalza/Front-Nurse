@@ -33,7 +33,7 @@ const DetallesConsulta = ({ route }) => {
           alignItems: "center",
         }}
       >
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#00826B" />
       </View>
     );
   }

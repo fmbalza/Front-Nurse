@@ -150,7 +150,7 @@ const CompleteConsulta = ({ route }) => {
     <View style={{ flex: 1 }}>
       {updateConsultaMutation.isPending || updateConsultaMutation.isLoading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator size="large" color="#00826B" />
         </View>
       ) : null}
       <View style={styles.container}>

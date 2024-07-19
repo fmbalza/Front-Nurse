@@ -44,7 +44,7 @@ export default function PickMedicamento({ onChange, onClose }) {
   // if (isLoading || isFetching || isPending) {
   //   return (
   //     <View style={styles.container}>
-  //       <ActivityIndicator size="large" color="#0000ff" />
+  //       <ActivityIndicator size="large" color="#00826B" />
   //     </View>
   //   );
   // }
@@ -77,7 +77,7 @@ export default function PickMedicamento({ onChange, onClose }) {
                 alignItems: "center",
               }}
             >
-              <ActivityIndicator size="large" color="#0000ff" />
+              <ActivityIndicator size="large" color="#00826B" />
             </View>
           ) : (
             <FlashList

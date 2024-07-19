@@ -210,7 +210,7 @@ const MedicoLogin = () => {
             backgroundColor: "rgba(0, 0, 0, 0.5)",
           }}
         >
-          <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator size="large" color="#00826B" />
         </View>
       )}
     </LinearGradient>

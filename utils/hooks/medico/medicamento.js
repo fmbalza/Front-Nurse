@@ -113,8 +113,7 @@ export const useUpdateMedicamento = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id_medicamento, data }) =>
-      updateMedicamento(id_medicamento, data),
+    mutationFn: (data) => updateMedicamento(data),
     onSuccess: (data) => {
       if (data) {
         console.log("mensaje:", data);

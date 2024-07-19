@@ -21,7 +21,7 @@ const FotoModal = ({ isVisible, onClose, onImagePicked, onChange, value }) => {
       <Modal visible={true} animationType="slide" transparent>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <ActivityIndicator size="large" color="#0000ff" />
+            <ActivityIndicator size="large" color="#00826B" />
           </View>
         </View>
       </Modal>
@@ -92,7 +92,7 @@ const FotoModal = ({ isVisible, onClose, onImagePicked, onChange, value }) => {
       <Modal visible={true} animationType="slide" transparent>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <ActivityIndicator size="large" color="#0000ff" />
+            <ActivityIndicator size="large" color="#00826B" />
           </View>
         </View>
       </Modal>

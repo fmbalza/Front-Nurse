@@ -89,7 +89,7 @@ const PerfilMedico = () => {
   if (getMeQuery.isPending) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#00826B" />
       </View>
     );
   }

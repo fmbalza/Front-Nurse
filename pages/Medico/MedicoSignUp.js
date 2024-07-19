@@ -41,7 +41,7 @@ const MedicoSignUp = () => {
   if (isPending) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#00826B" />
       </View>
     );
   }
@@ -376,7 +376,7 @@ const MedicoSignUp = () => {
               backgroundColor: "rgba(0, 0, 0, 0.5)",
             }}
           >
-            <ActivityIndicator size="large" color="#0000ff" />
+            <ActivityIndicator size="large" color="#00826B" />
           </View>
         )}
       </LinearGradient>

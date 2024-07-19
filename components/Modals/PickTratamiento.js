@@ -60,7 +60,7 @@ export default function PickTratamiento({ onChange, onClose }) {
                 alignItems: "center",
               }}
             >
-              <ActivityIndicator size="large" color="#0000ff" />
+              <ActivityIndicator size="large" color="#00826B" />
             </View>
           ) : (
             <FlashList
