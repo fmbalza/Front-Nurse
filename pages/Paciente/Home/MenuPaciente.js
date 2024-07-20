@@ -24,6 +24,7 @@ import {
 } from "../../../utils/hooks/paciente/horarios";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import * as Notifications from "expo-notifications";
 
 const estado = ["Omitido", "Completado", "Pendiente"];
 const { width } = Dimensions.get("window");
@@ -54,33 +55,51 @@ const MenuPaciente = () => {
     });
   }, [week]);
 
+  const handleConsultas = async (data) => {
+    await Notifications.cancelAllScheduledNotificationsAsync();
+
+    const pendingConsultas = data.filter((item) => {
+      // console.log(
+      //   "Item: ",
+      //   item.estado === 2 && new Date(item.fecha) > new Date()
+      // );
+      return item.estado === 2 && new Date(item.fecha) > new Date();
+    });
+
+    pendingConsultas.forEach((item) => {
+      timedNotificationV1(item.fecha, item.id_consulta);
+    });
+  };
+
+  const handleRecordatorios = async (data) => {
+    // await Notifications.cancelAllScheduledNotificationsAsync();
+
+    const pendingRecordatorios = recordatorios.data.filter((item) => {
+      return item.estado === 2 && new Date(item.fecha) > new Date();
+    });
+
+    // console.log(pendingRecordatorios.length);
+
+    pendingRecordatorios.forEach((item) => {
+      timedNotificationV2(item.fecha, item);
+    });
+  };
+
+  const cancelAllNotifications = async () => {
+    await Notifications.cancelAllScheduledNotificationsAsync();
+  };
+
   useEffect(() => {
     if (Array.isArray(data) && data.length > 0) {
-      const pendingConsultas = data.filter((item) => {
-        // console.log(
-        //   "Item: ",
-        //   item.estado === 2 && new Date(item.fecha) > new Date()
-        // );
-        return item.estado === 2 && new Date(item.fecha) > new Date();
-      });
-
-      pendingConsultas.forEach((item) => {
-        timedNotificationV1(item.fecha, item.id_consulta);
-      });
+      handleConsultas(data);
+    } else {
+      cancelAllNotifications();
     }
   }, [data]);
 
   useEffect(() => {
     if (Array.isArray(recordatorios.data) && recordatorios.data.length > 0) {
-      const pendingRecordatorios = recordatorios.data.filter((item) => {
-        return item.estado === 2 && new Date(item.fecha) > new Date();
-      });
-
-      console.log(pendingRecordatorios.length);
-
-      pendingRecordatorios.forEach((item) => {
-        timedNotificationV2(item.fecha, item);
-      });
+      handleRecordatorios(recordatorios.data);
     }
   }, [recordatorios.data]);
 

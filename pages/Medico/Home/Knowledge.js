@@ -9,7 +9,11 @@ const Tab = createMaterialTopTabNavigator();
 const Knowledge = () => {
   return (
     // <View>
-    <Tab.Navigator>
+    <Tab.Navigator
+      screenOptions={{
+        tabBarIndicatorStyle: { backgroundColor: "#00826B" },
+      }}
+    >
       <Tab.Screen name="Medicamentos" component={Medicamentos} />
       <Tab.Screen name="Tratamientos" component={Tratamientos} />
     </Tab.Navigator>

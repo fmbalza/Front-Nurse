@@ -13,8 +13,11 @@ const TimePicker = ({ onTimeChange, value }) => {
     const currentTime = selectedTime || time;
     setShowPicker(false);
     setTime(currentTime);
-    onTimeChange(currentTime.toLocaleTimeString());
-    value = currentTime.toLocaleTimeString();
+    let timeString = currentTime.toLocaleTimeString();
+    timeString = timeString.replace(/\s/g, " ");
+
+    onTimeChange(timeString);
+    value = timeString;
   };
 
   const showTimePicker = () => {

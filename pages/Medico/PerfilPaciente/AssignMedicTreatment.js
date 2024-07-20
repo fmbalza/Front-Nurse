@@ -16,6 +16,7 @@ import MedicamentoSlot from "../../../components/MedicamentoSlot";
 import TratamientoSlot from "../../../components/TratamientoSlot";
 import { useCreateHorario } from "../../../utils/hooks/medico/horario";
 import { useNavigation } from "@react-navigation/native";
+import { sendPushNotificationV3 } from "../../../utils/notifications/notifications";
 
 /* Example of the JSON to be send to the API
 {
@@ -72,9 +73,9 @@ import { useNavigation } from "@react-navigation/native";
 
 export default function AssignMedicTreatment({ route }) {
   const navigation = useNavigation();
-  const [screenHeight, setScreenHeight] = useState(
-    Dimensions.get("window").height
-  );
+  // const [screenHeight, setScreenHeight] = useState(
+  //   Dimensions.get("window").height
+  // );
   const createHorarioMutation = useCreateHorario();
   const {
     control,
@@ -175,6 +176,7 @@ export default function AssignMedicTreatment({ route }) {
 
     if (createHorarioMutation.isSuccess) {
       // navigation.navigate("Consultas");
+      sendPushNotificationV3(paciente.push_token);
       navigation.goBack();
       setLoadingManually(false);
     }
@@ -200,7 +202,8 @@ export default function AssignMedicTreatment({ route }) {
   }
 
   return (
-    <ScrollView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
+      {/* <ScrollView style={{ flex: 1 }}> */}
       <Swiper
         scrollEnabled={false}
         loop={false}
@@ -219,9 +222,10 @@ export default function AssignMedicTreatment({ route }) {
           alignItems: "flex-end",
           zIndex: 9999,
         }}
-        nextButton={<Text style={styles.navButton}>Next</Text>}
-        prevButton={<Text style={styles.navButton}>Back</Text>}
-        height={screenHeight * 0.89}
+        nextButton={<Text style={styles.navButton}>Siguiente</Text>}
+        prevButton={<Text style={styles.navButton}>Regresar</Text>}
+        // height={screenHeight * 0.88}
+        height={"100%"}
       >
         <View style={styles.slide1}>
           <View style={styles.header}>
@@ -318,16 +322,6 @@ export default function AssignMedicTreatment({ route }) {
             <Text style={styles.text}>Resumen</Text>
           </View>
 
-          <TouchableOpacity
-            style={styles.submitctn}
-            onPress={handleSubmit(handleHorario)}
-            disabled={!canSubmit}
-          >
-            <Text style={canSubmit ? styles.submitbtnEna : styles.submitbtnDis}>
-              Submit
-            </Text>
-          </TouchableOpacity>
-
           <View style={styles.MainContainer}>
             <ScrollView>
               {watchingMeds?.length > 0 && (
@@ -387,9 +381,19 @@ export default function AssignMedicTreatment({ route }) {
               )}
             </ScrollView>
           </View>
+          <TouchableOpacity
+            style={styles.submitctn}
+            onPress={handleSubmit(handleHorario)}
+            disabled={!canSubmit}
+          >
+            <Text style={canSubmit ? styles.submitbtnEna : styles.submitbtnDis}>
+              completar
+            </Text>
+          </TouchableOpacity>
         </View>
       </Swiper>
-    </ScrollView>
+      {/* </ScrollView> */}
+    </View>
   );
 }
 
@@ -466,8 +470,8 @@ const styles = StyleSheet.create({
   },
   submitctn: {
     zIndex: 9999,
-    position: "absolute",
-    top: "105.2%",
-    left: "81%",
+    // position: "absolute",
+    // top: "105.2%",
+    // left: "81%",
   },
 });

@@ -95,7 +95,7 @@ export const sendPushNotificationV2 = async (
     sound: "default",
     title: "Consulta cancelada!",
     body: `${user?.no_medico} ${user?.ap_medico} ha cancelado la consulta del ${fecha} a las ${hora}`,
-    data: { key: "getConsultasById", identifier: id },
+    data: { key: "getConsultasById" },
   };
 
   await fetch("https://exp.host/--/api/v2/push/send", {
@@ -109,7 +109,7 @@ export const sendPushNotificationV2 = async (
   });
 };
 
-export const sendPushNotificationV3 = async (expoPushToken, fecha, hora) => {
+export const sendPushNotificationV3 = async (expoPushToken) => {
   const { user } = useAuthStore.getState();
 
   const message = {
@@ -154,6 +154,7 @@ export const timedNotificationV1 = async (timestamp, id) => {
     ) {
       await Notifications.scheduleNotificationAsync({
         content: {
+          priority: "high",
           title: "Recordatorio de consulta",
           body: `Su consulta para ${localeTimestamp} está por comenzar`,
           data: {
@@ -161,7 +162,6 @@ export const timedNotificationV1 = async (timestamp, id) => {
             key: "consulta",
           },
         },
-        // identifier: id,
         // trigger: new Date(timestamp),
         trigger: new Date(thirtyMinutesEarlier),
       });
@@ -173,6 +173,7 @@ export const timedNotificationV1 = async (timestamp, id) => {
   } else {
     await Notifications.scheduleNotificationAsync({
       content: {
+        priority: "high",
         title: "Recordatorio de consulta",
         body: `Su consulta de las ${localeTimestamp} está por comenzar`,
         data: {
@@ -193,7 +194,7 @@ export const timedNotificationV2 = async (timestamp, data) => {
   const scheduledNotifications =
     await Notifications.getAllScheduledNotificationsAsync();
 
-  let localeTimestamp = new Date(timestamp).toLocaleString();
+  // let localeTimestamp = new Date(timestamp).toLocaleString();
 
   // const oneHourEarlier = new Date(timestamp);
   // oneHourEarlier.setHours(oneHourEarlier.getHours() - 1);
@@ -211,18 +212,18 @@ export const timedNotificationV2 = async (timestamp, data) => {
     ) {
       await Notifications.scheduleNotificationAsync({
         content: {
+          priority: "high",
           title: data?.id_horario?.id_medicamento
             ? "Recordatorio de medicamento"
             : "Recordatorio de tratamiento",
           body: data?.id_horario?.id_medicamento?.cp_medicamento
             ? `Es hora de tomar su medicamento ${data.id_horario.id_medicamento.cp_medicamento}`
-            : `Es hora de aplicarse su tratamiento ${data.id_horario.id_tratamiento.no_tratamiento}`,
+            : `Es hora de su tratamiento ${data.id_horario.id_tratamiento.no_tratamiento}`,
           data: {
             timestamp: timestamp,
             key: "Med/Trat",
           },
         },
-        // identifier: data.id_recordatorio,
         // trigger: new Date(timestamp),
         trigger: new Date(timestamp),
       });
@@ -234,6 +235,7 @@ export const timedNotificationV2 = async (timestamp, data) => {
   } else {
     await Notifications.scheduleNotificationAsync({
       content: {
+        priority: "high",
         title: data?.id_horario?.id_medicamento
           ? "Recordatorio de medicamento"
           : "Recordatorio de tratamiento",
@@ -245,7 +247,6 @@ export const timedNotificationV2 = async (timestamp, data) => {
           key: "Med/Trat",
         },
       },
-      // identifier: data.id_recordatorio,
       // trigger: new Date(timestamp),
       trigger: new Date(timestamp),
     });

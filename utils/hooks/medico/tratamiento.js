@@ -59,9 +59,9 @@ export const useUpdateTratamiento = () => {
     onSuccess: (data) => {
       // console.log("aqui", data);
       queryClient.invalidateQueries("getTratamiento");
-      if (data) {
-        console.log(data);
-      }
+      // if (data) {
+      //   console.log(data);
+      // }
     },
     onError: (error) => {
       console.log(error);

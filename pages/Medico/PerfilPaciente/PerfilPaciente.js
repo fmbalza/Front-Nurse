@@ -221,7 +221,7 @@ const PerfilPaciente = ({ route }) => {
                       <Text style={styles.cardTitle}>
                         {" "}
                         Consulta {index + 1}
-                        {index + 1 === 1 ? " (De primera)" : ""}:{" "}
+                        {index + 1 === 1 ? "" : ""}:{" "}
                       </Text>
                       <Text style={styles.cardlabel}>
                         {" "}

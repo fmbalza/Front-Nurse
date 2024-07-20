@@ -14,7 +14,7 @@ import {
   useCreateMedicamento,
   useUpdateMedicamento,
   useGetFunciones,
-  useGetMedicamentoByID,
+  // useGetMedicamentoByID,
 } from "../../../utils/hooks/medico/medicamento.js";
 import { FlashList } from "@shopify/flash-list";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -209,7 +209,7 @@ const CreateMedicamento = ({ closeModal }) => {
   );
 };
 const UpdateMedicamento = ({ closeModal, medicamento }) => {
-  const { user } = useAuthStore();
+  // const { user } = useAuthStore();
   // const medicamento = useGetMedicamentoByID(id_medicamento);
   const { data, error, isError, isFetching, isLoading, isPending, isSuccess } =
     useGetFunciones();
@@ -518,14 +518,17 @@ const Medicamentos = () => {
               ItemSeparatorComponent={() => (
                 <View style={{ height: 0.5, width: "100%" }} />
               )}
+              ListFooterComponent={() => <View style={{ height: 70 }} />}
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
             />
           )}
         </View>
       )}
-      <Modal visible={showModal} transparent={true} animationType="slide">
+      <Modal visible={showModal} transparent={true} animationType="none">
         <View style={styles.modal_container}>
           <View style={styles.actual_modal}>
-            <View style={{ alignItems: "flex-start", width: "100%" }}>
+            <View style={{ alignItems: "flex-start", width: "90%" }}>
               <Text
                 style={{
                   fontWeight: "bold",
@@ -570,7 +573,7 @@ const Medicamentos = () => {
         </View>
       </Modal>
 
-      <Modal visible={showCreateModal} transparent={true} animationType="slide">
+      <Modal visible={showCreateModal} transparent={true} animationType="none">
         <CreateMedicamento
           closeModal={() => {
             setShowCreateModal(false);
@@ -579,7 +582,7 @@ const Medicamentos = () => {
         />
       </Modal>
 
-      <Modal visible={showUpdateModal} transparent={true} animationType="slide">
+      <Modal visible={showUpdateModal} transparent={true} animationType="none">
         <UpdateMedicamento
           closeModal={() => {
             setShowUpdateModal(false);

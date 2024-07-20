@@ -37,7 +37,7 @@ const AgendarModal = ({
   } = useForm();
 
   const convertTo24Hour = (time) => {
-    let [mainTime, period] = time.split(" ");
+    let [mainTime, period] = time.split(/[\s]+|(?=[AP]M)/);
     let [hours, minutes, seconds] = mainTime.split(":");
 
     if (period === "PM" && hours !== "12") {

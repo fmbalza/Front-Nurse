@@ -12,7 +12,7 @@ export const getTratamiento = async () => {
 
 export const createTratamiento = async (data) => {
   try {
-    // console.log("aqui", data);
+    console.log("aqui", data);
     const response = await api.post("/tratamiento", data);
     return response.data;
   } catch (error) {
@@ -30,11 +30,13 @@ export const getTratamientoById = async (id_tratamiento) => {
   }
 };
 
-export const updateTratamiento = async (id_tratamiento, data) => {
+export const updateTratamiento = async (data) => {
   try {
-    // console.log("aqui id_tratamiento: ", id_tratamiento);
-    // console.log("aqui dat: ", data);
-    const response = await api.put(`/tratamiento/${id_tratamiento}`, data);
+    console.log("aqui data: ", data);
+    const response = await api.put(
+      `/tratamiento/${data.id_tratamiento}`,
+      data.request
+    );
     return response.data;
   } catch (error) {
     throw new Error(error);

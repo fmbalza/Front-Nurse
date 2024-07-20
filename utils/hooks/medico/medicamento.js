@@ -115,12 +115,12 @@ export const useUpdateMedicamento = () => {
   return useMutation({
     mutationFn: (data) => updateMedicamento(data),
     onSuccess: (data) => {
-      if (data) {
-        console.log("mensaje:", data);
-        queryClient.invalidateQueries("getMedicamento");
-      } else {
-        console.log(data);
-      }
+      // if (data) {
+      // console.log("mensaje:", data);
+      queryClient.invalidateQueries("getMedicamento");
+      // } else {
+      //   console.log(data);
+      // }
     },
     onError: (error) => {
       console.log(error);

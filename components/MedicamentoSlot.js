@@ -73,7 +73,11 @@ const UniqueTimePicker = ({ onTimeChange }) => {
     const currentTime = selectedTime || time;
     setShowPicker(false);
     setTime(currentTime);
-    onTimeChange(currentTime.toLocaleTimeString());
+
+    let timeString = currentTime.toLocaleTimeString();
+    timeString = timeString.replace(/\s/g, " ");
+
+    onTimeChange(timeString);
   };
 
   const showTimePicker = () => {
@@ -324,8 +328,9 @@ const MedicamentoSlot = ({ onChange, value }) => {
                 key={index}
                 onTimeChange={(hora) => {
                   setHoras((prev) => {
-                    prev[index] = hora;
-                    return prev;
+                    const newPrev = [...prev];
+                    newPrev[index] = hora;
+                    return newPrev;
                   });
                 }}
               />

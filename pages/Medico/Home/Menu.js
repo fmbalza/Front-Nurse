@@ -23,6 +23,7 @@ import {
   sendPushNotificationV2,
   timedNotificationV1,
 } from "../../../utils/notifications/notifications";
+import * as Notifications from "expo-notifications";
 
 const { width } = Dimensions.get("window");
 const estado = ["Omitido", "Completado", "Pendiente"];
@@ -39,6 +40,26 @@ const Menu = () => {
   );
   const { isFetching, isPending, isError, data, error } = useConsultasDia();
   const deleteConsultaMutation = useDeleteConsulta();
+
+  const handleNotifications = async (data) => {
+    await Notifications.cancelAllScheduledNotificationsAsync();
+
+    const pendingConsultas = data.filter((item) => {
+      // console.log(
+      //   "Item: ",
+      //   item.estado === 2 && new Date(item.fecha) > new Date()
+      // );
+      return item.estado === 2 && new Date(item.fecha) > new Date();
+    });
+
+    pendingConsultas.forEach((item) => {
+      timedNotificationV1(item.fecha, item.id_consulta);
+    });
+  };
+
+  const cancelAllConsultas = async () => {
+    await Notifications.cancelAllScheduledNotificationsAsync();
+  };
 
   useEffect(() => {
     if (
@@ -58,19 +79,12 @@ const Menu = () => {
 
   useEffect(() => {
     if (Array.isArray(data) && data.length > 0) {
-      const pendingConsultas = data.filter((item) => {
-        // console.log(
-        //   "Item: ",
-        //   item.estado === 2 && new Date(item.fecha) > new Date()
-        // );
-        return item.estado === 2 && new Date(item.fecha) > new Date();
-      });
-
-      pendingConsultas.forEach((item) => {
-        timedNotificationV1(item.fecha, item.id_consulta);
-      });
+      handleNotifications(data);
+    } else {
+      console.log("No hay consultas");
+      cancelAllConsultas();
     }
-  }, [data]);
+  }, [data, deleteConsultaMutation.isSuccess]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
