@@ -91,8 +91,8 @@ export default function PickMedicamento({ onChange, onClose }) {
                     }}
                   >
                     <Text style={styles.dataTitle}>
-                      {item?.cp_medicamento} - {item?.pr_medicamento} (
-                      {item?.mg_medicamento} mg)
+                      {item?.cp_medicamento} - {item?.pr_medicamento} 
+                      {item?.mg_medicamento}
                     </Text>
                     <Text style={styles.dataText}>
                       {item?.fn_medicamento?.no_funcion}:{" "}

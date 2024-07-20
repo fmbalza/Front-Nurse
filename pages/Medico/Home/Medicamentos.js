@@ -111,7 +111,6 @@ const CreateMedicamento = ({ closeModal }) => {
                   onChangeText={onChange}
                   onBlur={onBlur}
                   style={styles.input}
-                  inputMode="numeric"
                 />
               )}
               name="mg_medicamento"
@@ -310,7 +309,6 @@ const UpdateMedicamento = ({ closeModal, medicamento }) => {
                   onChangeText={onChange}
                   onBlur={onBlur}
                   style={styles.input}
-                  inputMode="numeric"
                 />
               )}
               name="mg_medicamento"
@@ -487,8 +485,8 @@ const Medicamentos = () => {
                     }}
                   >
                     <Text style={styles.dataTitle}>
-                      {item?.cp_medicamento} - {item?.pr_medicamento} (
-                      {item?.mg_medicamento} mg)
+                      {item?.cp_medicamento} - {item?.pr_medicamento} 
+                      {item?.mg_medicamento}
                     </Text>
                     {/* <Text style={styles.dataText}>
                       {item?.fn_medicamento?.no_funcion}:{" "}
@@ -541,7 +539,7 @@ const Medicamentos = () => {
               <View style={{ flexDirection: "row" }}>
                 <Text style={{ fontWeight: "bold" }}>Presentacion: </Text>
                 <Text>{selectedMed?.pr_medicamento}. </Text>
-                <Text>{selectedMed?.mg_medicamento} mg</Text>
+                <Text>{selectedMed?.mg_medicamento} </Text>
               </View>
 
               <View style={{ flexDirection: "row" }}>
