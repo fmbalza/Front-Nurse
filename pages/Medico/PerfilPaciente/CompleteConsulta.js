@@ -266,6 +266,7 @@ const CompleteConsulta = ({ route }) => {
           <TouchableOpacity
             style={isLoadingManually ? styles.saveButtonDis : styles.saveButton}
             onPress={handleSave}
+            disabled={isLoadingManually}
           >
             <Text style={styles.buttonText}>Guardar</Text>
           </TouchableOpacity>

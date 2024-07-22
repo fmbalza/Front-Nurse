@@ -69,6 +69,19 @@ const UniqueTimePicker = ({ onTimeChange }) => {
   const [time, setTime] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
 
+  const convertTo24Hour = (time) => {
+    let [mainTime, period] = time.split(/[\s]+|(?=[AP]M)/);
+    let [hours, minutes, seconds] = mainTime.split(":");
+
+    if (period === "PM" && hours !== "12") {
+      hours = parseInt(hours) + 12;
+    } else if (period === "AM" && hours === "12") {
+      hours = "00";
+    }
+
+    return `${hours}:${minutes}:${seconds}`;
+  };
+
   const onChange = (event, selectedTime) => {
     const currentTime = selectedTime || time;
     setShowPicker(false);

@@ -71,7 +71,7 @@ const MenuPaciente = () => {
     });
   };
 
-  const handleRecordatorios = async (data) => {
+  const handleRecordatorios = async () => {
     // await Notifications.cancelAllScheduledNotificationsAsync();
 
     const pendingRecordatorios = recordatorios.data.filter((item) => {
@@ -92,16 +92,21 @@ const MenuPaciente = () => {
   useEffect(() => {
     if (Array.isArray(data) && data.length > 0) {
       handleConsultas(data);
-    } else {
-      cancelAllNotifications();
     }
-  }, [data]);
 
-  useEffect(() => {
     if (Array.isArray(recordatorios.data) && recordatorios.data.length > 0) {
       handleRecordatorios(recordatorios.data);
     }
-  }, [recordatorios.data]);
+
+    if (
+      !Array.isArray(data) ||
+      data.length === 0 ||
+      !Array.isArray(recordatorios.data) ||
+      recordatorios.data.length === 0
+    ) {
+      cancelAllNotifications();
+    }
+  }, [data, recordatorios.data]);
 
   if (isPending || isError) {
     return (
@@ -245,9 +250,9 @@ const MenuPaciente = () => {
                 {typeof recordatorios.data === "string" ||
                 !Array.isArray(recordatorios.data) ? (
                   <View style={styles.noEventsContainer}>
-                    <Text style={styles.noEventsText}>
+                    {/* <Text style={styles.noEventsText}>
                       {recordatorios.data}
-                    </Text>
+                    </Text> */}
                   </View>
                 ) : (
                   <>
@@ -278,7 +283,10 @@ const MenuPaciente = () => {
                               - {estado[item.estado]}
                             </Text>
                             <Text>
-                              Fecha: {new Date(item.fecha).toLocaleString()}
+                              Fecha:{" "}
+                              {new Date(
+                                item.fecha.split("+")[0]
+                              ).toLocaleString()}
                             </Text>
                           </View>
                           <View style={{ flexDirection: "row", gap: 20 }}>

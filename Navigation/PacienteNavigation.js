@@ -51,7 +51,9 @@ function MyTabs() {
       <Tab.Screen
         name="MisDoctores"
         component={MisDoctores}
+        l
         options={{
+          title: "Mis Doctores",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="account-injury-outline"
@@ -66,6 +68,7 @@ function MyTabs() {
         name="BuscarDoctor"
         component={BuscarDoctor}
         options={{
+          title: "Buscar Doctor",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="account-search-outline"
