@@ -81,7 +81,7 @@ const MenuPaciente = () => {
     // console.log(pendingRecordatorios.length);
 
     pendingRecordatorios.forEach((item) => {
-      timedNotificationV2(item.fecha, item);
+      timedNotificationV2(item.fecha.split(/[+-]\d{2}:\d{2}$/)[0], item);
     });
   };
 
@@ -258,7 +258,9 @@ const MenuPaciente = () => {
                   <>
                     {recordatorios.data
                       .filter((item) => {
-                        const itemDate = new Date(item.fecha);
+                        const itemDate = new Date(
+                          item.fecha.split(/[+-]\d{2}:\d{2}$/)[0]
+                        );
                         const selected = new Date(value);
                         return (
                           itemDate.getDate() === selected.getUTCDate() &&
@@ -285,7 +287,7 @@ const MenuPaciente = () => {
                             <Text>
                               Fecha:{" "}
                               {new Date(
-                                item.fecha.split("+")[0]
+                                item.fecha.split(/[+-]\d{2}:\d{2}$/)[0]
                               ).toLocaleString()}
                             </Text>
                           </View>

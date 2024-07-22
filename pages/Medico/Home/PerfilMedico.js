@@ -411,7 +411,7 @@ const styles = StyleSheet.create({
   },
   photoContainer: {
     marginRight: 20,
-    backgroundColor: "grey",
+    backgroundColor: "transparent",
     borderRadius: 100,
   },
   photo: {

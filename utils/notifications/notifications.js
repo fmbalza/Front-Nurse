@@ -194,7 +194,9 @@ export const timedNotificationV2 = async (timestamp, data) => {
   const scheduledNotifications =
     await Notifications.getAllScheduledNotificationsAsync();
 
-  // let localeTimestamp = new Date(timestamp).toLocaleString();
+  let localeTimestamp = new Date(timestamp).toLocaleString();
+  console.log(timestamp);
+  console.log(localeTimestamp);
 
   // const oneHourEarlier = new Date(timestamp);
   // oneHourEarlier.setHours(oneHourEarlier.getHours() - 1);
