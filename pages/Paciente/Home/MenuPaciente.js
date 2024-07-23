@@ -263,6 +263,7 @@ const MenuPaciente = () => {
                           item.fecha.split(/[+-]\d{2}:\d{2}$/)[0]
                         );
                         const selected = new Date(value);
+                        selected.setHours(0, 0, 0, 0);
                         return (
                           itemDate.getDate() === selected.getUTCDate() &&
                           itemDate.getMonth() === selected.getUTCMonth() &&
