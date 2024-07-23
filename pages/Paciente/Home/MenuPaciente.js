@@ -210,6 +210,7 @@ const MenuPaciente = () => {
                       .filter((item) => {
                         const itemDate = new Date(item.fecha);
                         const selected = new Date(value);
+                        selected.setHours(0, 0, 0, 0);
                         return (
                           itemDate.getDate() === selected.getUTCDate() &&
                           itemDate.getMonth() === selected.getUTCMonth() &&

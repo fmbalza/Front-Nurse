@@ -194,15 +194,6 @@ export const timedNotificationV2 = async (timestamp, data) => {
   const scheduledNotifications =
     await Notifications.getAllScheduledNotificationsAsync();
 
-  let localeTimestamp = new Date(timestamp).toLocaleString();
-  console.log(timestamp);
-  console.log(localeTimestamp);
-
-  // const oneHourEarlier = new Date(timestamp);
-  // oneHourEarlier.setHours(oneHourEarlier.getHours() - 1);
-  // const thirtyMinutesEarlier = new Date(timestamp);
-  // thirtyMinutesEarlier.setMinutes(thirtyMinutesEarlier.getMinutes() - 30);
-
   if (scheduledNotifications.length > 0) {
     if (
       new Date() < new Date(timestamp) &&
@@ -232,7 +223,7 @@ export const timedNotificationV2 = async (timestamp, data) => {
       // console.log("got in here 1");
     } else {
       // console.log("got in here 2");
-      console.log("Notification already scheduled");
+      // console.log("Notification already scheduled");
     }
   } else {
     await Notifications.scheduleNotificationAsync({
