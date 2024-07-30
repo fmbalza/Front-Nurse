@@ -131,7 +131,7 @@ export const sendPushNotificationV3 = async (expoPushToken) => {
   });
 };
 
-export const timedNotificationV1 = async (timestamp, id) => {
+export const timedNotificationV1 = async (timestamp) => {
   const scheduledNotifications =
     await Notifications.getAllScheduledNotificationsAsync();
 
@@ -154,7 +154,7 @@ export const timedNotificationV1 = async (timestamp, id) => {
     ) {
       await Notifications.scheduleNotificationAsync({
         content: {
-          priority: "high",
+          priority: "max",
           title: "Recordatorio de consulta",
           body: `Su consulta para ${localeTimestamp} está por comenzar`,
           data: {
@@ -162,8 +162,9 @@ export const timedNotificationV1 = async (timestamp, id) => {
             key: "consulta",
           },
         },
-        // trigger: new Date(timestamp),
-        trigger: new Date(thirtyMinutesEarlier),
+        trigger: {
+          date: new Date(thirtyMinutesEarlier),
+        },
       });
       // console.log("got in here 1");
     } else {
@@ -173,7 +174,7 @@ export const timedNotificationV1 = async (timestamp, id) => {
   } else {
     await Notifications.scheduleNotificationAsync({
       content: {
-        priority: "high",
+        priority: "max",
         title: "Recordatorio de consulta",
         body: `Su consulta de las ${localeTimestamp} está por comenzar`,
         data: {
@@ -181,8 +182,9 @@ export const timedNotificationV1 = async (timestamp, id) => {
           key: "consulta",
         },
       },
-      // trigger: new Date(timestamp),
-      trigger: new Date(thirtyMinutesEarlier),
+      trigger: {
+        date: new Date(thirtyMinutesEarlier),
+      },
     });
     // console.log("got in here 3");
   }
@@ -205,7 +207,7 @@ export const timedNotificationV2 = async (timestamp, data) => {
     ) {
       await Notifications.scheduleNotificationAsync({
         content: {
-          priority: "high",
+          priority: "max",
           title: data?.id_horario?.id_medicamento
             ? "Recordatorio de medicamento"
             : "Recordatorio de tratamiento",
@@ -213,12 +215,13 @@ export const timedNotificationV2 = async (timestamp, data) => {
             ? `Es hora de tomar su medicamento ${data.id_horario.id_medicamento.cp_medicamento}`
             : `Es hora de su tratamiento ${data.id_horario.id_tratamiento.no_tratamiento}`,
           data: {
-            timestamp: timestamp,
             key: "Med/Trat",
           },
         },
         // trigger: new Date(timestamp),
-        trigger: new Date(timestamp),
+        trigger: {
+          date: new Date(timestamp),
+        },
       });
       // console.log("got in here 1");
     } else {
@@ -228,7 +231,7 @@ export const timedNotificationV2 = async (timestamp, data) => {
   } else {
     await Notifications.scheduleNotificationAsync({
       content: {
-        priority: "high",
+        priority: "max",
         title: data?.id_horario?.id_medicamento
           ? "Recordatorio de medicamento"
           : "Recordatorio de tratamiento",
@@ -236,12 +239,13 @@ export const timedNotificationV2 = async (timestamp, data) => {
           ? `Es hora de tomar su medicamento ${data.id_horario.id_medicamento.cp_medicamento}`
           : `Es hora de aplicarse su tratamiento ${data.id_horario.id_tratamiento.no_tratamiento}`,
         data: {
-          timestamp: timestamp,
           key: "Med/Trat",
         },
       },
       // trigger: new Date(timestamp),
-      trigger: new Date(timestamp),
+      trigger: {
+        date: new Date(timestamp),
+      },
     });
     // console.log("got in here 3");
   }

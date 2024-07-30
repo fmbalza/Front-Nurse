@@ -16,6 +16,7 @@ import Swiper from "react-native-swiper";
 import {
   timedNotificationV1,
   timedNotificationV2,
+  timedNotificationV3,
 } from "../../../utils/notifications/notifications";
 import {
   useGetRecordatoriosByPaciente,
@@ -67,18 +68,23 @@ const MenuPaciente = () => {
     });
 
     pendingConsultas.forEach((item) => {
-      timedNotificationV1(item.fecha, item.id_consulta);
+      timedNotificationV1(item.fecha);
     });
   };
 
   const handleRecordatorios = async () => {
     // await Notifications.cancelAllScheduledNotificationsAsync();
+    const now = new Date();
+    const nextWeek = new Date();
+    nextWeek.setDate(now.getDate() + 7);
 
     const pendingRecordatorios = recordatorios.data.filter((item) => {
-      return item.estado === 2 && new Date(item.fecha) > new Date();
+      return (
+        item.estado === 2 &&
+        new Date(item.fecha) > now &&
+        new Date(item.fecha) <= nextWeek
+      );
     });
-
-    // console.log(pendingRecordatorios.length);
 
     pendingRecordatorios.forEach((item) => {
       timedNotificationV2(item.fecha.split(/[+-]\d{2}:\d{2}$/)[0], item);

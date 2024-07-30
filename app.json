@@ -24,7 +24,7 @@
     "web": {
       "favicon": "./assets/nurse_logo.png"
     },
-    "plugins": ["expo-router"],
+    "plugins": ["expo-router", "expo-notifications"],
     "extra": {
       "router": {
         "origin": false
