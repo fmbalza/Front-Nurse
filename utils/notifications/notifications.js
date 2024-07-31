@@ -158,7 +158,6 @@ export const timedNotificationV1 = async (timestamp) => {
           title: "Recordatorio de consulta",
           body: `Su consulta para ${localeTimestamp} está por comenzar`,
           data: {
-            timestamp: timestamp,
             key: "consulta",
           },
         },
@@ -178,7 +177,6 @@ export const timedNotificationV1 = async (timestamp) => {
         title: "Recordatorio de consulta",
         body: `Su consulta de las ${localeTimestamp} está por comenzar`,
         data: {
-          timestamp: timestamp,
           key: "consulta",
         },
       },
@@ -251,4 +249,17 @@ export const timedNotificationV2 = async (timestamp, data) => {
   }
 
   // await Notifications.cancelAllScheduledNotificationsAsync();
+};
+
+export const timedNotificationV3 = async () => {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      priority: "max",
+      title: "Notificacion de Prueba",
+      body: `Esta es una notificacion de prueba`,
+    },
+    trigger: {
+      seconds: 60, // 1 minute
+    },
+  });
 };

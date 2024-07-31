@@ -95,23 +95,29 @@ const MenuPaciente = () => {
     await Notifications.cancelAllScheduledNotificationsAsync();
   };
 
+  const handleTest = async () => {
+    timedNotificationV3();
+  };
+
   useEffect(() => {
-    if (Array.isArray(data) && data.length > 0) {
-      handleConsultas(data);
-    }
+    // if (Array.isArray(data) && data.length > 0) {
+    //   handleConsultas(data);
+    // }
 
-    if (Array.isArray(recordatorios.data) && recordatorios.data.length > 0) {
-      handleRecordatorios(recordatorios.data);
-    }
+    // if (Array.isArray(recordatorios.data) && recordatorios.data.length > 0) {
+    //   handleRecordatorios(recordatorios.data);
+    // }
 
-    if (
-      !Array.isArray(data) ||
-      data.length === 0 ||
-      !Array.isArray(recordatorios.data) ||
-      recordatorios.data.length === 0
-    ) {
-      cancelAllNotifications();
-    }
+    // if (
+    //   !Array.isArray(data) ||
+    //   data.length === 0 ||
+    //   !Array.isArray(recordatorios.data) ||
+    //   recordatorios.data.length === 0
+    // ) {
+    //   cancelAllNotifications();
+    // }
+
+    handleTest();
   }, [data, recordatorios.data]);
 
   if (isPending || isError) {

@@ -12,13 +12,6 @@ Notifications.setNotificationHandler({
   }),
 });
 
-Notifications.setNotificationChannelAsync("default", {
-  name: "default",
-  importance: Notifications.AndroidImportance.MAX,
-  vibrationPattern: [0, 250, 250, 250],
-  lightColor: "#FF231F7C",
-});
-
 const queryClient = new QueryClient();
 
 export default function App() {
@@ -31,21 +24,9 @@ export default function App() {
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
         setNotification(notification);
-        // console.log("aqui en App.js", notification.request.content.data);
 
         if (notification.request.content.data?.key) {
-          console.log("aqui en App.js", notification.request.content.data.key);
           queryClient.invalidateQueries(notification.request.content.data.key);
-        }
-
-        if (notification.request.content.data?.identifier) {
-          console.log(
-            "aqui en App.js",
-            notification.request.content.data.identifier
-          );
-          Notifications.dismissNotificationAsync(
-            notification.request.content.data.identifier
-          );
         }
       });
 
