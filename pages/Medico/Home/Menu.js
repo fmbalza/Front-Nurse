@@ -53,7 +53,7 @@ const Menu = () => {
     });
 
     pendingConsultas.forEach((item) => {
-      timedNotificationV1(item.fecha, item.id_consulta);
+      timedNotificationV1(item.fecha);
     });
   };
 
