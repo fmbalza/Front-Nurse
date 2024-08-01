@@ -1,18 +1,34 @@
-// import { useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Modal, Button } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-// import RFValue from '@react-native-responsive-fontsize'
-import useAuthStore from "../utils/storage/auth";
+import { isBatteryOptimizationEnabledAsync } from "expo-battery";
+import AndroidOpenSettings from "react-native-android-open-settings";
+import {
+  PrimaryColor,
+  SecondaryColor,
+  ThirdColor,
+  WhiteColor,
+  BlackColor,
+  BackgroundShade,
+} from "../styles/globalStyles";
 
 const StartPage = () => {
   const navigation = useNavigation();
-  // const { logout } = useAuthStore();
+  const [showModal, setShowModal] = useState(false);
 
-  // useEffect(() => {
-  //   logout();
-  // }, []);
+  checkForBatteryOptimization = async () => {
+    await isBatteryOptimizationEnabledAsync().then((res) => {
+      if (res) {
+        setShowModal(true);
+      }
+    });
+  };
+
+  useEffect(() => {
+    checkForBatteryOptimization();
+  }, []);
 
   return (
     <LinearGradient
@@ -78,6 +94,97 @@ const StartPage = () => {
             Comenzar
           </Text>
         </TouchableOpacity>
+
+        <Modal visible={showModal} animationType="fade" transparent={true}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: BackgroundShade,
+            }}
+          >
+            <View
+              style={{
+                width: "80%",
+                height: "auto",
+                backgroundColor: "white",
+                borderRadius: 20,
+                padding: 30,
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 10,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 20,
+                  textAlign: "center",
+                  color: "#00826B",
+                  fontWeight: "500",
+                }}
+              >
+                ¡Desactiva la optimización de batería!
+              </Text>
+              <Text
+                style={{
+                  fontSize: 15,
+                  textAlign: "center",
+                  color: "#00826B",
+                  fontWeight: "400",
+                }}
+              >
+                Para asegurar el correcto funcionamiento de las notificaciones
+                en tiempo real, desactiva la optimización de batería para Nurse.
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  gap: 10,
+                  width: "100%",
+                  justifyContent: "center",
+                  marginTop: 20,
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => AndroidOpenSettings.appDetailsSettings()}
+                >
+                  <Text
+                    style={{
+                      color: WhiteColor,
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      backgroundColor: PrimaryColor,
+                      padding: 10,
+                      minWidth: 100,
+                      textAlign: "center",
+                      borderRadius: 20,
+                    }}
+                  >
+                    Continuar
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => setShowModal(false)}>
+                  <Text
+                    style={{
+                      color: WhiteColor,
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      backgroundColor: PrimaryColor,
+                      padding: 10,
+                      minWidth: 100,
+                      textAlign: "center",
+                      borderRadius: 20,
+                    }}
+                  >
+                    Salir
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </View>
     </LinearGradient>
   );

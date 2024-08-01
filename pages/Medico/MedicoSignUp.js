@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   View,
@@ -19,11 +19,29 @@ import { useRegisterMedico } from "../../utils/hooks/medico/auth.js";
 import { useEspecialidades } from "../../utils/hooks/medico/especialidades";
 import { MaskedTextInput } from "react-native-mask-text";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import CustomAlert from "../../components/Modals/CustomAlert.js";
+import {
+  PrimaryColor,
+  SecondaryColor,
+  ThirdColor,
+  BackgroundShade,
+  WhiteColor,
+  BlackColor,
+} from "../../styles/globalStyles";
 
 const MedicoSignUp = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedImageUri, setSelectedImageUri] = useState(null);
   const specialties = [];
+  const [alertVisible, setAlertVisible] = useState(false);
+
+  const showAlert = () => {
+    setAlertVisible(true);
+  };
+
+  const hideAlert = () => {
+    setAlertVisible(false);
+  };
 
   const {
     control,
@@ -32,6 +50,16 @@ const MedicoSignUp = () => {
   } = useForm();
 
   const registerMutation = useRegisterMedico();
+
+  useEffect(() => {
+    if (
+      registerMutation.data &&
+      registerMutation.data !== "Medico creado exitosamente"
+    ) {
+      showAlert();
+    }
+  }, [registerMutation.data]);
+
   const { isPending, isError, data, error } = useEspecialidades();
 
   if (isError) {
@@ -58,7 +86,7 @@ const MedicoSignUp = () => {
   }
 
   const handleRegister = (values) => {
-    console.log("Aqui en MedicoSignUp.js: ", values);
+    // console.log("Aqui en MedicoSignUp.js: ", values);
     registerMutation.mutate(values);
   };
 
@@ -77,310 +105,321 @@ const MedicoSignUp = () => {
   };
 
   return (
-    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
-      <LinearGradient
-        colors={["#FFFFFF", "#D6FFE9"]}
-        style={{
-          flexGrow: 1,
-          paddingBottom: 150,
-        }}
-      >
-        <View
+    <View style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
+        <LinearGradient
+          colors={["#FFFFFF", "#D6FFE9"]}
           style={{
-            alignItems: "center",
+            flexGrow: 1,
+            paddingBottom: 150,
           }}
         >
+          <CustomAlert
+            visible={alertVisible}
+            message={
+              registerMutation.data == "Medico ya existe"
+                ? "La cédula o el correo ya están registrados en el sistema"
+                : registerMutation.data
+            }
+            onClose={hideAlert}
+          />
+
           <View
             style={{
-              justifyContent: "center",
-
-              backgroundColor: "#006150",
-              width: "100%",
-              height: 300,
-              borderBottomLeftRadius: 40,
-              borderBottomRightRadius: 40,
-              elevation: 10,
-              marginBottom: 40,
+              alignItems: "center",
             }}
           >
-            <Text
+            <View
               style={{
-                fontSize: 45,
-                textAlign: "left",
-                color: "#FFFFFF",
-                fontWeight: "700",
-                marginLeft: 30,
+                alignItems: "center",
+                width: "100%",
+                height: 100,
+                justifyContent: "center",
+                backgroundColor: "#006150",
+                borderBottomLeftRadius: 40,
+                borderBottomRightRadius: 40,
+                elevation: 10,
+                marginBottom: 20,
               }}
             >
-              Ingrese los siguientes datos
-            </Text>
-          </View>
-
-          <View
-            style={{
-              alignItems: "center",
-              width: "100%",
-              height: "70%",
-            }}
-          >
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  style={SignUpStyles.inputs}
-                  placeholderTextColor="#00826B"
-                  placeholder="Nombre"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                />
-              )}
-              name="no_medico"
-              rules={{ required: true }}
-              defaultValue={""}
-            />
-            <View>
-              {errors.no_medico && (
-                <Text style={styles.errorMessage}>
-                  <Icon name="alert-circle-outline" color={"red"} />
-                    Este campo es requerido
-                </Text>
-              )}
-            </View>
-
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  style={SignUpStyles.inputs}
-                  placeholderTextColor="#00826B"
-                  placeholder="Apellido"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                />
-              )}
-              name="ap_medico"
-              rules={{ required: true }}
-              defaultValue={""}
-            />
-            <View>
-              {errors.ap_medico && (
-                <Text style={styles.errorMessage}>
-                  <Icon name="alert-circle-outline" color={"red"} />
-                    Este campo es requerido
-                </Text>
-              )}
-            </View>
-
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  style={SignUpStyles.inputs}
-                  placeholderTextColor="#00826B"
-                  placeholder="Contraseña"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                />
-              )}
-              name="contrasena"
-              rules={{ required: true }}
-              defaultValue={""}
-            />
-            <View>
-              {errors.contraseña && (
-                <Text style={styles.errorMessage}>
-                  <Icon name="alert-circle-outline" color={"red"} />
-                    Este campo es requerido
-                </Text>
-              )}
-            </View>
-
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <MaskedTextInput
-                  style={SignUpStyles.inputs}
-                  placeholderTextColor="#00826B"
-                  placeholder="Cedula Ej: 29.560.310"
-                  keyboardType="numeric"
-                  onBlur={onBlur}
-                  onChangeText={(text, rawText) => onChange(rawText)}
-                  mask={"99.999.999"}
-                  value={value}
-                />
-              )}
-              name="cedula_medico"
-              rules={{ required: true }}
-              defaultValue={""}
-            />
-            <View>
-              {errors.cedula_medico && (
-                <Text style={styles.errorMessage}>
-                  <Icon name="alert-circle-outline" color={"red"} />
-                    Este campo es requerido
-                </Text>
-              )}
-            </View>
-
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <MaskedTextInput
-                  style={SignUpStyles.inputs}
-                  placeholderTextColor="#00826B"
-                  placeholder="Telefonon Ej: +58 123-1234567"
-                  onBlur={onBlur}
-                  onChangeText={(text, rawText) => onChange(rawText)}
-                  mask={"+99 999-9999999"}
-                  value={value}
-                  keyboardType="numeric"
-                />
-              )}
-              name="telefono"
-              rules={{ required: true }}
-              defaultValue={""}
-            />
-            <View>
-              {errors.telefono && (
-                <Text style={styles.errorMessage}>
-                  <Icon name="alert-circle-outline" color={"red"} />
-                    Este campo es requerido
-                </Text>
-              )}
-            </View>
-
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  style={SignUpStyles.inputs}
-                  placeholderTextColor="#00826B"
-                  placeholder="Correo"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                />
-              )}
-              name="email"
-              rules={{ required: true }}
-              defaultValue={""}
-            />
-            <View>
-              {errors.email && (
-                <Text style={styles.errorMessage}>
-                  <Icon name="alert-circle-outline" color={"red"} />
-                    Este campo es requerido
-                </Text>
-              )}
-            </View>
-
-            <Controller
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <View style={styles.componentt}>
-                  <GenderPicker onGenderChange={onChange} value={value} />
-                </View>
-              )}
-              name="genero"
-              rules={{ required: true }}
-            />
-            <View>
-              {errors.genero && (
-                <Text style={styles.errorMessage}>
-                  <Icon name="alert-circle-outline" color={"red"} />
-                    Este campo es requerido
-                </Text>
-              )}
-            </View>
-
-            <Controller
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <View style={styles.componentt}>
-                  <SpecialtyPicker
-                    onSpecialtyChange={onChange}
-                    value={value}
-                    specialties={specialties || []}
-                  />
-                </View>
-              )}
-              name="id_especialidad"
-              rules={{ required: true }}
-            />
-            <View>
-              {errors.id_especialidad && (
-                <Text style={styles.errorMessage}>
-                  <Icon name="alert-circle-outline" color={"red"} />
-                    Este campo es requerido
-                </Text>
-              )}
-            </View>
-
-            <TouchableOpacity onPress={openModal} style={SignUpStyles.btnCert}>
               <Text
                 style={{
-                  color: "white",
-                  fontSize: 20,
-                  fontWeight: "300",
+                  fontSize: 40,
+                  fontWeight: "bold",
+                  color: "#FFFFFF",
                 }}
               >
-                Subir Foto de perfil
+                Registro de médico
               </Text>
-            </TouchableOpacity>
+            </View>
 
-            <Controller
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <FotoModal
-                  isVisible={isModalVisible}
-                  onClose={closeModal}
-                  onImagePicked={handleImagePicked}
-                  onChange={onChange}
-                  value={value}
-                />
-              )}
-              name="foto_perfil"
-            />
-
-            <TouchableOpacity
-              onPress={handleSubmit((data) => handleRegister(data))}
-              style={SignUpStyles.btnAceptar}
+            <View
+              style={{
+                alignItems: "center",
+                width: "100%",
+                height: "70%",
+              }}
             >
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 25,
-                  fontWeight: "300",
-                }}
-              >
-                Aceptar
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    style={SignUpStyles.inputs}
+                    placeholderTextColor="#00826B"
+                    placeholder="Nombre"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                )}
+                name="no_medico"
+                rules={{ required: true }}
+                defaultValue={""}
+              />
+              <View>
+                {errors.no_medico && (
+                  <Text style={styles.errorMessage}>
+                    <Icon name="alert-circle-outline" color={"red"} />
+                      Este campo es requerido
+                  </Text>
+                )}
+              </View>
 
-        {registerMutation.isPending && (
-          <View
-            style={{
-              position: "absolute",
-              width: "100%",
-              height: "100%",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 10,
-              flex: 1,
-              flexGrow: 1,
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-            }}
-          >
-            <ActivityIndicator size="large" color="#00826B" />
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    style={SignUpStyles.inputs}
+                    placeholderTextColor="#00826B"
+                    placeholder="Apellido"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                )}
+                name="ap_medico"
+                rules={{ required: true }}
+                defaultValue={""}
+              />
+              <View>
+                {errors.ap_medico && (
+                  <Text style={styles.errorMessage}>
+                    <Icon name="alert-circle-outline" color={"red"} />
+                      Este campo es requerido
+                  </Text>
+                )}
+              </View>
+
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    style={SignUpStyles.inputs}
+                    placeholderTextColor="#00826B"
+                    placeholder="Contraseña"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                )}
+                name="contrasena"
+                rules={{ required: true }}
+                defaultValue={""}
+              />
+              <View>
+                {errors.contrasena && (
+                  <Text style={styles.errorMessage}>
+                    <Icon name="alert-circle-outline" color={"red"} />
+                      Este campo es requerido
+                  </Text>
+                )}
+              </View>
+
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <MaskedTextInput
+                    style={SignUpStyles.inputs}
+                    placeholderTextColor="#00826B"
+                    placeholder="Cedula Ej: 29.560.310"
+                    keyboardType="numeric"
+                    onBlur={onBlur}
+                    onChangeText={(text, rawText) => onChange(rawText)}
+                    mask={"99.999.999"}
+                    value={value}
+                  />
+                )}
+                name="cedula_medico"
+                rules={{ required: true }}
+                defaultValue={""}
+              />
+              <View>
+                {errors.cedula_medico && (
+                  <Text style={styles.errorMessage}>
+                    <Icon name="alert-circle-outline" color={"red"} />
+                      Este campo es requerido
+                  </Text>
+                )}
+              </View>
+
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <MaskedTextInput
+                    style={SignUpStyles.inputs}
+                    placeholderTextColor="#00826B"
+                    placeholder="Telefonon Ej: +58 123-1234567"
+                    onBlur={onBlur}
+                    onChangeText={(text, rawText) => onChange(rawText)}
+                    mask={"+99 999-9999999"}
+                    value={value}
+                    keyboardType="numeric"
+                  />
+                )}
+                name="telefono"
+                rules={{ required: true }}
+                defaultValue={""}
+              />
+              <View>
+                {errors.telefono && (
+                  <Text style={styles.errorMessage}>
+                    <Icon name="alert-circle-outline" color={"red"} />
+                      Este campo es requerido
+                  </Text>
+                )}
+              </View>
+
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    style={SignUpStyles.inputs}
+                    placeholderTextColor="#00826B"
+                    placeholder="Correo"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                )}
+                name="email"
+                rules={{ required: true }}
+                defaultValue={""}
+              />
+              <View>
+                {errors.email && (
+                  <Text style={styles.errorMessage}>
+                    <Icon name="alert-circle-outline" color={"red"} />
+                      Este campo es requerido
+                  </Text>
+                )}
+              </View>
+
+              <Controller
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <View style={styles.componentt}>
+                    <GenderPicker onGenderChange={onChange} value={value} />
+                  </View>
+                )}
+                name="genero"
+                rules={{ required: true }}
+              />
+              <View>
+                {errors.genero && (
+                  <Text style={styles.errorMessage}>
+                    <Icon name="alert-circle-outline" color={"red"} />
+                      Este campo es requerido
+                  </Text>
+                )}
+              </View>
+
+              <Controller
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <View style={styles.componentt}>
+                    <SpecialtyPicker
+                      onSpecialtyChange={onChange}
+                      value={value}
+                      specialties={specialties || []}
+                    />
+                  </View>
+                )}
+                name="id_especialidad"
+                rules={{ required: true }}
+              />
+              <View>
+                {errors.id_especialidad && (
+                  <Text style={styles.errorMessage}>
+                    <Icon name="alert-circle-outline" color={"red"} />
+                      Este campo es requerido
+                  </Text>
+                )}
+              </View>
+
+              <TouchableOpacity
+                onPress={openModal}
+                style={SignUpStyles.btnCert}
+              >
+                <Text
+                  style={{
+                    color: "white",
+                    fontSize: 20,
+                    fontWeight: "300",
+                  }}
+                >
+                  Subir Foto de perfil
+                </Text>
+              </TouchableOpacity>
+
+              <Controller
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <FotoModal
+                    isVisible={isModalVisible}
+                    onClose={closeModal}
+                    onImagePicked={handleImagePicked}
+                    onChange={onChange}
+                    value={value}
+                  />
+                )}
+                name="foto_perfil"
+              />
+
+              <TouchableOpacity
+                onPress={handleSubmit((data) => handleRegister(data))}
+                style={SignUpStyles.btnAceptar}
+              >
+                <Text
+                  style={{
+                    color: "white",
+                    fontSize: 25,
+                    fontWeight: "300",
+                  }}
+                >
+                  Aceptar
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        )}
-      </LinearGradient>
-    </ScrollView>
+        </LinearGradient>
+      </ScrollView>
+      {registerMutation.isPending && (
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: BackgroundShade,
+          }}
+        >
+          <ActivityIndicator size="large" color={PrimaryColor} />
+        </View>
+      )}
+    </View>
   );
 };
 

@@ -169,7 +169,7 @@ const MedicoLogin = () => {
       <Text style={styles.registerText}>
         ¿No tienes una cuenta?{" "}
         <Text
-          style={styles.registerLink}
+          style={{ color: "#00826B", fontWeight: "bold" }}
           onPress={() => navigation.navigate("MedicoSignUp")}
         >
           Regístrate aquí

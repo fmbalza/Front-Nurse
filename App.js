@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import Navigation from "./Navigation/Navigation";
+import { StatusBar } from "react-native";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import * as Notifications from "expo-notifications";
 
@@ -32,7 +33,7 @@ export default function App() {
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log("Aqui en App.js: ", response);
+        // console.log("Aqui en App.js: ", response);
       });
 
     return () => {
@@ -47,6 +48,7 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <StatusBar hidden={true} />
       <Navigation />
     </QueryClientProvider>
   );

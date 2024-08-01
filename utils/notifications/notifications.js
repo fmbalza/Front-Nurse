@@ -260,6 +260,7 @@ export const timedNotificationV3 = async () => {
     },
     trigger: {
       seconds: 60, // 1 minute
+      repeats: true,
     },
   });
 };

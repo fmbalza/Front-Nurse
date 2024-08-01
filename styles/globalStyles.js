@@ -58,7 +58,7 @@ export const LoginStyles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#00826B",
     elevation: 5,
-    marginBottom:40
+    marginBottom: 40,
   },
   btnCert: {
     width: "90%",
@@ -71,3 +71,14 @@ export const LoginStyles = StyleSheet.create({
     elevation: 5,
   },
 });
+
+export const PrimaryColor = "#00826B";
+export const SecondaryColor = "#A4D4BB";
+export const ThirdColor = "#006150";
+export const WhiteColor = "#FFFFFF";
+export const BlackColor = "#000000";
+export const GrayColor = "#808080";
+export const LightGrayColor = "#D3D3D3";
+export const DarkGrayColor = "#A9A9A9";
+export const RedColor = "#FF0000";
+export const BackgroundShade = "rgba(0,0,0,0.5)";

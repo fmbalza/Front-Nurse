@@ -7,7 +7,7 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
-  KeyboardAvoidingView,
+  Button,
 } from "react-native";
 import { SignUpStyles } from "../../styles/globalStyles";
 import DatePicker from "../../components/DatePicker";
@@ -17,10 +17,36 @@ import { useForm, Controller } from "react-hook-form";
 import { useRegisterPaciente } from "../../utils/hooks/paciente/auth.js";
 import { MaskedTextInput } from "react-native-mask-text";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import { useEffect, useState } from "react";
+import {
+  PrimaryColor,
+  SecondaryColor,
+  ThirdColor,
+  BackgroundShade,
+  WhiteColor,
+  BlackColor,
+} from "../../styles/globalStyles";
+import CustomAlert from "../../components/Modals/CustomAlert.js";
 
 const PacienteSignUp = () => {
   // const navigation = useNavigation();
-  // const [isFamiliar, setIsFamiliar] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const loadFiveSeconds = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 5000);
+  };
+
+  const showAlert = () => {
+    setAlertVisible(true);
+  };
+
+  const hideAlert = () => {
+    setAlertVisible(false);
+  };
 
   const {
     control,
@@ -35,268 +61,232 @@ const PacienteSignUp = () => {
     registerMutation.mutate(values);
   };
 
-  // const handleSwitchToggle = (value) => {
-  //   setIsFamiliar(value);
-  // };
+  useEffect(() => {
+    if (
+      registerMutation.data &&
+      registerMutation.data == "Paciente ya existe"
+    ) {
+      showAlert();
+    }
+  }, [registerMutation.data]);
 
   return (
-    // <KeyboardAvoidingView behavior="height" style={{ flex: 1 }}>
-    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
-      <LinearGradient
-        colors={["#FFFFFF", "#D6FFE9"]}
-        style={{
-          flexGrow: 1,
-          paddingBottom: 100,
-        }}
-      >
-        <View
-          style={{
-            alignItems: "center",
-          }}
-        >
+    <View style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
+        <LinearGradient colors={["#FFFFFF", "#D6FFE9"]} style={{ flexGrow: 1 }}>
+          {/* <Button title="Cargar 5 segundos" onPress={loadFiveSeconds} /> */}
+          <CustomAlert
+            visible={alertVisible}
+            message="La cedula ingresada ya esta registrada en el sistema"
+            onClose={hideAlert}
+          />
+
           <View
             style={{
-              justifyContent: "center",
-
-              backgroundColor: "#006150",
-              width: "100%",
-              height: 300,
-              borderBottomLeftRadius: 40,
-              borderBottomRightRadius: 40,
-              elevation: 10,
-              marginBottom: 40,
+              alignItems: "center",
             }}
           >
-            {/* Este texto se deforma en mi telefono (•_•) */}
-            <Text
+            <View
               style={{
-                fontSize: 45,
-                textAlign: "left",
-                color: "#FFFFFF",
-                fontWeight: "700",
-                marginLeft: 30,
+                alignItems: "center",
+                width: "100%",
+                height: 100,
+                justifyContent: "center",
+                backgroundColor: "#006150",
+                borderBottomLeftRadius: 40,
+                borderBottomRightRadius: 40,
+                elevation: 10,
+                marginBottom: 20,
               }}
             >
-              Ingrese los siguientes datos
-            </Text>
-          </View>
-
-          <View
-            style={{
-              alignItems: "center",
-              width: "100%",
-              height: "70%",
-            }}
-          >
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  style={SignUpStyles.inputs}
-                  placeholderTextColor="#00826B"
-                  placeholder="Nombre"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                />
-              )}
-              name="no_paciente"
-              rules={{ required: true }}
-              defaultValue={""}
-            />
-            <View>
-              {errors.no_paciente && (
-                <Text style={styles.errorMessage}>
-                  <Icon name="alert-circle-outline" color={"red"} />
-                    Este campo es requerido
-                </Text>
-              )}
-            </View>
-
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  style={SignUpStyles.inputs}
-                  placeholderTextColor="#00826B"
-                  placeholder="Apellido"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                />
-              )}
-              name="ap_paciente"
-              rules={{ required: true }}
-              defaultValue={""}
-            />
-            <View>
-              {errors.ap_paciente && (
-                <Text style={styles.errorMessage}>
-                  <Icon name="alert-circle-outline" color={"red"} />
-                    Este campo es requerido
-                </Text>
-              )}
-            </View>
-
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <MaskedTextInput
-                  style={SignUpStyles.inputs}
-                  placeholderTextColor="#00826B"
-                  placeholder="Cedula Ej: 29.560.310"
-                  keyboardType="numeric"
-                  onBlur={onBlur}
-                  onChangeText={(text, rawText) => onChange(rawText)}
-                  mask={"99.999.999"}
-                  value={value}
-                />
-              )}
-              name="cedula_paciente"
-              rules={{ required: true }}
-              defaultValue={""}
-            />
-            <View>
-              {errors.cedula_paciente && (
-                <Text style={styles.errorMessage}>
-                  <Icon name="alert-circle-outline" color={"red"} />
-                    Este campo es requerido
-                </Text>
-              )}
-            </View>
-
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <MaskedTextInput
-                  style={SignUpStyles.inputs}
-                  placeholderTextColor="#00826B"
-                  placeholder="Telefonon Ej: +58 123-1234567"
-                  onBlur={onBlur}
-                  onChangeText={(text, rawText) => onChange(rawText)}
-                  mask={"+99 999-9999999"}
-                  value={value}
-                  keyboardType="numeric"
-                />
-              )}
-              name="telefono"
-              rules={{ required: true }}
-              defaultValue={""}
-            />
-            <View>
-              {errors.telefono && (
-                <Text style={styles.errorMessage}>
-                  <Icon name="alert-circle-outline" color={"red"} />
-                    Este campo es requerido
-                </Text>
-              )}
-            </View>
-
-            <Controller
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <View style={styles.componentt}>
-                  <GenderPicker onGenderChange={onChange} value={value} />
-                </View>
-              )}
-              name="genero"
-              rules={{ required: true }}
-            />
-            <View>
-              {errors.genero && (
-                <Text style={[styles.errorMessage, { marginTop: 10 }]}>
-                  <Icon name="alert-circle-outline" color={"red"} />
-                    Este campo es requerido
-                </Text>
-              )}
-            </View>
-
-            <Controller
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <View style={styles.componentt}>
-                  <DatePicker onDateChange={onChange} value={value} />
-                </View>
-              )}
-              name="fecha_nacimiento"
-              defaultValue={new Date().toISOString().split("T")[0]}
-              // rules={{ required: true }} // siempre tiene algo asignado por defecto
-            />
-
-            {/* 
-              Familiar se va a descartar...
-            */}
-            {/* 
-              <View
+              <Text
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginTop: 10,
-                  marginBottom: 15,
+                  fontSize: 40,
+                  fontWeight: "bold",
+                  color: "#FFFFFF",
                 }}
               >
-                <Text style={{ fontSize: 20, color: "#00826B" }}>Familiar</Text>
-                <Switch
-                  value={isFamiliar}
-                  onValueChange={handleSwitchToggle}
-                  trackColor={{ false: "#767577", true: "#A4D4BB" }}
-                  thumbColor={isFamiliar ? "#00826B" : "#A4D4BB"}
-                  ios_backgroundColor="#3e3e3e"
-                  style={styles.switch}
-                />
+                Registro de paciente
+              </Text>
+            </View>
+
+            <View
+              style={{
+                alignItems: "center",
+                width: "100%",
+                height: "70%",
+              }}
+            >
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    style={SignUpStyles.inputs}
+                    placeholderTextColor="#00826B"
+                    placeholder="Nombre"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                )}
+                name="no_paciente"
+                rules={{ required: true }}
+                defaultValue={""}
+              />
+              <View>
+                {errors.no_paciente && (
+                  <Text style={styles.errorMessage}>
+                    <Icon name="alert-circle-outline" color={"red"} />
+                      Este campo es requerido
+                  </Text>
+                )}
               </View>
 
-              <Text
-                style={{
-                  marginLeft: 20,
-                  marginRight: 20,
-                  fontSize: 15,
-                  color: "#00826B",
-                }}
-              >
-                Activar la funcionalidad de "Familiar" te permitiria poder acceder
-                a los registros de tratamientos en uso de los usuarios que te lo
-                permitan. En caso de tener un miembro mayor de tu familia en la
-                aplicacion Nurse, te permitira ver su tratamiento en tiempo real,
-                y hacerle seguimiento{" "}
-              </Text> 
-            */}
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    style={SignUpStyles.inputs}
+                    placeholderTextColor="#00826B"
+                    placeholder="Apellido"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                )}
+                name="ap_paciente"
+                rules={{ required: true }}
+                defaultValue={""}
+              />
+              <View>
+                {errors.ap_paciente && (
+                  <Text style={styles.errorMessage}>
+                    <Icon name="alert-circle-outline" color={"red"} />
+                      Este campo es requerido
+                  </Text>
+                )}
+              </View>
 
-            <TouchableOpacity
-              onPress={handleSubmit((data) => handleRegister(data))}
-              style={SignUpStyles.btnAceptar}
-            >
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 25,
-                  fontWeight: "300",
-                }}
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <MaskedTextInput
+                    style={SignUpStyles.inputs}
+                    placeholderTextColor="#00826B"
+                    placeholder="Cedula Ej: 29.560.310"
+                    keyboardType="numeric"
+                    onBlur={onBlur}
+                    onChangeText={(text, rawText) => onChange(rawText)}
+                    mask={"99.999.999"}
+                    value={value}
+                  />
+                )}
+                name="cedula_paciente"
+                rules={{ required: true }}
+                defaultValue={""}
+              />
+              <View>
+                {errors.cedula_paciente && (
+                  <Text style={styles.errorMessage}>
+                    <Icon name="alert-circle-outline" color={"red"} />
+                      Este campo es requerido
+                  </Text>
+                )}
+              </View>
+
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <MaskedTextInput
+                    style={SignUpStyles.inputs}
+                    placeholderTextColor="#00826B"
+                    placeholder="Telefonon Ej: +58 123-1234567"
+                    onBlur={onBlur}
+                    onChangeText={(text, rawText) => onChange(rawText)}
+                    mask={"+99 999-9999999"}
+                    value={value}
+                    keyboardType="numeric"
+                  />
+                )}
+                name="telefono"
+                rules={{ required: true }}
+                defaultValue={""}
+              />
+              <View>
+                {errors.telefono && (
+                  <Text style={styles.errorMessage}>
+                    <Icon name="alert-circle-outline" color={"red"} />
+                      Este campo es requerido
+                  </Text>
+                )}
+              </View>
+
+              <Controller
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <View style={styles.componentt}>
+                    <GenderPicker onGenderChange={onChange} value={value} />
+                  </View>
+                )}
+                name="genero"
+                rules={{ required: true }}
+              />
+              <View>
+                {errors.genero && (
+                  <Text style={[styles.errorMessage, { marginTop: 10 }]}>
+                    <Icon name="alert-circle-outline" color={"red"} />
+                      Este campo es requerido
+                  </Text>
+                )}
+              </View>
+
+              <Controller
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <View style={styles.componentt}>
+                    <DatePicker onDateChange={onChange} value={value} />
+                  </View>
+                )}
+                name="fecha_nacimiento"
+                defaultValue={new Date().toISOString().split("T")[0]}
+                // rules={{ required: true }} // siempre tiene algo asignado por defecto
+              />
+
+              <TouchableOpacity
+                onPress={handleSubmit((data) => handleRegister(data))}
+                style={SignUpStyles.btnAceptar}
               >
-                Aceptar
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={{
+                    color: "white",
+                    fontSize: 25,
+                    fontWeight: "300",
+                  }}
+                >
+                  Aceptar
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
+        </LinearGradient>
+      </ScrollView>
+      {registerMutation.isPending && (
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: BackgroundShade,
+          }}
+        >
+          <ActivityIndicator size="large" color={PrimaryColor} />
         </View>
-
-        {registerMutation.isPending && (
-          <View
-            style={{
-              position: "absolute",
-              width: "100%",
-              height: "100%",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 10,
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-            }}
-          >
-            <ActivityIndicator size="large" color="#00826B" />
-          </View>
-        )}
-      </LinearGradient>
-    </ScrollView>
-    // </KeyboardAvoidingView>
+      )}
+    </View>
   );
 };
 

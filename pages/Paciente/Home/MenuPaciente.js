@@ -26,6 +26,13 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import * as Notifications from "expo-notifications";
+import {
+  PrimaryColor,
+  SecondaryColor,
+  ThirdColor,
+  WhiteColor,
+  BlackColor,
+} from "../../../styles/globalStyles";
 
 const estado = ["Omitido", "Completado", "Pendiente"];
 const { width } = Dimensions.get("window");
@@ -91,9 +98,9 @@ const MenuPaciente = () => {
     });
   };
 
-  const cancelAllNotifications = async () => {
-    await Notifications.cancelAllScheduledNotificationsAsync();
-  };
+  // const cancelAllNotifications = async () => {
+  //   await Notifications.cancelAllScheduledNotificationsAsync();
+  // };
 
   // const handleTest = async () => {
   //   timedNotificationV3();
@@ -108,17 +115,20 @@ const MenuPaciente = () => {
       handleRecordatorios(recordatorios.data);
     }
 
-    if (
-      !Array.isArray(data) ||
-      data.length === 0 ||
-      !Array.isArray(recordatorios.data) ||
-      recordatorios.data.length === 0
-    ) {
-      cancelAllNotifications();
-    }
-
-    // handleTest();
+    // if (
+    //   !Array.isArray(data) ||
+    //   data.length === 0 ||
+    //   !Array.isArray(recordatorios.data) ||
+    //   recordatorios.data.length === 0
+    // ) {
+    //   cancelAllNotifications();
+    // }
   }, [data, recordatorios.data]);
+
+  // useEffect(() => {
+  //   // cancelAllNotifications();
+  //   handleTest();
+  // }, []);
 
   if (isPending || isError) {
     return (
@@ -140,6 +150,7 @@ const MenuPaciente = () => {
     <View style={styles.container}>
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.header}></View>
+
         <View style={styles.picker}>
           <Swiper
             index={1}
@@ -175,8 +186,8 @@ const MenuPaciente = () => {
                         style={[
                           styles.item,
                           isActive && {
-                            backgroundColor: "#111",
-                            borderColor: "#111",
+                            backgroundColor: PrimaryColor,
+                            borderColor: ThirdColor,
                           },
                         ]}
                       >
@@ -204,6 +215,7 @@ const MenuPaciente = () => {
             ))}
           </Swiper>
         </View>
+
         <View style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 24 }}>
           <Text style={styles.subtitle}>{value.toLocaleDateString()}</Text>
           <View style={styles.placeholder}>
@@ -214,7 +226,7 @@ const MenuPaciente = () => {
               >
                 {typeof data === "string" || !Array.isArray(data) ? (
                   <View style={styles.noEventsContainer}>
-                    <Text style={styles.noEventsText}>{data}</Text>
+                    <Text style={styles.noEventsText}>No Hay Eventos</Text>
                   </View>
                 ) : (
                   <>

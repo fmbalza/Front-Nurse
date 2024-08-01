@@ -120,7 +120,7 @@ const PacienteLogin = () => {
       <Text style={styles.registerText}>
         ¿No tienes una cuenta?{" "}
         <Text
-          style={styles.registerLink}
+          style={{ color: "#00826B", fontWeight: "bold" }}
           onPress={() => navigation.navigate("PacienteSignUp")}
         >
           Regístrate aquí

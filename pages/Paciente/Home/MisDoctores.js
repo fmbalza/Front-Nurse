@@ -31,7 +31,7 @@ const MisDoctores = () => {
 
   useEffect(() => {
     if (typeof data === "string" || !data) {
-      console.log("Aqui en MisDoctores.js: no hay data");
+      // console.log("Aqui en MisDoctores.js: no hay data");
     } else {
       fetchPosts();
     }
@@ -213,6 +213,7 @@ const styles = StyleSheet.create({
   containerr: {
     flexDirection: "row",
     alignItems: "center",
+    marginTop: 10,
     marginBottom: 10,
     backgroundColor: "#D6FFE9",
     marginLeft: 10,
