@@ -122,13 +122,13 @@ const MenuPaciente = () => {
       return item.estado === 2 && new Date(item.fecha) > now;
     });
 
-    // pendingConsultas.forEach((item) => {
-    //   timedNotificationV1(item.fecha);
-    // });
+    pendingConsultas.forEach((item) => {
+      timedNotificationV1(item.fecha);
+    });
 
-    for (item of pendingConsultas) {
-      await timedNotificationV1(item.fecha);
-    }
+    // for (item of pendingConsultas) {
+    //   await timedNotificationV1(item.fecha);
+    // }
   };
 
   const handleRecordatorios = async () => {
@@ -148,15 +148,15 @@ const MenuPaciente = () => {
       );
     });
 
-    // pendingRecordatorios.forEach((item) => {
-    //   let formatted = item.fecha.split(/[+-]\d{2}:\d{2}$/)[0];
-    //   timedNotificationV2(formatted, item);
-    // });
-
-    for (item of pendingRecordatorios) {
+    pendingRecordatorios.forEach((item) => {
       let formatted = item.fecha.split(/[+-]\d{2}:\d{2}$/)[0];
-      await timedNotificationV2(formatted, item);
-    }
+      timedNotificationV2(formatted, item);
+    });
+
+    // for (item of pendingRecordatorios) {
+    //   let formatted = item.fecha.split(/[+-]\d{2}:\d{2}$/)[0];
+    //   await timedNotificationV2(formatted, item);
+    // }
   };
 
   useEffect(() => {
