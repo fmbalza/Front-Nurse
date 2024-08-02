@@ -19,6 +19,7 @@ import useAuthStore from "../../../utils/storage/auth";
 import userAccountFigure from "../../../assets/user-account-figure.png";
 import { useQueryClient } from "@tanstack/react-query";
 import { MaskedText } from "react-native-mask-text";
+import * as Notifications from "expo-notifications";
 
 const PerfilPaciente = () => {
   const queryClient = useQueryClient();
@@ -39,12 +40,12 @@ const PerfilPaciente = () => {
   const navigation = useNavigation();
   const { logout } = useAuthStore();
 
-  const doLogOut = () => {
-    // Aquí se debe de hacer el logout
+  const doLogOut = async () => {
     logout();
+    await Notifications.cancelAllScheduledNotificationsAsync();
     queryClient.cancelQueries();
-    queryClient.removeQueries();
-    queryClient.clear();
+    // queryClient.removeQueries();
+    // queryClient.clear();
     // navigation.getParent("MainStack").navigate("StartPage", { logout: true });
     navigation
       .getParent("MainStack")

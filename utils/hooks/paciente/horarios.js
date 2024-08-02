@@ -35,6 +35,7 @@ export const useGetRecordatoriosByPaciente = () => {
     queryFn: () => getRecordatoriosByPaciente(user?.cedula_paciente),
     refetchInterval: 30000,
     enabled: canFetch,
+    placeholderData: keepPreviousData,
   });
 };
 

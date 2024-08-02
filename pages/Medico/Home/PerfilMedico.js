@@ -44,8 +44,8 @@ const PerfilMedico = () => {
     logout();
     await Notifications.cancelAllScheduledNotificationsAsync();
     queryClient.cancelQueries();
-    queryClient.removeQueries();
-    queryClient.clear();
+    // queryClient.removeQueries();
+    // queryClient.clear();
     // navigation.getParent("MainStack").navigate("StartPage", { logout: true });
     navigation
       .getParent("MainStack")

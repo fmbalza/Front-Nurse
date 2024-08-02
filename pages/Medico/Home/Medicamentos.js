@@ -547,10 +547,14 @@ const Medicamentos = () => {
                 <Text>{selectedMed?.in_medicamento}</Text>
               </View>
 
-              <View style={{ flexDirection: "row" }}>
-                <Text style={{ fontWeight: "bold" }}>Funcion: </Text>
-                <Text>{selectedMed?.fn_medicamento?.no_funcion}. </Text>
-                <Text>{selectedMed?.fn_medicamento?.de_funcion}</Text>
+              <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+                <Text style={{ fontWeight: "bold" }}>
+                  Funcion: 
+                  <Text style={{ fontWeight: "100" }} ellipsizeMode="tail">
+                    {selectedMed?.fn_medicamento?.no_funcion},{" "}
+                    {selectedMed?.fn_medicamento?.de_funcion}
+                  </Text>
+                </Text>
               </View>
             </View>
             <TouchableOpacity

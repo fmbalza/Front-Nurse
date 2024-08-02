@@ -10,10 +10,12 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { useGetConsulta } from "../../../utils/hooks/medico/consultaDia";
 import ImageViewer from "../../../components/ImageViewer";
+import useAuthStore from "../../../utils/storage/auth";
 
 const DetallesConsulta = ({ route }) => {
   const { id_consulta, paciente } = route.params;
   const navigation = useNavigation();
+  const { user, role } = useAuthStore();
   const { data, error, isError, isFetching, isLoading, isPending, isSuccess } =
     useGetConsulta(id_consulta);
   const [horarios, setHorarios] = useState([]);
@@ -135,24 +137,26 @@ const DetallesConsulta = ({ route }) => {
                 </>
               )}
 
-              <TouchableOpacity
-                style={{
-                  backgroundColor: "#00826B",
-                  padding: 10,
-                  borderRadius: 8,
-                  marginTop: 16,
-                }}
-                onPress={() => {
-                  navigation.navigate("AssignMedicTreatment", {
-                    id_consulta: id_consulta,
-                    paciente: paciente,
-                  });
-                }}
-              >
-                <Text style={{ color: "white", textAlign: "center" }}>
-                  Asignar Medicamento/Tratamiento
-                </Text>
-              </TouchableOpacity>
+              {role === "medico" && (
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "#00826B",
+                    padding: 10,
+                    borderRadius: 8,
+                    marginTop: 16,
+                  }}
+                  onPress={() => {
+                    navigation.navigate("AssignMedicTreatment", {
+                      id_consulta: id_consulta,
+                      paciente: paciente,
+                    });
+                  }}
+                >
+                  <Text style={{ color: "white", textAlign: "center" }}>
+                    Asignar Medicamento/Tratamiento
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
           ))}
       </ScrollView>

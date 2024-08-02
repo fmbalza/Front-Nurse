@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ScrollView,
+  Modal,
 } from "react-native";
 import { useGetConsultasById } from "../../../utils/hooks/paciente/consultas";
 import moment from "moment";
@@ -16,7 +17,6 @@ import Swiper from "react-native-swiper";
 import {
   timedNotificationV1,
   timedNotificationV2,
-  timedNotificationV3,
 } from "../../../utils/notifications/notifications";
 import {
   useGetRecordatoriosByPaciente,
@@ -32,10 +32,61 @@ import {
   ThirdColor,
   WhiteColor,
   BlackColor,
+  BackgroundShade,
 } from "../../../styles/globalStyles";
 
 const estado = ["Omitido", "Completado", "Pendiente"];
 const { width } = Dimensions.get("window");
+
+const DebugNotifModal = ({ isVisible, close, info }) => {
+  const [Dinfo, setDInfo] = useState(null);
+
+  useEffect(() => {
+    setDInfo(info);
+  }, []);
+
+  return (
+    <Modal visible={isVisible} animationType="slide" transparent>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: BackgroundShade,
+        }}
+      >
+        <TouchableOpacity
+          onPress={close}
+          style={{
+            padding: 10,
+            margin: 10,
+            backgroundColor: WhiteColor,
+            borderRadius: 10,
+          }}
+        >
+          <Text>Hide</Text>
+        </TouchableOpacity>
+        <ScrollView>
+          {info &&
+            info.map((item, index) => (
+              <View
+                key={index}
+                style={{
+                  padding: 10,
+                  margin: 10,
+                  backgroundColor: WhiteColor,
+                  borderRadius: 10,
+                }}
+              >
+                {/* <Text>{item.identifier}</Text> */}
+                <Text>{new Date(item.trigger.value).toLocaleString()}</Text>
+              </View>
+            ))}
+        </ScrollView>
+      </View>
+    </Modal>
+  );
+};
 
 const MenuPaciente = () => {
   const navigation = useNavigation();
@@ -43,6 +94,8 @@ const MenuPaciente = () => {
   const [value, setValue] = useState(new Date());
   const [week, setWeek] = useState(0);
   const [isManualChange, setIsManualChange] = useState(false);
+  const [debug, setDebug] = useState(false);
+  const [debugInfo, setDebugInfo] = useState(null);
 
   const { isPending, isError, data, error } = useGetConsultasById();
   const recordatorios = useGetRecordatoriosByPaciente();
@@ -63,15 +116,23 @@ const MenuPaciente = () => {
     });
   }, [week]);
 
+  const getnotifications = async () => {
+    const notifications =
+      await Notifications.getAllScheduledNotificationsAsync();
+
+    notifications.sort((a, b) => {
+      return a.trigger.value - b.trigger.value;
+    });
+
+    setDebugInfo(notifications);
+  };
+
   const handleConsultas = async (data) => {
-    await Notifications.cancelAllScheduledNotificationsAsync();
+    const now = new Date();
+    // now.setHours(0, 0, 0, 0);
 
     const pendingConsultas = data.filter((item) => {
-      // console.log(
-      //   "Item: ",
-      //   item.estado === 2 && new Date(item.fecha) > new Date()
-      // );
-      return item.estado === 2 && new Date(item.fecha) > new Date();
+      return item.estado === 2 && new Date(item.fecha) > now;
     });
 
     pendingConsultas.forEach((item) => {
@@ -80,33 +141,31 @@ const MenuPaciente = () => {
   };
 
   const handleRecordatorios = async () => {
-    // await Notifications.cancelAllScheduledNotificationsAsync();
     const now = new Date();
+    // now.setHours(0, 0, 0, 0);
+
     const nextWeek = new Date();
     nextWeek.setDate(now.getDate() + 7);
+    nextWeek.setHours(23, 59, 59, 0);
 
     const pendingRecordatorios = recordatorios.data.filter((item) => {
+      let formatted = item.fecha.split(/[+-]\d{2}:\d{2}$/)[0];
       return (
         item.estado === 2 &&
-        new Date(item.fecha) > now &&
-        new Date(item.fecha) <= nextWeek
+        new Date(formatted) > now &&
+        new Date(formatted) <= nextWeek
       );
     });
 
     pendingRecordatorios.forEach((item) => {
-      timedNotificationV2(item.fecha.split(/[+-]\d{2}:\d{2}$/)[0], item);
+      let formatted = item.fecha.split(/[+-]\d{2}:\d{2}$/)[0];
+      timedNotificationV2(formatted, item);
     });
   };
 
-  // const cancelAllNotifications = async () => {
-  //   await Notifications.cancelAllScheduledNotificationsAsync();
-  // };
-
-  // const handleTest = async () => {
-  //   timedNotificationV3();
-  // };
-
   useEffect(() => {
+    getnotifications();
+
     if (Array.isArray(data) && data.length > 0) {
       handleConsultas(data);
     }
@@ -114,21 +173,7 @@ const MenuPaciente = () => {
     if (Array.isArray(recordatorios.data) && recordatorios.data.length > 0) {
       handleRecordatorios(recordatorios.data);
     }
-
-    // if (
-    //   !Array.isArray(data) ||
-    //   data.length === 0 ||
-    //   !Array.isArray(recordatorios.data) ||
-    //   recordatorios.data.length === 0
-    // ) {
-    //   cancelAllNotifications();
-    // }
   }, [data, recordatorios.data]);
-
-  // useEffect(() => {
-  //   // cancelAllNotifications();
-  //   handleTest();
-  // }, []);
 
   if (isPending || isError) {
     return (
@@ -137,14 +182,6 @@ const MenuPaciente = () => {
       </View>
     );
   }
-
-  // if (Array.isArray(data) && data.length > 0) {
-  //   const fechas = data.map((consulta) => consulta.fecha);
-  // }
-
-  // useEffect(() => {
-  //   console.log(recordatorios.data);
-  // }, [recordatorios.data]);
 
   return (
     <View style={styles.container}>
@@ -217,12 +254,28 @@ const MenuPaciente = () => {
         </View>
 
         <View style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 24 }}>
+          <TouchableOpacity
+            onPress={() => {
+              setDebug(true);
+            }}
+          >
+            <Text>Debug</Text>
+          </TouchableOpacity>
+
+          <DebugNotifModal
+            isVisible={debug}
+            close={() => {
+              setDebug(false);
+            }}
+            info={debugInfo}
+          />
+
           <Text style={styles.subtitle}>{value.toLocaleDateString()}</Text>
           <View style={styles.placeholder}>
             <View style={styles.placeholderInset}>
               <ScrollView
                 style={{ flex: 1 }}
-                contentContainerStyle={{ flexGrow: 1 }}
+                contentContainerStyle={{ flexGrow: 1, padding: 16 }}
               >
                 {typeof data === "string" || !Array.isArray(data) ? (
                   <View style={styles.noEventsContainer}>
@@ -259,12 +312,14 @@ const MenuPaciente = () => {
                             <Text style={styles.eventTitle}>
                               Consulta {index + 1} - {estado[item.estado]}
                             </Text>
-                            <Text>
+                            <Text style={styles.eventText}>
                               Medico: {item.cd_medico.no_medico} 
                               {item.cd_medico.ap_medico}
                             </Text>
-                            <Text>Descripcion: {item.de_consulta}</Text>
-                            <Text>
+                            <Text style={styles.eventText}>
+                              Descripcion: {item.de_consulta}
+                            </Text>
+                            <Text style={styles.eventText}>
                               Fecha: {new Date(item.fecha).toLocaleString()}
                             </Text>
                           </View>
@@ -310,7 +365,7 @@ const MenuPaciente = () => {
                                   ?.no_tratamiento}{" "}
                               - {estado[item.estado]}
                             </Text>
-                            <Text>
+                            <Text style={styles.eventText}>
                               Fecha:{" "}
                               {new Date(
                                 item.fecha.split(/[+-]\d{2}:\d{2}$/)[0]
@@ -485,6 +540,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 4,
+    color: "#000",
+  },
+  eventText: {
+    fontSize: 14,
+    color: "#000",
   },
 });
 

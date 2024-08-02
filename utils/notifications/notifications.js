@@ -13,7 +13,7 @@ export const registerForPushNotificationsAsync = async () => {
   if (Platform.OS === "android") {
     Notifications.setNotificationChannelAsync("default", {
       name: "default",
-      importance: Notifications.AndroidImportance.MAX,
+      importance: "high",
       vibrationPattern: [0, 250, 250, 250],
       lightColor: "#FF231F7C",
     });
@@ -132,134 +132,97 @@ export const sendPushNotificationV3 = async (expoPushToken) => {
 };
 
 export const timedNotificationV1 = async (timestamp) => {
+  if (!timestamp) {
+    return;
+  }
+
   const scheduledNotifications =
     await Notifications.getAllScheduledNotificationsAsync();
 
   let localeTimestamp = new Date(timestamp).toLocaleString();
 
-  // const oneHourEarlier = new Date(timestamp);
-  // oneHourEarlier.setHours(oneHourEarlier.getHours() - 1);
-
   const thirtyMinutesEarlier = new Date(timestamp);
   thirtyMinutesEarlier.setMinutes(thirtyMinutesEarlier.getMinutes() - 30);
 
-  if (scheduledNotifications.length > 0) {
-    if (
-      new Date() < new Date(timestamp) &&
-      !scheduledNotifications.some(
-        (item) =>
-          item.content.data.timestamp === timestamp &&
-          item.content.data.key === "consulta"
-      )
-    ) {
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          priority: "max",
-          title: "Recordatorio de consulta",
-          body: `Su consulta para ${localeTimestamp} está por comenzar`,
-          data: {
-            key: "consulta",
-          },
-        },
-        trigger: {
-          date: new Date(thirtyMinutesEarlier),
-        },
-      });
-      // console.log("got in here 1");
-    } else {
-      // console.log("got in here 2");
-      // console.log("Notification already scheduled");
-    }
-  } else {
+  const isScheduledNotification = scheduledNotifications.some(
+    (item) =>
+      item.content.data.timestamp === timestamp &&
+      item.content.data.key === "consulta"
+  );
+
+  if (!isScheduledNotification) {
     await Notifications.scheduleNotificationAsync({
       content: {
-        priority: "max",
+        priority: "high",
         title: "Recordatorio de consulta",
-        body: `Su consulta de las ${localeTimestamp} está por comenzar`,
+        body: `Su consulta para ${localeTimestamp} está por comenzar`,
         data: {
           key: "consulta",
         },
       },
       trigger: {
+        channelId: "default",
         date: new Date(thirtyMinutesEarlier),
       },
     });
-    // console.log("got in here 3");
   }
-
-  // await Notifications.cancelAllScheduledNotificationsAsync();
 };
 
 export const timedNotificationV2 = async (timestamp, data) => {
+  if (!timestamp || !data) {
+    return;
+  }
+
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+
   const scheduledNotifications =
     await Notifications.getAllScheduledNotificationsAsync();
 
-  if (scheduledNotifications.length > 0) {
-    if (
-      new Date() < new Date(timestamp) &&
-      !scheduledNotifications.some(
-        (item) =>
-          item.content.data.timestamp === timestamp &&
-          item.content.data.key === "Med/Trat"
-      )
-    ) {
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          priority: "max",
-          title: data?.id_horario?.id_medicamento
-            ? "Recordatorio de medicamento"
-            : "Recordatorio de tratamiento",
-          body: data?.id_horario?.id_medicamento?.cp_medicamento
-            ? `Es hora de tomar su medicamento ${data.id_horario.id_medicamento.cp_medicamento}`
-            : `Es hora de su tratamiento ${data.id_horario.id_tratamiento.no_tratamiento}`,
-          data: {
-            key: "Med/Trat",
-          },
-        },
-        // trigger: new Date(timestamp),
-        trigger: {
-          date: new Date(timestamp),
-        },
-      });
-      // console.log("got in here 1");
-    } else {
-      // console.log("got in here 2");
-      // console.log("Notification already scheduled");
-    }
-  } else {
+  // console.log(scheduledNotifications);
+
+  const isScheduledNotification = scheduledNotifications.some(
+    (item) =>
+      item.content.data.timestamp === timestamp &&
+      item.content.data.key === "Med/Trat" &&
+      item.identifier === data.id_recordatorio
+  );
+
+  const isFutureDate = now < new Date(timestamp);
+
+  if (!isScheduledNotification && isFutureDate) {
     await Notifications.scheduleNotificationAsync({
       content: {
-        priority: "max",
+        priority: "high",
         title: data?.id_horario?.id_medicamento
           ? "Recordatorio de medicamento"
           : "Recordatorio de tratamiento",
-        body: data?.id_horario?.id_medicamento?.cp_medicamento
-          ? `Es hora de tomar su medicamento ${data.id_horario.id_medicamento.cp_medicamento}`
-          : `Es hora de aplicarse su tratamiento ${data.id_horario.id_tratamiento.no_tratamiento}`,
+        body: data?.id_horario?.id_medicamento
+          ? `Es hora de tomar su medicamento: ${data.id_horario.id_medicamento.cp_medicamento}`
+          : `Es hora de su tratamiento: ${data.id_horario.id_tratamiento.no_tratamiento}`,
         data: {
           key: "Med/Trat",
+          timestamp,
         },
       },
-      // trigger: new Date(timestamp),
+      identifier: data.id_recordatorio,
       trigger: {
+        channelId: "default",
         date: new Date(timestamp),
       },
     });
-    // console.log("got in here 3");
   }
-
-  // await Notifications.cancelAllScheduledNotificationsAsync();
 };
 
 export const timedNotificationV3 = async () => {
   await Notifications.scheduleNotificationAsync({
     content: {
-      priority: "max",
+      priority: "high",
       title: "Notificacion de Prueba",
       body: `Esta es una notificacion de prueba`,
     },
     trigger: {
-      seconds: 60, // 1 minute
+      seconds: 10, // 1 minute
       repeats: true,
     },
   });
