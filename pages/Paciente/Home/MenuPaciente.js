@@ -38,55 +38,55 @@ import {
 const estado = ["Omitido", "Completado", "Pendiente"];
 const { width } = Dimensions.get("window");
 
-const DebugNotifModal = ({ isVisible, close, info }) => {
-  const [Dinfo, setDInfo] = useState(null);
+// const DebugNotifModal = ({ isVisible, close, info }) => {
+//   const [Dinfo, setDInfo] = useState(null);
 
-  useEffect(() => {
-    setDInfo(info);
-  }, []);
+//   useEffect(() => {
+//     setDInfo(info);
+//   }, []);
 
-  return (
-    <Modal visible={isVisible} animationType="slide" transparent>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: BackgroundShade,
-        }}
-      >
-        <TouchableOpacity
-          onPress={close}
-          style={{
-            padding: 10,
-            margin: 10,
-            backgroundColor: WhiteColor,
-            borderRadius: 10,
-          }}
-        >
-          <Text>Hide</Text>
-        </TouchableOpacity>
-        <ScrollView>
-          {info &&
-            info.map((item, index) => (
-              <View
-                key={index}
-                style={{
-                  padding: 10,
-                  margin: 10,
-                  backgroundColor: WhiteColor,
-                  borderRadius: 10,
-                }}
-              >
-                {/* <Text>{item.identifier}</Text> */}
-                <Text>{new Date(item.trigger.value).toLocaleString()}</Text>
-              </View>
-            ))}
-        </ScrollView>
-      </View>
-    </Modal>
-  );
-};
+//   return (
+//     <Modal visible={isVisible} animationType="slide" transparent>
+//       <View
+//         style={{
+//           flex: 1,
+//           justifyContent: "center",
+//           alignItems: "center",
+//           backgroundColor: BackgroundShade,
+//         }}
+//       >
+//         <TouchableOpacity
+//           onPress={close}
+//           style={{
+//             padding: 10,
+//             margin: 10,
+//             backgroundColor: WhiteColor,
+//             borderRadius: 10,
+//           }}
+//         >
+//           <Text>Hide</Text>
+//         </TouchableOpacity>
+//         <ScrollView>
+//           {info &&
+//             info.map((item, index) => (
+//               <View
+//                 key={index}
+//                 style={{
+//                   padding: 10,
+//                   margin: 10,
+//                   backgroundColor: WhiteColor,
+//                   borderRadius: 10,
+//                 }}
+//               >
+//                 {/* <Text>{item.identifier}</Text> */}
+//                 <Text>{new Date(item.trigger.value).toLocaleString()}</Text>
+//               </View>
+//             ))}
+//         </ScrollView>
+//       </View>
+//     </Modal>
+//   );
+// };
 
 const MenuPaciente = () => {
   const navigation = useNavigation();
@@ -94,8 +94,6 @@ const MenuPaciente = () => {
   const [value, setValue] = useState(new Date());
   const [week, setWeek] = useState(0);
   const [isManualChange, setIsManualChange] = useState(false);
-  const [debug, setDebug] = useState(false);
-  const [debugInfo, setDebugInfo] = useState(null);
 
   const { isPending, isError, data, error } = useGetConsultasById();
   const recordatorios = useGetRecordatoriosByPaciente();
@@ -116,17 +114,6 @@ const MenuPaciente = () => {
     });
   }, [week]);
 
-  const getnotifications = async () => {
-    const notifications =
-      await Notifications.getAllScheduledNotificationsAsync();
-
-    notifications.sort((a, b) => {
-      return a.trigger.value - b.trigger.value;
-    });
-
-    setDebugInfo(notifications);
-  };
-
   const handleConsultas = async (data) => {
     const now = new Date();
     // now.setHours(0, 0, 0, 0);
@@ -135,9 +122,13 @@ const MenuPaciente = () => {
       return item.estado === 2 && new Date(item.fecha) > now;
     });
 
-    pendingConsultas.forEach((item) => {
-      timedNotificationV1(item.fecha);
-    });
+    // pendingConsultas.forEach((item) => {
+    //   timedNotificationV1(item.fecha);
+    // });
+
+    for (item of pendingConsultas) {
+      await timedNotificationV1(item.fecha);
+    }
   };
 
   const handleRecordatorios = async () => {
@@ -157,15 +148,18 @@ const MenuPaciente = () => {
       );
     });
 
-    pendingRecordatorios.forEach((item) => {
+    // pendingRecordatorios.forEach((item) => {
+    //   let formatted = item.fecha.split(/[+-]\d{2}:\d{2}$/)[0];
+    //   timedNotificationV2(formatted, item);
+    // });
+
+    for (item of pendingRecordatorios) {
       let formatted = item.fecha.split(/[+-]\d{2}:\d{2}$/)[0];
-      timedNotificationV2(formatted, item);
-    });
+      await timedNotificationV2(formatted, item);
+    }
   };
 
   useEffect(() => {
-    getnotifications();
-
     if (Array.isArray(data) && data.length > 0) {
       handleConsultas(data);
     }
@@ -254,21 +248,20 @@ const MenuPaciente = () => {
         </View>
 
         <View style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 24 }}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {
               setDebug(true);
             }}
           >
             <Text>Debug</Text>
           </TouchableOpacity>
-
           <DebugNotifModal
             isVisible={debug}
             close={() => {
               setDebug(false);
             }}
             info={debugInfo}
-          />
+          /> */}
 
           <Text style={styles.subtitle}>{value.toLocaleDateString()}</Text>
           <View style={styles.placeholder}>

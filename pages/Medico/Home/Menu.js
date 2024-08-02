@@ -42,23 +42,20 @@ const Menu = () => {
   const deleteConsultaMutation = useDeleteConsulta();
 
   const handleNotifications = async (data) => {
-    await Notifications.cancelAllScheduledNotificationsAsync();
+    const now = new Date();
+    // now.setHours(0, 0, 0, 0);
 
     const pendingConsultas = data.filter((item) => {
       // console.log(
       //   "Item: ",
       //   item.estado === 2 && new Date(item.fecha) > new Date()
       // );
-      return item.estado === 2 && new Date(item.fecha) > new Date();
+      return item.estado === 2 && new Date(item.fecha) > now;
     });
 
     pendingConsultas.forEach((item) => {
       timedNotificationV1(item.fecha);
     });
-  };
-
-  const cancelAllConsultas = async () => {
-    await Notifications.cancelAllScheduledNotificationsAsync();
   };
 
   useEffect(() => {
@@ -80,9 +77,6 @@ const Menu = () => {
   useEffect(() => {
     if (Array.isArray(data) && data.length > 0) {
       handleNotifications(data);
-    } else {
-      console.log("No hay consultas");
-      cancelAllConsultas();
     }
   }, [data, deleteConsultaMutation.isSuccess]);
 
