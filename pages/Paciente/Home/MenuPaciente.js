@@ -125,10 +125,6 @@ const MenuPaciente = () => {
     pendingConsultas.forEach((item) => {
       timedNotificationV1(item.fecha);
     });
-
-    // for (item of pendingConsultas) {
-    //   await timedNotificationV1(item.fecha);
-    // }
   };
 
   const handleRecordatorios = async () => {
@@ -163,7 +159,6 @@ const MenuPaciente = () => {
     if (Array.isArray(data) && data.length > 0) {
       handleConsultas(data);
     }
-
     if (Array.isArray(recordatorios.data) && recordatorios.data.length > 0) {
       handleRecordatorios(recordatorios.data);
     }

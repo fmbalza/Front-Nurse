@@ -8,18 +8,25 @@ import { useVerifyPaciente } from "../utils/hooks/paciente/auth.js";
 import { useVerifyMedico } from "../utils/hooks/medico/auth.js";
 import useAuthStore from "../utils/storage/auth.js";
 import * as Notifications from "expo-notifications";
+import { registerForPushNotificationsAsync } from "../utils/notifications/notifications.js";
 
 const StartPage = () => {
   const navigation = useNavigation();
 
   const verifyPacienteQuery = useVerifyPaciente();
   const verifyMedicoQuery = useVerifyMedico();
-  const { rememberMe, role, user, logout } = useAuthStore();
+  const { rememberMe, role, setPushToken, logout } = useAuthStore();
 
   const doLogOut = async () => {
     await Notifications.cancelAllScheduledNotificationsAsync();
     logout();
   };
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) => {
+      setPushToken(token);
+    });
+  }, []);
 
   useEffect(() => {
     if (verifyPacienteQuery.isSuccess && rememberMe && role === "paciente") {

@@ -29,7 +29,7 @@ const PacienteLogin = () => {
   const loginMutation = usePacienteLogin();
   const navigation = useNavigation();
 
-  const { setRememberMe } = useAuthStore();
+  const { setRememberMe, push_token } = useAuthStore();
   const [autoLogin, setAutoLogin] = useState(false);
 
   const toggleSwitch = () => {
@@ -38,8 +38,9 @@ const PacienteLogin = () => {
   };
 
   const handleLogIn = async (values) => {
-    const push_token = await registerForPushNotificationsAsync();
-    values = { ...values, push_token };
+    // const push_token = await registerForPushNotificationsAsync();
+    const pt = push_token;
+    values = { ...values, push_token: pt };
     // console.log(values);
     loginMutation.mutate(values);
   };

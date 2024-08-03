@@ -6,14 +6,14 @@ import useAuthStore from "../storage/auth";
 
 const handleRegistrationError = (errorMessage) => {
   alert(errorMessage);
-  throw new Error(errorMessage);
+  // throw new Error(errorMessage);
 };
 
 export const registerForPushNotificationsAsync = async () => {
   if (Platform.OS === "android") {
     Notifications.setNotificationChannelAsync("default", {
       name: "default",
-      importance: "high",
+      importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: "#FF231F7C",
     });
@@ -146,8 +146,8 @@ export const timedNotificationV1 = async (timestamp) => {
 
   const isScheduledNotification = scheduledNotifications.some(
     (item) =>
-      item.content.data.timestamp === timestamp &&
-      item.content.data.key === "consulta"
+      item.content.data.timestamp == timestamp &&
+      item.content.data.key == "consulta"
   );
 
   if (!isScheduledNotification) {
@@ -158,10 +158,11 @@ export const timedNotificationV1 = async (timestamp) => {
         body: `Su consulta para ${localeTimestamp} está por comenzar`,
         data: {
           key: "consulta",
+          timestamp,
         },
       },
       trigger: {
-        channelId: "default",
+        type: "date",
         date: new Date(thirtyMinutesEarlier),
       },
     });
@@ -183,9 +184,9 @@ export const timedNotificationV2 = async (timestamp, data) => {
 
   const isScheduledNotification = scheduledNotifications.some(
     (item) =>
-      item.content.data.timestamp === timestamp &&
-      item.content.data.key === "Med/Trat" &&
-      item.identifier === data.id_recordatorio
+      item.content.data.timestamp == timestamp &&
+      item.content.data.key == "Med/Trat" &&
+      item.identifier == data.id_recordatorio
   );
 
   const isFutureDate = now < new Date(timestamp);

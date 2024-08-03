@@ -18,7 +18,7 @@ const StartPage = () => {
   const navigation = useNavigation();
   const [showModal, setShowModal] = useState(false);
 
-  checkForBatteryOptimization = async () => {
+  const checkForBatteryOptimization = async () => {
     await isBatteryOptimizationEnabledAsync().then((res) => {
       if (res) {
         setShowModal(true);
