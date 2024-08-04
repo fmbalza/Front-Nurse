@@ -51,20 +51,39 @@ const MedicoLogin = () => {
     <LinearGradient colors={["#FFFFFF", "#D6FFE9"]} style={styles.container}>
       <Image
         source={require("../../assets/nurse_logo.png")}
-        style={{ width: 200, height: 230, resizeMode: "contain" }}
+        style={{ width: 150, height: 64, resizeMode: "contain", top:60, left: 300}}
       />
-
+<View style={{justifyContent: 'left', width:'100%', marginLeft:'10%', marginBottom:70}}>
       <Text
         style={{
-          fontSize: 95,
-          textAlign: "center",
+          fontSize: 60,
 
+          top:-30,
           color: "#00826B",
-          fontWeight: "500",
+          fontWeight: "600",
+
         }}
       >
-        Nurse
+        Nurse.
       </Text>
+
+      <Text style={{
+        fontSize:25,
+        fontWeight: "300",
+        color: "#00826B",
+      }}>
+        Bienvenido de Nuevo
+      </Text>
+      <Text style={{
+        fontSize:15,
+        fontWeight: "300",
+        color: "#00826B",
+      }}>
+        Inicia sesión a continuación 
+      </Text>
+</View>
+   
+
 
       <View style={LoginStyles.inputs}>
         <Controller
@@ -72,7 +91,7 @@ const MedicoLogin = () => {
           render={({ field: { onChange, onBlur, value } }) => (
             <MaskedTextInput
               style={styles.input}
-              placeholder="Cedula Ej: 29.560.310"
+              placeholder="Cedula"
               placeholderTextColor="#00826B"
               onChangeText={(text, rawText) => onChange(rawText)}
               onBlur={onBlur}
@@ -186,6 +205,7 @@ const MedicoLogin = () => {
       <TouchableOpacity
         onPress={handleSubmit((data) => handleLogIn(data))}
         style={LoginStyles.btnAceptar}
+        
       >
         <Text
           style={{

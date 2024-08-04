@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Modal,
   Pressable,
+  Image,
 } from "react-native";
 import { useState, useEffect } from "react";
 import {
@@ -484,10 +485,51 @@ const Medicamentos = () => {
                       setShowModal(true);
                     }}
                   >
-                    <Text style={styles.dataTitle}>
+                    {/* <Text style={styles.dataTitle}>
                       {item?.cp_medicamento} - {item?.pr_medicamento} 
                       {item?.mg_medicamento}
-                    </Text>
+                    </Text> */}
+
+                      <View style={styles.medicamentContainer}>
+                        {/* {item?.pr_medicamento === 'Tableta'
+                        && (
+                            <Image source={require('../../../assets/Tableta.png')} style={styles.medicamentImage} />
+                          )}
+                          {item?.pr_medicamento === 'Inyectable' && (
+                            <Image source={require('../../../assets/Inyectable.png')} style={styles.medicamentImage} />
+                          )}
+                          {item?.pr_medicamento === 'Capsula' && (
+                            <Image source={require('../../../assets/Capsula.png')} style={styles.medicamentImage} />
+                          )} */}
+                        <View style={{width:'40%'}}>
+                          <Text style={styles.dataTitle}>
+                            {item?.cp_medicamento}  
+                          </Text>
+                        </View>
+                       
+
+                        <View style={{
+                          backgroundColor:'#00826B', 
+                          borderRadius:8, 
+                          width:'40%', 
+                          height:'100%', 
+                          left:12, 
+                          alignItems:'center',
+                          justifyContent:"center"
+                          }}>
+                          <Text style={{ color:"white"}}>
+                           {item?.pr_medicamento} {item?.mg_medicamento} 
+
+                          </Text>
+                        </View>
+
+                        {/* <Text style={styles.dataText}>
+                          {item?.fn_medicamento?.no_funcion}: {item?.fn_medicamento?.de_funcion}
+                        </Text> */}
+                      </View>
+
+
+
                     {/* <Text style={styles.dataText}>
                       {item?.fn_medicamento?.no_funcion}:{" "}
                       {item?.fn_medicamento?.de_funcion}
@@ -527,11 +569,21 @@ const Medicamentos = () => {
         <View style={styles.modal_container}>
           <View style={styles.actual_modal}>
             <View style={{ alignItems: "flex-start", width: "90%" }}>
+                        {selectedMed?.pr_medicamento === 'Tableta' && (
+                          <Image source={require('../../../assets/Tableta.png')} style={styles.medicamentImageS} />
+                        )}
+                        {selectedMed?.pr_medicamento === 'Inyectable' && (
+                          <Image source={require('../../../assets/Inyectable.png')} style={styles.medicamentImageS} />
+                        )}
+                        {selectedMed?.pr_medicamento === 'Capsula' && (
+                          <Image source={require('../../../assets/Capsula.png')} style={styles.medicamentImageS} />
+                        )}
               <Text
                 style={{
                   fontWeight: "bold",
                   fontSize: 24,
                   marginBottom: 5,
+                  bottom:"20%"
                 }}
               >
                 {selectedMed?.cp_medicamento}
@@ -658,16 +710,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     // borderColor: "#A4D4BB",
     borderRadius: 10,
-    borderColor: "#D6FFE9",
-    backgroundColor: "#D6FFE9",
-    elevation: 5,
+    borderColor: "#00826B",
+    backgroundColor: "white",
+
     height: "auto",
     // minHeight: 80,
     margin: 5,
   },
   dataTitle: {
     fontWeight: "bold",
-    fontSize: 17,
+    fontSize: 15,
   },
   dataText: {
     // fontWeight: "bold",
@@ -685,5 +737,29 @@ const styles = StyleSheet.create({
     color: "#00826B",
     fontSize: 17,
     marginBottom: 10,
+  },
+  medicamentContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+ 
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    shadowColor: '#000',
+  
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+  },
+  medicamentImage: {
+    width: 40,
+    height: 40,
+    marginRight: 12,
+    borderRadius:8
+  },
+  medicamentImageS: {
+    width: 60,
+    height: 60,
+    left:"80%",
+    top:"2%"
   },
 });
