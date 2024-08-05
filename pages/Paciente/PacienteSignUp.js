@@ -8,6 +8,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Button,
+  Image
 } from "react-native";
 import { SignUpStyles } from "../../styles/globalStyles";
 import DatePicker from "../../components/DatePicker";
@@ -32,6 +33,8 @@ const PacienteSignUp = () => {
   // const navigation = useNavigation();
   const [alertVisible, setAlertVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showText, setShowText] = useState(false);
+  const [text, setText] = useState('');
 
   const loadFiveSeconds = () => {
     setLoading(true);
@@ -70,6 +73,18 @@ const PacienteSignUp = () => {
     }
   }, [registerMutation.data]);
 
+  const handleFocus = () => {
+    setShowText(true);
+  };
+
+  const handleBlur = () => {
+    setShowText(false);
+  };
+
+  const handleChangeText = (newText) => {
+    setText(newText);
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
@@ -88,33 +103,33 @@ const PacienteSignUp = () => {
           >
             <View
               style={{
-                alignItems: "center",
+                alignItems: "left",
                 width: "100%",
-                height: 100,
+                height: 150,
                 justifyContent: "center",
-                backgroundColor: "#006150",
-                borderBottomLeftRadius: 40,
-                borderBottomRightRadius: 40,
-                elevation: 10,
-                marginBottom: 20,
+                marginLeft: 10, 
               }}
             >
               <Text
                 style={{
-                  fontSize: 40,
+                  fontSize: 36,
                   fontWeight: "bold",
-                  color: "#FFFFFF",
+                  color: "#00826B",
+                  marginLeft: 20, 
                 }}
               >
-                Registro de paciente
+                Formulario Paciente
               </Text>
             </View>
-
+            <Image source={require("../../assets/nurse_logo.png")} 
+            style={{width:60, height:69, left:"40%", top:"-15%"}
+            }></Image>
             <View
               style={{
                 alignItems: "center",
                 width: "100%",
                 height: "70%",
+                top:-70
               }}
             >
               <Controller
@@ -173,7 +188,7 @@ const PacienteSignUp = () => {
                   <MaskedTextInput
                     style={SignUpStyles.inputs}
                     placeholderTextColor="#00826B"
-                    placeholder="Cedula Ej: 29.560.310"
+                    placeholder="Cedula "
                     keyboardType="numeric"
                     onBlur={onBlur}
                     onChangeText={(text, rawText) => onChange(rawText)}
@@ -193,19 +208,27 @@ const PacienteSignUp = () => {
                   </Text>
                 )}
               </View>
-
+              <View style={{justifyContent:'flex-start', width:'100%', marginLeft: 60, marginTop: 10}}>
+                {showText && (
+                    <Text style={{color:'#005848'}}>
+                      Especificar el código de región {"\n"} 
+                      Ej: +XY 123-1234567 
+                    </Text>
+                  )}
+                </View>
               <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <MaskedTextInput
                     style={SignUpStyles.inputs}
                     placeholderTextColor="#00826B"
-                    placeholder="Telefonon Ej: +58 123-1234567"
-                    onBlur={onBlur}
+                    placeholder="Telefono "
+                    onBlur={handleBlur}
                     onChangeText={(text, rawText) => onChange(rawText)}
                     mask={"+99 999-9999999"}
                     value={value}
                     keyboardType="numeric"
+                    onFocus={handleFocus}
                   />
                 )}
                 name="telefono"

@@ -8,6 +8,7 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  Image,
 } from "react-native";
 import { SignUpStyles } from "../../styles/globalStyles";
 import GenderPicker from "../../components/GenderPicker";
@@ -34,6 +35,8 @@ const MedicoSignUp = () => {
   const [selectedImageUri, setSelectedImageUri] = useState(null);
   const specialties = [];
   const [alertVisible, setAlertVisible] = useState(false);
+  const [showText, setShowText] = useState(false);
+  const [text, setText] = useState('');
 
   const showAlert = () => {
     setAlertVisible(true);
@@ -104,6 +107,19 @@ const MedicoSignUp = () => {
     // console.log(selectedImageUri);
   };
 
+
+  const handleFocus = () => {
+    setShowText(true);
+  };
+
+  const handleBlur = () => {
+    setShowText(false);
+  };
+
+  const handleChangeText = (newText) => {
+    setText(newText);
+  };
+  
   return (
     <View style={{ flex: 1 }}>
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
@@ -129,35 +145,38 @@ const MedicoSignUp = () => {
               alignItems: "center",
             }}
           >
+            
             <View
               style={{
-                alignItems: "center",
+                alignItems: "left",
                 width: "100%",
-                height: 100,
+                height: 150,
                 justifyContent: "center",
-                backgroundColor: "#006150",
-                borderBottomLeftRadius: 40,
-                borderBottomRightRadius: 40,
-                elevation: 10,
-                marginBottom: 20,
+                marginLeft: 10, 
+            
               }}
             >
+             
               <Text
                 style={{
-                  fontSize: 40,
+                  fontSize: 36,
                   fontWeight: "bold",
-                  color: "#FFFFFF",
+                  color: "#00826B",
+                  marginLeft: 20, 
                 }}
               >
-                Registro de médico
+                Formulario Médico 
               </Text>
             </View>
-
+            <Image source={require("../../assets/nurse_logo.png")} 
+            style={{width:60, height:69, left:"40%", top:"-12%"}
+            }></Image>
             <View
               style={{
                 alignItems: "center",
                 width: "100%",
                 height: "70%",
+                top:-30
               }}
             >
               <Controller
@@ -185,6 +204,7 @@ const MedicoSignUp = () => {
                 )}
               </View>
 
+             
               <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
@@ -241,7 +261,7 @@ const MedicoSignUp = () => {
                   <MaskedTextInput
                     style={SignUpStyles.inputs}
                     placeholderTextColor="#00826B"
-                    placeholder="Cedula Ej: 29.560.310"
+                    placeholder="Cédula "
                     keyboardType="numeric"
                     onBlur={onBlur}
                     onChangeText={(text, rawText) => onChange(rawText)}
@@ -261,26 +281,40 @@ const MedicoSignUp = () => {
                   </Text>
                 )}
               </View>
+         
 
+                <View style={{justifyContent:'flex-start', width:'100%', marginLeft: 60, marginTop: 10}}>
+                {showText && (
+                    <Text style={{color:'#005848'}}>
+                      Especificar el código de región {"\n"} 
+                      Ej: +XY 123-1234567 
+                    </Text>
+                  )}
+                </View>
               <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <MaskedTextInput
                     style={SignUpStyles.inputs}
                     placeholderTextColor="#00826B"
-                    placeholder="Telefonon Ej: +58 123-1234567"
-                    onBlur={onBlur}
+                    placeholder="Teléfono"
+                    onBlur={handleBlur}
                     onChangeText={(text, rawText) => onChange(rawText)}
                     mask={"+99 999-9999999"}
                     value={value}
                     keyboardType="numeric"
-                  />
+                    onFocus={handleFocus}
+                   
+                  /> 
+                
+                  
                 )}
                 name="telefono"
                 rules={{ required: true }}
                 defaultValue={""}
               />
               <View>
+            
                 {errors.telefono && (
                   <Text style={styles.errorMessage}>
                     <Icon name="alert-circle-outline" color={"red"} />
@@ -295,7 +329,7 @@ const MedicoSignUp = () => {
                   <TextInput
                     style={SignUpStyles.inputs}
                     placeholderTextColor="#00826B"
-                    placeholder="Correo"
+                    placeholder="Correo Electrónico"
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}

@@ -49,20 +49,38 @@ const PacienteLogin = () => {
     <LinearGradient colors={["#FFFFFF", "#D6FFE9"]} style={styles.container}>
       <Image
         source={require("../../assets/nurse_logo.png")}
-        style={{ width: 200, height: 230, resizeMode: "contain" }}
+        style={{ width: 150, height: 64, resizeMode: "contain", top:60, left: 300 }}
       />
-
+<View style={{justifyContent: 'left', width:'100%', marginLeft:'10%',marginBottom:50}}>
       <Text
         style={{
-          fontSize: 95,
-          textAlign: "center",
-
+          fontSize: 60,
+          top:-70,
           color: "#00826B",
-          fontWeight: "500",
+          fontWeight: "600",
+
         }}
       >
-        Nurse
+        Nurse.
       </Text>
+
+      <Text style={{
+        fontSize:25,
+        fontWeight: "300",
+        color: "#00826B",
+        top:-20
+      }}>
+        Bienvenido de Nuevo
+      </Text>
+      <Text style={{
+        fontSize:15,
+        fontWeight: "300",
+        color: "#00826B",
+        top:-20
+      }}>
+        Inicia sesión a continuación 
+      </Text>
+</View>
 
       <View style={LoginStyles.inputs}>
         <Controller

@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Modal,
   Pressable,
+  Image
 } from "react-native";
 import { useState, useEffect } from "react";
 import {
@@ -420,7 +421,37 @@ const Tratamientos = () => {
                       setShowModal(true);
                     }}
                   >
-                    <Text style={styles.dataTitle}>{item?.no_tratamiento}</Text>
+                    <View style={styles.terapiaContainer}>
+
+                    {/* {item?.id_categoria?.de_categoria === 'Terapia Quirúrgica' && (
+                          <Image source={require('../../../assets/Cirugia.png')} style={styles.terapiaImage} />
+                        )}
+                        {item?.id_categoria?.de_categoria === 'Terapia Psicológica' && (
+                          <Image source={require('../../../assets/Psicologia.png')} style={styles.terapiaImage} />
+                        )}
+                        {item?.id_categoria?.de_categoria === 'Terapia Alternativa y Complementaria' && (
+                          <Image source={require('../../../assets/Alternativa.png')} style={styles.terapiaImage} />
+                        )}
+                         {item?.id_categoria?.de_categoria === 'Terapia de Rehabilitación' && (
+                          <Image source={require('../../../assets/Rehabilitacion.png')} style={styles.terapiaImage} />
+                        )}
+                         {item?.id_categoria?.de_categoria === 'Definido por el medico' && (
+                          <Image source={require('../../../assets/Definido.png')} style={styles.terapiaImage} />
+                        )} */}
+
+                      <Text style={styles.dataTitle}>{item?.no_tratamiento} 
+                        {"\n"} 
+                        <Text style={styles.dataDescription}>{item?.id_categoria?.de_categoria}</Text>
+
+                      </Text>
+
+                    
+
+                      
+                    
+
+                    </View>
+                   
                   </TouchableOpacity>
                   {item.origen == user.cedula_medico && (
                     <TouchableOpacity
@@ -571,20 +602,25 @@ const styles = StyleSheet.create({
   },
   listItem: {
     marginVertical: 10,
-    padding: 10,
+  
     borderWidth: 1,
     // borderColor: "#A4D4BB",
     borderRadius: 10,
     borderColor: "#D6FFE9",
     backgroundColor: "#D6FFE9",
     elevation: 5,
-    height: "auto",
+    height: 100,
     // minHeight: 80,
     margin: 5,
   },
   dataTitle: {
     fontWeight: "bold",
     fontSize: 17,
+  },
+  dataDescription:{
+    fontWeight: "bold",
+    fontWeight:"300",
+    fontSize: 13,
   },
   dataText: {
     // fontWeight: "bold",
@@ -603,4 +639,21 @@ const styles = StyleSheet.create({
     fontSize: 17,
     marginBottom: 10,
   },
+  terapiaContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    shadowColor: '#000',
+   height:"100%"
+
+  },
+  terapiaImage: {
+    width: 40,
+    height: 40,
+    marginRight: 12,
+  },
+
 });

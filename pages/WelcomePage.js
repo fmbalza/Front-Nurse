@@ -91,7 +91,7 @@ const StartPage = () => {
             fontWeight: "700",
           }}
         >
-          Bienvenido a Nurse
+          Iniciate en Nurse
         </Text>
         <Text
           style={{
@@ -99,10 +99,10 @@ const StartPage = () => {
             textAlign: "left",
 
             color: "#00826B",
-            fontWeight: "800",
+            fontWeight: "200",
           }}
         >
-          Cuentanos de ti
+          Indicanos tu perfil
         </Text>
 
         <TouchableOpacity
@@ -126,7 +126,7 @@ const StartPage = () => {
               fontWeight: "300",
             }}
           >
-            Medico
+            Médico
           </Text>
         </TouchableOpacity>
 
