@@ -20,8 +20,10 @@ import useAuthStore from "../../../utils/storage/auth";
 import { useGetPacienteMedico } from "../../../utils/hooks/medico/paciente";
 import { useGetPacienteByCedula } from "../../../utils/hooks/medico/paciente";
 import userAccountFigure from "../../../assets/user-account-figure.png";
+import { PrimaryColor, ThirdColor } from "../../../styles/globalStyles";
 
 const PerfilPaciente = ({ route }) => {
+  const estados = ["Todas", "Completadas", "Pendientes"];
   const { user } = useAuthStore.getState();
   const { cedula, paciente } = route.params;
   const [selectedConsulta, setSelectedConsulta] = useState(null);
@@ -35,6 +37,7 @@ const PerfilPaciente = ({ route }) => {
   const { isPending, isError, data, error } = useGetPacienteByCedula(cedula);
   const pacienteConsultaQuery = useGetPacienteConsulta(cedula);
   const pacienteMedicoQuery = useGetPacienteMedico();
+  const [filter, setFilter] = useState(0);
 
   if (pacienteMedicoQuery.isPending) {
     return (
@@ -104,9 +107,14 @@ const PerfilPaciente = ({ route }) => {
         }));
 
   handleConsultaPress = (consulta) => {
-    // console.log(consulta.id_consulta);
+    setSelectedConsulta(consulta.id_consulta);
     const id_consulta = consulta.id_consulta;
-    navigation.navigate("Consulta", { id_consulta, paciente });
+
+    if (consulta.estado === 2) {
+      toggleModal();
+    } else if (consulta.estado === 1) {
+      navigation.navigate("Consulta", { id_consulta, paciente });
+    }
   };
 
   return (
@@ -139,76 +147,101 @@ const PerfilPaciente = ({ route }) => {
         </View>
       </View>
 
-      <Text>Consultas: </Text>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <Text>Consultas: </Text>
+        <TouchableOpacity
+          onPress={() => {
+            setFilter((filter + 1) % 3);
+          }}
+          style={{
+            backgroundColor: PrimaryColor,
+            borderRadius: 10,
+            width: 80,
+            padding: 5,
+          }}
+        >
+          <Text style={{ color: "#fff", textAlign: "center" }}>
+            {" "}
+            {estados[filter]}
+          </Text>
+        </TouchableOpacity>
+      </View>
 
       <View style={{ flex: 1 }}>
         <ScrollView
           style={{
             flex: 1,
-            backgroundColor: "#ECECEC",
+            // backgroundColor: "#ECECEC",
+            borderWidth: 4,
             borderRadius: 10,
+            borderColor: "#e5e7eb",
             marginTop: 10,
             marginBottom: 60,
           }}
+          contentContainerStyle={{ alignItems: "center" }}
         >
           <View style={styles.cardsContainer}>
             <View>
-              {typeof consultas === "string" ||
-              consultas.every((consulta) => consulta.estado !== 2) ? (
-                <Text></Text>
+              {!Array.isArray(consultas) ? (
+                <></>
               ) : (
-                <Text>Pendientes: </Text>
-              )}
-
-              {typeof consultas === "string" ||
-              consultas.every((consulta) => consulta.estado !== 2) ? (
-                <Text></Text>
-              ) : (
-                consultas
-                  .filter((consulta) => consulta.estado === 2)
-                  .map((consulta, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      style={styles.card}
-                      onPress={() => {
-                        setSelectedConsulta(consulta.id_consulta);
-                        toggleModal();
-                      }}
-                    >
-                      <Text style={styles.cardTitle}>
-                        {" "}
-                        Consulta {index + 1}:{" "}
-                      </Text>
-                      <Text style={styles.cardlabel}>
-                        {" "}
-                        Paciente: {consulta.nombrePaciente}
-                      </Text>
-                      <Text style={styles.cardlabel}>
-                        {" "}
-                        Medico: {consulta.nombreMedico}
-                      </Text>
-                      <Text style={styles.cardlabel}>
-                        {" "}
-                        Fecha: {new Date(consulta.fecha).toLocaleString()}
-                      </Text>
-                      <Text style={styles.cardlabel}>
-                        {" "}
-                        Estado: {estado[consulta.estado]}
-                      </Text>
-                    </TouchableOpacity>
-                  ))
+                {
+                  0: consultas,
+                  1: consultas.filter((consulta) => consulta.estado === 1),
+                  2: consultas.filter((consulta) => consulta.estado === 2),
+                }[filter].map((consulta, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.card}
+                    onPress={() => {
+                      handleConsultaPress(consulta);
+                    }}
+                  >
+                    <Text style={styles.cardTitle}>
+                      {" "}
+                      Consulta {index + 1}:{" "}
+                    </Text>
+                    <Text style={styles.cardlabel}>
+                      {" "}
+                      <Text style={{ color: "white", fontWeight: "bold" }}>
+                        Paciente:
+                      </Text>{" "}
+                      {consulta.nombrePaciente}
+                    </Text>
+                    <Text style={styles.cardlabel}>
+                      {" "}
+                      <Text style={{ color: "white", fontWeight: "bold" }}>
+                        Medico:
+                      </Text>{" "}
+                      {consulta.nombreMedico}
+                    </Text>
+                    <Text style={styles.cardlabel}>
+                      {" "}
+                      <Text style={{ color: "white", fontWeight: "bold" }}>
+                        Fecha:
+                      </Text>{" "}
+                      {new Date(consulta.fecha).toLocaleString()}
+                    </Text>
+                    <Text style={styles.cardlabel}>
+                      {" "}
+                      <Text style={{ color: "white", fontWeight: "bold" }}>
+                        Estado:
+                      </Text>{" "}
+                      {estado[consulta.estado]}
+                    </Text>
+                  </TouchableOpacity>
+                ))
               )}
             </View>
 
-            <View style={{ marginTop: 10 }}>
-              {typeof consultas === "string" ||
-              consultas.every((consulta) => consulta.estado !== 1) ? (
-                <Text></Text>
-              ) : (
-                <Text>Completadas: </Text>
-              )}
-              {typeof consultas === "string" ? (
-                <Text>No hay consultas</Text>
+            {/* <View style={{ marginTop: 10 }}>
+              {!Array.isArray(consultas) ? (
+                <></>
               ) : (
                 consultas
                   .filter((consulta) => consulta.estado === 1)
@@ -243,7 +276,7 @@ const PerfilPaciente = ({ route }) => {
                     </TouchableOpacity>
                   ))
               )}
-            </View>
+            </View> */}
           </View>
         </ScrollView>
       </View>
@@ -301,17 +334,20 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     borderRadius: 10,
-    marginTop: 20,
+    // marginTop: 20,
+    padding: 10,
   },
   card: {
     width: 350,
-    height: 200,
+    minHeight: 100,
+    // backgroundColor: "#00826B",
     backgroundColor: "#00826B",
     borderRadius: 10,
-    marginRight: 10,
+    borderWidth: 2,
+    borderColor: ThirdColor,
     justifyContent: "center",
     alignItems: "left",
-    marginTop: 10,
+    marginBottom: 10,
   },
   cardlabel: {
     color: "white",
@@ -322,6 +358,7 @@ const styles = StyleSheet.create({
     color: "black",
   },
   cardTitle: {
+    marginLeft: 10,
     fontSize: 15,
     fontWeight: "bold",
     color: "white",

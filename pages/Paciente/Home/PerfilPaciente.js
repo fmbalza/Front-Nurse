@@ -20,6 +20,7 @@ import userAccountFigure from "../../../assets/user-account-figure.png";
 import { useQueryClient } from "@tanstack/react-query";
 import { MaskedText } from "react-native-mask-text";
 import * as Notifications from "expo-notifications";
+import { MaskedTextInput } from "react-native-mask-text";
 
 const PerfilPaciente = () => {
   const queryClient = useQueryClient();
@@ -222,19 +223,30 @@ const PerfilPaciente = () => {
             <Controller
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
+                <MaskedTextInput
                   style={styles.modalInput}
                   placeholderTextColor="#A4D4BB"
-                  placeholder="Telefono"
+                  placeholder="Teléfono"
                   onBlur={onBlur}
-                  onChangeText={onChange}
+                  onChangeText={(text, rawText) => onChange(rawText)}
+                  mask={"+99 999-9999999"}
                   value={value}
+                  keyboardType="numeric"
                 />
               )}
               name="telefono"
-              rules={{ required: false }}
+              rules={{ minLength: 11, maxLength: 11 }}
               defaultValue={""}
             />
+            <View>
+              {errors.telefono && (
+                <Text style={styles.errorMessage}>
+                  <Icon name="alert-circle-outline" color={"red"} />
+                  {errors.telefono.type === "minLength" &&
+                    "El telefono esta incompleto"}
+                </Text>
+              )}
+            </View>
 
             <View style={styles.modalButtons}>
               <TouchableOpacity
@@ -371,6 +383,10 @@ const styles = StyleSheet.create({
   modalButtonText: {
     color: "#00826B",
     fontWeight: "bold",
+  },
+  errorMessage: {
+    color: "red",
+    fontSize: 14,
   },
 });
 

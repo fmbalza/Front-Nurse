@@ -95,8 +95,6 @@ const StartPage = () => {
           </Text>
         </TouchableOpacity>
 
-     
-
         <Modal visible={showModal} animationType="fade" transparent={true}>
           <View
             style={{

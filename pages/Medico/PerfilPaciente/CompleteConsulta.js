@@ -17,20 +17,13 @@ import ImageViewer from "../../../components/ImageViewer.js";
 import * as ImagePicker from "expo-image-picker";
 import { supabase } from "../../../utils/storage/supabase.js";
 import { decode } from "base64-arraybuffer";
+import { PrimaryColor } from "../../../styles/globalStyles.js";
 
 const CompleteConsulta = ({ route }) => {
   const { idconsulta } = route.params;
   const navigation = useNavigation();
   const updateConsultaMutation = useUpdateConsulta(idconsulta);
   const [showModal, setShowModal] = useState(false);
-  // const [formData, setFormData] = useState({
-  //   ocupacion: "",
-  //   motivosConsulta: "",
-  //   antecedentePersonales: "",
-  //   examenFisico: "",
-  //   impresionDiagnostica: "",
-  //   planManejo: "",
-  // });
   const [formData, setFormData] = useState({
     motivosConsulta: "",
     antecedentePersonales: "",
@@ -39,18 +32,11 @@ const CompleteConsulta = ({ route }) => {
     planManejo: "",
   });
   const [addedImages, setAddedImages] = useState([]);
-  // const [selectedImage, setSelectedImage] = useState([]);
   const [isLoadingManually, setManualLoading] = useState(false);
-  // const {
-  //   control,
-  //   handleSubmit,
-  //   formState: { errors },
-  // } = useForm();
 
   const handleConfirmSave = async (values) => {
     const examen = {
       //   examen: `
-      //   Ocupación: ${formData.ocupacion}
       //   Motivos de Consulta: ${formData.motivosConsulta}
       //   Antecedentes Personales: ${formData.antecedentePersonales}
       //   Examen Físico: ${formData.examenFisico}
@@ -59,7 +45,6 @@ const CompleteConsulta = ({ route }) => {
       // `,
       examen: `
       Motivos de Consulta: ${formData.motivosConsulta}
-      Antecedentes Personales: ${formData.antecedentePersonales}
       Examen Físico: ${formData.examenFisico}
       Impresión Diagnóstica: ${formData.impresionDiagnostica}
       Plan de Manejo: ${formData.planManejo}
@@ -165,7 +150,7 @@ const CompleteConsulta = ({ route }) => {
             }
             multiline
           />
-          <TextInput
+          {/* <TextInput
             style={styles.textArea}
             placeholder="Antecedentes Personales"
             value={formData.antecedentePersonales}
@@ -173,7 +158,7 @@ const CompleteConsulta = ({ route }) => {
               setFormData({ ...formData, antecedentePersonales: text })
             }
             multiline
-          />
+          /> */}
           <TextInput
             style={styles.textArea}
             placeholder="Examen Físico"
@@ -202,8 +187,8 @@ const CompleteConsulta = ({ route }) => {
             multiline
           />
 
-          <View style={{ height: 50 }} />
-          <Text style={styles.label}>Adjuntos:</Text>
+          <View style={{ height: 20 }} />
+          <Text style={{ fontWeight: "bold", fontSize: 14 }}>Adjuntos:</Text>
           {addedImages.length > 0 ? (
             <View style={{ flexDirection: "row", gap: 10 }}>
               {addedImages.map((image, index) => (
@@ -243,17 +228,7 @@ const CompleteConsulta = ({ route }) => {
             </>
           )}
 
-          {/* {selectedImage && (
-            <View>
-              <Image
-                source={{ uri: selectedImage }}
-                style={{ width: 200, height: 200 }}
-              />
-              <ImageViewer imageUri={selectedImage} />
-            </View>
-          )} */}
-
-          <View style={{ height: 50 }} />
+          <View style={{ height: 20 }} />
         </ScrollView>
 
         <View style={styles.buttonContainer}>
@@ -343,13 +318,13 @@ const styles = StyleSheet.create({
     marginVertical: 12,
   },
   uploadButton: {
-    backgroundColor: "#007AFF",
+    backgroundColor: PrimaryColor,
     borderRadius: 4,
     paddingVertical: 12,
     paddingHorizontal: 16,
   },
   saveButton: {
-    backgroundColor: "#007AFF",
+    backgroundColor: PrimaryColor,
     borderRadius: 4,
     paddingVertical: 12,
     paddingHorizontal: 16,
@@ -387,10 +362,11 @@ const styles = StyleSheet.create({
   },
   modalButtonContainer: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "center",
+    gap: 10,
   },
   modalButton: {
-    backgroundColor: "#007AFF",
+    backgroundColor: PrimaryColor,
     borderRadius: 4,
     paddingVertical: 12,
     paddingHorizontal: 16,

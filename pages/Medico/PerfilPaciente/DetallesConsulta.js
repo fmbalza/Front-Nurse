@@ -67,14 +67,19 @@ const DetallesConsulta = ({ route }) => {
                   {new Date(consulta.fecha).toLocaleString()}
                 </Text>
               </View>
-              {/* <View style={styles.infoContainer}>
-                <Text style={styles.label}>Descripción:</Text>
-                <Text style={styles.value}>{consulta.de_consulta}</Text>
-              </View> */}
               <Text style={styles.label}>Datos:</Text>
-              {""}
-              <View style={styles.infoContainer}>
-                <Text style={styles.value}>{consulta.examen}</Text>
+              <View style={[styles.infoContainer, { flexDirection: "column" }]}>
+                {consulta.examen
+                  .trim()
+                  .split("\n")
+                  .filter((item) => item.trim().split(":")[1] !== "")
+                  .map((item, index) => (
+                    <Text key={index} style={styles.value}>
+                      {item.trim().split(":")[0] +
+                        ": " +
+                        item.trim().split(":")[1]}
+                    </Text>
+                  ))}
               </View>
 
               {consulta?.horariosAsignados?.length > 0 && (
@@ -93,11 +98,52 @@ const DetallesConsulta = ({ route }) => {
                         }}
                       >
                         <Text style={styles.label}>
-                          Desde: {horario.fecha_inicio}
+                          Desde:
+                          <Text style={{ fontWeight: "100" }}>
+                            {horario.fecha_inicio}
+                          </Text>
                         </Text>
                         <Text style={styles.label}>
-                          Hasta: {horario.fecha_fin}
+                          Hasta:{" "}
+                          <Text style={{ fontWeight: "100" }}>
+                            {horario.fecha_fin}
+                          </Text>
                         </Text>
+
+                        <Text style={styles.label}>
+                          Repeticiones:{" "}
+                          <Text style={{ fontWeight: "100" }}>
+                            {horario.repeticiones.map((repeticion, index) => {
+                              const [hora, minuto, segundo] =
+                                repeticion.split(":");
+                              const fecha = new Date();
+                              fecha.setHours(hora, minuto, 0, 0);
+                              return (
+                                <Text key={index}>
+                                  {fecha.toLocaleTimeString()}
+                                  {index < horario.repeticiones.length - 1 && (
+                                    <Text>, </Text>
+                                  )}
+                                </Text>
+                              );
+                            })}
+                          </Text>
+                        </Text>
+
+                        <Text style={styles.label}>
+                          Dias de la semana:{" "}
+                          <Text style={{ fontWeight: "100" }}>
+                            {horario.dias_semana.map((dia, index) => (
+                              <Text key={index}>
+                                {dia}
+                                {index < horario.dias_semana.length - 1 && (
+                                  <Text>, </Text>
+                                )}
+                              </Text>
+                            ))}
+                          </Text>
+                        </Text>
+
                         <View>
                           {horario?.id_medicamento !== null ? (
                             <Text style={styles.label}>

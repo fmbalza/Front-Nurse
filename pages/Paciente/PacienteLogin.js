@@ -15,7 +15,6 @@ import { useNavigation } from "@react-navigation/native";
 import { useForm, Controller } from "react-hook-form";
 import { usePacienteLogin } from "../../utils/hooks/paciente/auth.js";
 import useAuthStore from "../../utils/storage/auth.js";
-import { registerForPushNotificationsAsync } from "../../utils/notifications/notifications.js";
 import { MaskedTextInput } from "react-native-mask-text";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
@@ -30,15 +29,9 @@ const PacienteLogin = () => {
   const navigation = useNavigation();
 
   const { setRememberMe, push_token } = useAuthStore();
-  const [autoLogin, setAutoLogin] = useState(false);
-
-  const toggleSwitch = () => {
-    setAutoLogin((a) => !a);
-    setRememberMe(!autoLogin);
-  };
 
   const handleLogIn = async (values) => {
-    // const push_token = await registerForPushNotificationsAsync();
+    setRememberMe(true);
     const pt = push_token;
     values = { ...values, push_token: pt };
     // console.log(values);
@@ -49,38 +42,54 @@ const PacienteLogin = () => {
     <LinearGradient colors={["#FFFFFF", "#D6FFE9"]} style={styles.container}>
       <Image
         source={require("../../assets/nurse_logo.png")}
-        style={{ width: 150, height: 64, resizeMode: "contain", top:60, left: 300 }}
-      />
-<View style={{justifyContent: 'left', width:'100%', marginLeft:'10%',marginBottom:50}}>
-      <Text
         style={{
-          fontSize: 60,
-          top:-70,
-          color: "#00826B",
-          fontWeight: "600",
-
+          width: 150,
+          height: 64,
+          resizeMode: "contain",
+          top: 60,
+          left: 300,
+        }}
+      />
+      <View
+        style={{
+          justifyContent: "left",
+          width: "100%",
+          marginLeft: "10%",
+          marginBottom: 50,
         }}
       >
-        Nurse.
-      </Text>
+        <Text
+          style={{
+            fontSize: 60,
+            top: -70,
+            color: "#00826B",
+            fontWeight: "600",
+          }}
+        >
+          Nurse.
+        </Text>
 
-      <Text style={{
-        fontSize:25,
-        fontWeight: "300",
-        color: "#00826B",
-        top:-20
-      }}>
-        Bienvenido de Nuevo
-      </Text>
-      <Text style={{
-        fontSize:15,
-        fontWeight: "300",
-        color: "#00826B",
-        top:-20
-      }}>
-        Inicia sesión a continuación 
-      </Text>
-</View>
+        <Text
+          style={{
+            fontSize: 25,
+            fontWeight: "300",
+            color: "#00826B",
+            top: -20,
+          }}
+        >
+          Bienvenido de Nuevo
+        </Text>
+        <Text
+          style={{
+            fontSize: 15,
+            fontWeight: "300",
+            color: "#00826B",
+            top: -20,
+          }}
+        >
+          Inicia sesión a continuación
+        </Text>
+      </View>
 
       <View style={LoginStyles.inputs}>
         <Controller
@@ -117,7 +126,7 @@ const PacienteLogin = () => {
         )}
       </View>
 
-      <View style={{ display: "flex", flexDirection: "row" }}>
+      {/* <View style={{ display: "flex", flexDirection: "row" }}>
         <Text
           style={{
             color: "#00826B",
@@ -134,7 +143,7 @@ const PacienteLogin = () => {
           onValueChange={toggleSwitch}
           value={autoLogin}
         />
-      </View>
+      </View> */}
 
       <Text style={styles.registerText}>
         ¿No tienes una cuenta?{" "}

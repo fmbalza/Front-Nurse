@@ -80,7 +80,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: "row",
-    marginTop: 20,
+    gap: 10,
+    // marginTop: 20,
   },
   button: {
     borderRadius: 20,
@@ -89,13 +90,13 @@ const styles = StyleSheet.create({
   },
   buttonYes: {
     backgroundColor: "#00826B",
-    marginRight: 10,
-    height: 50,
+    // marginRight: 10,
+    // height: 50,
     width: 60,
   },
   buttonNo: {
     backgroundColor: "#E53935",
-    height: 50,
+    // height: 50,
     width: 60,
   },
   textStyle: {

@@ -7,7 +7,6 @@ import {
   ActivityIndicator,
   Modal,
   Pressable,
-  Image,
 } from "react-native";
 import { useState, useEffect } from "react";
 import {
@@ -490,67 +489,57 @@ const Medicamentos = () => {
                       {item?.mg_medicamento}
                     </Text> */}
 
-                      <View style={styles.medicamentContainer}>
-                        {/* {item?.pr_medicamento === 'Tableta'
-                        && (
-                            <Image source={require('../../../assets/Tableta.png')} style={styles.medicamentImage} />
-                          )}
-                          {item?.pr_medicamento === 'Inyectable' && (
-                            <Image source={require('../../../assets/Inyectable.png')} style={styles.medicamentImage} />
-                          )}
-                          {item?.pr_medicamento === 'Capsula' && (
-                            <Image source={require('../../../assets/Capsula.png')} style={styles.medicamentImage} />
-                          )} */}
-                        <View style={{width:'40%'}}>
-                          <Text style={styles.dataTitle}>
-                            {item?.cp_medicamento}  
-                          </Text>
-                        </View>
-                       
-
-                        <View style={{
-                          backgroundColor:'#00826B', 
-                          borderRadius:8, 
-                          width:'40%', 
-                          height:'100%', 
-                          left:12, 
-                          alignItems:'center',
-                          justifyContent:"center"
-                          }}>
-                          <Text style={{ color:"white"}}>
-                           {item?.pr_medicamento} {item?.mg_medicamento} 
-
-                          </Text>
-                        </View>
-
-                        {/* <Text style={styles.dataText}>
-                          {item?.fn_medicamento?.no_funcion}: {item?.fn_medicamento?.de_funcion}
-                        </Text> */}
+                    <View style={styles.medicamentContainer}>
+                      <View style={{ flex: 2 }}>
+                        <Text style={styles.dataTitle}>
+                          {item?.cp_medicamento}
+                        </Text>
                       </View>
 
+                      {item.origen == user.cedula_medico && (
+                        <TouchableOpacity
+                          style={{}}
+                          onPress={() => {
+                            // console.log("Update med");
+                            setSelectedMed(item);
+                            setShowUpdateModal(true);
+                          }}
+                        >
+                          <MaterialCommunityIcons
+                            name="pencil"
+                            size={24}
+                            color="black"
+                          />
+                        </TouchableOpacity>
+                      )}
 
+                      <View
+                        style={{
+                          backgroundColor: "#00826B",
+                          width: "40%",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          borderRadius: 8,
+                          minHeight: 30,
+                          marginLeft: 10,
+                          paddingHorizontal: 5,
+                        }}
+                      >
+                        <Text style={{ color: "white" }} numberOfLines={1}>
+                          {item?.pr_medicamento} {item?.mg_medicamento}
+                        </Text>
+                      </View>
+
+                      {/* <Text style={styles.dataText}>
+                          {item?.fn_medicamento?.no_funcion}: {item?.fn_medicamento?.de_funcion}
+                        </Text> */}
+                    </View>
 
                     {/* <Text style={styles.dataText}>
                       {item?.fn_medicamento?.no_funcion}:{" "}
                       {item?.fn_medicamento?.de_funcion}
                     </Text> */}
                   </TouchableOpacity>
-                  {item.origen == user.cedula_medico && (
-                    <TouchableOpacity
-                      style={{ position: "absolute", right: 10, top: 10 }}
-                      onPress={() => {
-                        // console.log("Update med");
-                        setSelectedMed(item);
-                        setShowUpdateModal(true);
-                      }}
-                    >
-                      <MaterialCommunityIcons
-                        name="pencil"
-                        size={24}
-                        color="black"
-                      />
-                    </TouchableOpacity>
-                  )}
                 </View>
               )}
               estimatedItemSize={200}
@@ -569,21 +558,11 @@ const Medicamentos = () => {
         <View style={styles.modal_container}>
           <View style={styles.actual_modal}>
             <View style={{ alignItems: "flex-start", width: "90%" }}>
-                        {selectedMed?.pr_medicamento === 'Tableta' && (
-                          <Image source={require('../../../assets/Tableta.png')} style={styles.medicamentImageS} />
-                        )}
-                        {selectedMed?.pr_medicamento === 'Inyectable' && (
-                          <Image source={require('../../../assets/Inyectable.png')} style={styles.medicamentImageS} />
-                        )}
-                        {selectedMed?.pr_medicamento === 'Capsula' && (
-                          <Image source={require('../../../assets/Capsula.png')} style={styles.medicamentImageS} />
-                        )}
               <Text
                 style={{
                   fontWeight: "bold",
                   fontSize: 24,
                   marginBottom: 5,
-                  bottom:"20%"
                 }}
               >
                 {selectedMed?.cp_medicamento}
@@ -714,7 +693,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
 
     height: "auto",
-    // minHeight: 80,
+    minHeight: 50,
     margin: 5,
   },
   dataTitle: {
@@ -739,27 +718,26 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   medicamentContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
- 
-    backgroundColor: '#fff',
+    flexDirection: "row",
+    alignItems: "center",
+
+    backgroundColor: "#fff",
     borderRadius: 8,
-    shadowColor: '#000',
-  
+    shadowColor: "#000",
+
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-
   },
   medicamentImage: {
     width: 40,
     height: 40,
     marginRight: 12,
-    borderRadius:8
+    borderRadius: 8,
   },
   medicamentImageS: {
     width: 60,
     height: 60,
-    left:"80%",
-    top:"2%"
+    left: "80%",
+    top: "2%",
   },
 });

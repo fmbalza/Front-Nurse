@@ -26,7 +26,7 @@ import { supabase } from "../../../utils/storage/supabase.js";
 import { decode } from "base64-arraybuffer";
 import userAccountFigure from "../../../assets/user-account-figure.png";
 import * as Notifications from "expo-notifications";
-import { MaskedText } from "react-native-mask-text";
+import { MaskedText, MaskedTextInput } from "react-native-mask-text";
 
 const PerfilMedico = () => {
   const queryClient = useQueryClient();
@@ -313,16 +313,27 @@ const PerfilMedico = () => {
                 <TextInput
                   style={styles.modalInput}
                   placeholderTextColor="#A4D4BB"
-                  placeholder="Telefono"
+                  placeholder="Teléfono"
                   onBlur={onBlur}
-                  onChangeText={onChange}
+                  onChangeText={(text, rawText) => onChange(rawText)}
+                  mask={"+99 999-9999999"}
                   value={value}
+                  keyboardType="numeric"
                 />
               )}
               name="telefono"
-              rules={{ required: false }}
+              rules={{ minLength: 11, maxLength: 11 }}
               defaultValue={""}
             />
+            <View>
+              {errors.telefono && (
+                <Text style={styles.errorMessage}>
+                  <Icon name="alert-circle-outline" color={"red"} />
+                  {errors.telefono.type === "minLength" &&
+                    "El telefono esta incompleto"}
+                </Text>
+              )}
+            </View>
 
             {/* <Controller
               control={control}
@@ -514,6 +525,10 @@ const styles = StyleSheet.create({
     color: "#FFFFFF", // Color del texto del botón
     fontWeight: "bold", // Grosor de la fuente del texto
     fontSize: 16, // Tamaño de la fuente del texto
+  },
+  errorMessage: {
+    color: "red",
+    fontSize: 14,
   },
 });
 

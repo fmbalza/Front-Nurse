@@ -523,12 +523,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    borderWidth: 1,
   },
   eventTitle: {
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 4,
-    color: "#000",
   },
   eventText: {
     fontSize: 14,

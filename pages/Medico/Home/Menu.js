@@ -23,10 +23,22 @@ import {
   sendPushNotificationV2,
   timedNotificationV1,
 } from "../../../utils/notifications/notifications";
-import * as Notifications from "expo-notifications";
+import { PrimaryColor } from "../../../styles/globalStyles";
 
 const { width } = Dimensions.get("window");
 const estado = ["Omitido", "Completado", "Pendiente"];
+const calendarTheme = {
+  itemDay: {
+    active: ({}) => ({
+      container: {
+        backgroundColor: "#00826B",
+      },
+      content: {
+        color: "#ffffff",
+      },
+    }),
+  },
+};
 
 const Menu = () => {
   const navigation = useNavigation();
@@ -132,6 +144,7 @@ const Menu = () => {
                 calendarMonthId={currentCalendarMonth}
                 onCalendarDayPress={setSelectedDate}
                 calendarFormatLocale="es"
+                theme={calendarTheme}
               />
             </View>
             <Pressable style={styles.nextButton} onPress={handleNextMonth}>
@@ -157,11 +170,11 @@ const Menu = () => {
               <View style={styles.placeholderInset}>
                 <ScrollView
                   style={{ flex: 1 }}
-                  contentContainerStyle={{ flexGrow: 1 }}
+                  contentContainerStyle={{ flexGrow: 1, padding: 16 }}
                 >
                   {typeof data === "string" ? (
                     <View style={styles.noEventsContainer}>
-                      <Text style={styles.noEventsText}>{data}</Text>
+                      <Text style={styles.noEventsText}>No hay eventos</Text>
                     </View>
                   ) : (
                     <>
@@ -256,6 +269,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    borderWidth: 1,
   },
   deleteButton: {
     justifyContent: "flex-end",
@@ -266,15 +280,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 4,
-  },
-  eventDescription: {
-    fontSize: 14,
-    marginBottom: 4,
-  },
-  eventTime: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginLeft: "auto",
   },
   noEventsContainer: {
     display: "flex",
@@ -292,71 +297,17 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 24,
   },
-  header: {
-    paddingHorizontal: 16,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: "700",
-    color: "#1d1d1d",
-    marginBottom: 12,
-  },
-  picker: {
-    flex: 1,
-    maxHeight: 74,
-    paddingVertical: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: "10%",
-  },
   subtitle: {
     fontSize: 17,
     fontWeight: "600",
     color: "#999999",
     marginBottom: 12,
   },
-  footer: {
-    marginTop: "auto",
-    paddingHorizontal: 16,
-  },
-  /** Item */
-  item: {
-    flex: 1,
-    height: 80,
-    marginHorizontal: 4,
-    paddingVertical: 6,
-    paddingHorizontal: 4,
-    borderWidth: 1,
-    borderRadius: 8,
-    borderColor: "#e3e3e3",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  itemRow: {
-    width: width,
-    flexDirection: "row",
-    alignItems: "flex-start",
-    justifyContent: "space-between",
-    paddingHorizontal: 5,
-    height: 1000,
-  },
-  itemWeekday: {
-    fontSize: 10,
-    fontWeight: "500",
-    color: "#737373",
-    marginBottom: 4,
-  },
-  itemDate: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#111",
-  },
-  /** Placeholder */
   placeholder: {
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 0,
-    height: 400,
+    height: 200,
     marginTop: 0,
     padding: 0,
     backgroundColor: "transparent",
@@ -369,7 +320,6 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     flexBasis: 0,
   },
-  /** Button */
   btn: {
     flexDirection: "row",
     alignItems: "center",
@@ -387,9 +337,8 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#fff",
   },
-
   pickerContainer: {
-    flex: 1,
+    // flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",

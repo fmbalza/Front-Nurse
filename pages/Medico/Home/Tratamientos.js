@@ -7,7 +7,6 @@ import {
   ActivityIndicator,
   Modal,
   Pressable,
-  Image
 } from "react-native";
 import { useState, useEffect } from "react";
 import {
@@ -422,53 +421,31 @@ const Tratamientos = () => {
                     }}
                   >
                     <View style={styles.terapiaContainer}>
-
-                    {/* {item?.id_categoria?.de_categoria === 'Terapia Quirúrgica' && (
-                          <Image source={require('../../../assets/Cirugia.png')} style={styles.terapiaImage} />
-                        )}
-                        {item?.id_categoria?.de_categoria === 'Terapia Psicológica' && (
-                          <Image source={require('../../../assets/Psicologia.png')} style={styles.terapiaImage} />
-                        )}
-                        {item?.id_categoria?.de_categoria === 'Terapia Alternativa y Complementaria' && (
-                          <Image source={require('../../../assets/Alternativa.png')} style={styles.terapiaImage} />
-                        )}
-                         {item?.id_categoria?.de_categoria === 'Terapia de Rehabilitación' && (
-                          <Image source={require('../../../assets/Rehabilitacion.png')} style={styles.terapiaImage} />
-                        )}
-                         {item?.id_categoria?.de_categoria === 'Definido por el medico' && (
-                          <Image source={require('../../../assets/Definido.png')} style={styles.terapiaImage} />
-                        )} */}
-
-                      <Text style={styles.dataTitle}>{item?.no_tratamiento} 
-                        {"\n"} 
-                        <Text style={styles.dataDescription}>{item?.id_categoria?.de_categoria}</Text>
-
+                      <Text style={styles.dataTitle}>
+                        {item?.no_tratamiento}
+                        {"\n"}
+                        <Text style={styles.dataDescription}>
+                          {item?.id_categoria?.de_categoria}
+                        </Text>
                       </Text>
-
-                    
-
-                      
-                    
-
+                      {item.origen == user.cedula_medico && (
+                        <TouchableOpacity
+                          style={{}}
+                          onPress={() => {
+                            // console.log("Update med");
+                            setSelectedTreat(item);
+                            setShowUpdateModal(true);
+                          }}
+                        >
+                          <MaterialCommunityIcons
+                            name="pencil"
+                            size={24}
+                            color="black"
+                          />
+                        </TouchableOpacity>
+                      )}
                     </View>
-                   
                   </TouchableOpacity>
-                  {item.origen == user.cedula_medico && (
-                    <TouchableOpacity
-                      style={{ position: "absolute", right: 10, top: 10 }}
-                      onPress={() => {
-                        // console.log("Update med");
-                        setSelectedTreat(item);
-                        setShowUpdateModal(true);
-                      }}
-                    >
-                      <MaterialCommunityIcons
-                        name="pencil"
-                        size={24}
-                        color="black"
-                      />
-                    </TouchableOpacity>
-                  )}
                 </View>
               )}
               estimatedItemSize={200}
@@ -496,9 +473,13 @@ const Tratamientos = () => {
               >
                 {selectedTreat?.no_tratamiento}
               </Text>
-              <View style={{ flexDirection: "row" }}>
-                <Text style={{ fontWeight: "bold" }}>Descripcion: </Text>
-                <Text>{selectedTreat?.de_tratamiento} </Text>
+              <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+                <Text style={{ fontWeight: "bold" }}>
+                  Descripcion: 
+                  <Text style={{ fontWeight: "100" }} ellipsizeMode="tail">
+                    {selectedTreat?.de_tratamiento}{" "}
+                  </Text>
+                </Text>
               </View>
 
               <View style={{ flexDirection: "row" }}>
@@ -602,24 +583,27 @@ const styles = StyleSheet.create({
   },
   listItem: {
     marginVertical: 10,
-  
-    borderWidth: 1,
-    // borderColor: "#A4D4BB",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    justifyContent: "center",
     borderRadius: 10,
-    borderColor: "#D6FFE9",
     backgroundColor: "#D6FFE9",
-    elevation: 5,
-    height: 100,
-    // minHeight: 80,
+    // elevation: 5,
+    borderWidth: 1,
+    borderColor: "#00826B",
+    backgroundColor: "white",
+    // height: 100,
+    minHeight: 80,
     margin: 5,
   },
   dataTitle: {
+    flex: 1,
     fontWeight: "bold",
     fontSize: 17,
   },
-  dataDescription:{
+  dataDescription: {
     fontWeight: "bold",
-    fontWeight:"300",
+    fontWeight: "300",
     fontSize: 13,
   },
   dataText: {
@@ -640,20 +624,15 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   terapiaContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    backgroundColor: '#fff',
+    flexDirection: "row",
+    flex: 1,
+    alignItems: "center",
     borderRadius: 8,
-    shadowColor: '#000',
-   height:"100%"
-
+    shadowColor: "#000",
   },
   terapiaImage: {
     width: 40,
     height: 40,
     marginRight: 12,
   },
-
 });

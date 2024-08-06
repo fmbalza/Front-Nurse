@@ -79,7 +79,7 @@ const CertifyMedicoModal = ({ visible, onClose }) => {
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.title}>-- Verificacion de Cuenta --</Text>
+          <Text style={styles.title}>-- Verificación de Cuenta --</Text>
           <Text style={styles.text}>
             Para poder completar tu registro, necesitamos que subas una imagen
             de tu certificado médico o cualquier documento que acredite tu
@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "50%",
     justifyContent: "space-between",
+    gap: 10,
   },
 });
 

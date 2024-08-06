@@ -8,7 +8,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Button,
-  Image
+  Image,
 } from "react-native";
 import { SignUpStyles } from "../../styles/globalStyles";
 import DatePicker from "../../components/DatePicker";
@@ -33,8 +33,8 @@ const PacienteSignUp = () => {
   // const navigation = useNavigation();
   const [alertVisible, setAlertVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showText, setShowText] = useState(false);
-  const [text, setText] = useState('');
+  // const [showText, setShowText] = useState(false);
+  // const [text, setText] = useState('');
 
   const loadFiveSeconds = () => {
     setLoading(true);
@@ -60,7 +60,6 @@ const PacienteSignUp = () => {
   const registerMutation = useRegisterPaciente();
 
   const handleRegister = (values) => {
-    // console.log(values);
     registerMutation.mutate(values);
   };
 
@@ -72,18 +71,6 @@ const PacienteSignUp = () => {
       showAlert();
     }
   }, [registerMutation.data]);
-
-  const handleFocus = () => {
-    setShowText(true);
-  };
-
-  const handleBlur = () => {
-    setShowText(false);
-  };
-
-  const handleChangeText = (newText) => {
-    setText(newText);
-  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -107,7 +94,7 @@ const PacienteSignUp = () => {
                 width: "100%",
                 height: 150,
                 justifyContent: "center",
-                marginLeft: 10, 
+                marginLeft: 10,
               }}
             >
               <Text
@@ -115,21 +102,22 @@ const PacienteSignUp = () => {
                   fontSize: 36,
                   fontWeight: "bold",
                   color: "#00826B",
-                  marginLeft: 20, 
+                  marginLeft: 20,
                 }}
               >
-                Formulario Paciente
+                Registro de Paciente
               </Text>
             </View>
-            <Image source={require("../../assets/nurse_logo.png")} 
-            style={{width:60, height:69, left:"40%", top:"-15%"}
-            }></Image>
+            <Image
+              source={require("../../assets/nurse_logo.png")}
+              style={{ width: 60, height: 69, left: "40%", top: "-15%" }}
+            ></Image>
             <View
               style={{
                 alignItems: "center",
                 width: "100%",
                 height: "70%",
-                top:-70
+                top: -70,
               }}
             >
               <Controller
@@ -188,7 +176,7 @@ const PacienteSignUp = () => {
                   <MaskedTextInput
                     style={SignUpStyles.inputs}
                     placeholderTextColor="#00826B"
-                    placeholder="Cedula "
+                    placeholder="Cedula Ej: 29.560.310"
                     keyboardType="numeric"
                     onBlur={onBlur}
                     onChangeText={(text, rawText) => onChange(rawText)}
@@ -197,49 +185,49 @@ const PacienteSignUp = () => {
                   />
                 )}
                 name="cedula_paciente"
-                rules={{ required: true }}
+                rules={{ required: true, minLength: 8, maxLength: 8 }}
                 defaultValue={""}
               />
               <View>
                 {errors.cedula_paciente && (
                   <Text style={styles.errorMessage}>
                     <Icon name="alert-circle-outline" color={"red"} />
-                      Este campo es requerido
+                      
+                    {errors.cedula_paciente.type === "required" &&
+                      "Este campo es requerido"}
+                    {errors.cedula_paciente.type === "minLength" &&
+                      "La cedula debe tener 8 digitos"}
                   </Text>
                 )}
               </View>
-              <View style={{justifyContent:'flex-start', width:'100%', marginLeft: 60, marginTop: 10}}>
-                {showText && (
-                    <Text style={{color:'#005848'}}>
-                      Especificar el código de región {"\n"} 
-                      Ej: +XY 123-1234567 
-                    </Text>
-                  )}
-                </View>
+
               <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <MaskedTextInput
                     style={SignUpStyles.inputs}
                     placeholderTextColor="#00826B"
-                    placeholder="Telefono "
-                    onBlur={handleBlur}
+                    placeholder="Telefono Ej: +58 123-1234567"
+                    onBlur={onBlur}
                     onChangeText={(text, rawText) => onChange(rawText)}
                     mask={"+99 999-9999999"}
                     value={value}
                     keyboardType="numeric"
-                    onFocus={handleFocus}
                   />
                 )}
                 name="telefono"
-                rules={{ required: true }}
+                rules={{ required: true, minLength: 11, maxLength: 11 }}
                 defaultValue={""}
               />
               <View>
                 {errors.telefono && (
                   <Text style={styles.errorMessage}>
                     <Icon name="alert-circle-outline" color={"red"} />
-                      Este campo es requerido
+                      
+                    {errors.telefono.type === "required" &&
+                      "Este campo es requerido"}
+                    {errors.telefono.type === "minLength" &&
+                      "El telefono esta incompleto"}
                   </Text>
                 )}
               </View>

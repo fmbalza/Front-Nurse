@@ -12,6 +12,7 @@ import {
   useDeleteAsPaciente,
 } from "../utils/hooks/medico/paciente";
 import { useGetPacienteMedico } from "../utils/hooks/medico/paciente";
+import { PrimaryColor } from "../styles/globalStyles.js";
 
 const BtnAgregar = ({ cedula, user }) => {
   const assignPacienteMutation = useAssignPaciente();
@@ -98,12 +99,21 @@ const BtnAgregar = ({ cedula, user }) => {
       <Modal visible={showModal} transparent={true}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalText}>
-              ¿Está seguro de que quiere remover?
+            <Text style={styles.modalText} numberOfLines={2}>
+              ¿Está seguro de que quiere {"\n"}remover al usuario de sus
+              pacientes?
             </Text>
             <View style={styles.modalButtonContainer}>
-              <Button title="Confirmar" onPress={handleRemove} />
-              <Button title="Cancelar" onPress={handleCancel} />
+              <Button
+                title="Confirmar"
+                onPress={handleRemove}
+                color={PrimaryColor}
+              />
+              <Button
+                title="Cancelar"
+                onPress={handleCancel}
+                color={PrimaryColor}
+              />
             </View>
           </View>
         </View>
@@ -164,10 +174,11 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 16,
     marginBottom: 20,
+    textAlign: "center",
   },
   modalButtonContainer: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    gap: 10,
     width: "100%",
   },
 });

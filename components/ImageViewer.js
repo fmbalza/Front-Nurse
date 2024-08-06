@@ -5,11 +5,14 @@ import {
   Image,
   Modal,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
+import { PrimaryColor } from "../styles/globalStyles";
 
 const ImageViewer = ({ imageUri }) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const openModal = () => {
     setModalVisible(true);
@@ -19,18 +22,44 @@ const ImageViewer = ({ imageUri }) => {
     setModalVisible(false);
   };
 
+  const handleLoad = () => {
+    setLoading(false);
+  };
+
   return (
     <View>
       <TouchableOpacity onPress={openModal}>
-        <Image source={{ uri: imageUri }} style={styles.previewImage} />
+        <Image
+          source={{ uri: imageUri }}
+          style={styles.previewImage}
+          onLoad={handleLoad}
+        />
       </TouchableOpacity>
+      {loading && (
+        <ActivityIndicator
+          size="small"
+          color={PrimaryColor}
+          style={styles.loadingIndicator}
+        />
+      )}
       <Modal
         visible={modalVisible}
         onRequestClose={closeModal}
         transparent={true}
       >
         <View style={styles.modalContainer}>
-          <Image source={{ uri: imageUri }} style={styles.fullImage} />
+          <Image
+            source={{ uri: imageUri }}
+            style={styles.fullImage}
+            onLoad={handleLoad}
+          />
+          {loading && (
+            <ActivityIndicator
+              size="large"
+              color={PrimaryColor}
+              style={styles.loadingIndicator}
+            />
+          )}
           <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
             <Text style={styles.closeButtonText}>Cerrar</Text>
           </TouchableOpacity>
@@ -69,5 +98,11 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: "white",
     fontWeight: "bold",
+  },
+  loadingIndicator: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: [{ translateX: -10 }, { translateY: -10 }],
   },
 });
