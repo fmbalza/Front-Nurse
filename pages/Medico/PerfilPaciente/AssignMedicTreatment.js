@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
-  Dimensions,
   ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -17,65 +16,17 @@ import TratamientoSlot from "../../../components/TratamientoSlot";
 import { useCreateHorario } from "../../../utils/hooks/medico/horario";
 import { useNavigation } from "@react-navigation/native";
 import { sendPushNotificationV3 } from "../../../utils/notifications/notifications";
-
-/* Example of the JSON to be send to the API
-{
-  "cedula_medico": "29633652",
-  "cedula_paciente": "50000000",
-  "id_consulta": "99",
-  "medicamentos": [
-    {
-      "dias_semana": [
-        "lunes",
-        "martes"
-      ],
-      "repeticiones": [
-        "12:00:00 PM",
-        "4:35:00 PM",
-        "8:10:00 PM"
-      ],
-      "fecha_inicio": "2024-06-16T00:00:00-04:00",
-      "fecha_fin": "2024-06-22T00:00:00-04:00",
-      "id_medicamento": "4"
-    },
-    {
-      "dias_semana": [
-        "miercoles",
-        "jueves"
-      ],
-      "repeticiones": [
-        "12:00:00 PM",
-        "4:35:00 PM",
-        "8:10:00 PM"
-      ],
-      "fecha_inicio": "2024-06-16T00:00:00-04:00",
-      "fecha_fin": "2024-06-22T00:00:00-04:00",
-      "id_medicamento": "5"
-    }
-  ],
-  "tratamientos": [
-    {
-      "dias_semana": [
-        "jueves",
-        "viernes"
-      ],
-      "repeticiones": [
-        "12:00:00 PM",
-        "8:10:00 PM"
-      ],
-      "fecha_inicio": "2024-06-24T00:00:00-04:00",
-      "fecha_fin": "2024-06-28T00:00:00-04:00",
-      "id_tratamiento": "2"
-    }
-  ]
-}
-*/
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import {
+  DarkGrayColor,
+  GrayColor,
+  PrimaryColor,
+  SecondaryColor,
+  ThirdColor,
+} from "../../../styles/globalStyles";
 
 export default function AssignMedicTreatment({ route }) {
   const navigation = useNavigation();
-  // const [screenHeight, setScreenHeight] = useState(
-  //   Dimensions.get("window").height
-  // );
   const createHorarioMutation = useCreateHorario();
   const {
     control,
@@ -104,10 +55,11 @@ export default function AssignMedicTreatment({ route }) {
 
   const allowSubmit = () => {
     const values = getValues();
-    // console.log(medicamentos, tratamientos);
+    let medicamentosValid;
+    let tratamientosValid;
 
     if (values?.medicamentos?.length > 0 && medicamentos > 0) {
-      let medicamentosValid = values.medicamentos.every((medicamento) => {
+      medicamentosValid = values.medicamentos.every((medicamento) => {
         return (
           medicamento.dias_semana.length > 0 &&
           medicamento.repeticiones.length > 0 &&
@@ -119,22 +71,64 @@ export default function AssignMedicTreatment({ route }) {
         );
       });
 
-      if (medicamentosValid) {
-        setSubmitEnabled(true);
-      } else {
-        setSubmitEnabled(false);
-      }
-    } else if (values?.tratamientos?.length > 0 && tratamientos > 0) {
-      let tratamientosValid = values.tratamientos.every((tratamiento) => {
+      // if (medicamentosValid) {
+      //   setSubmitEnabled(true);
+      // } else {
+      //   setSubmitEnabled(false);
+      // }
+    }
+
+    if (values?.tratamientos?.length > 0 && tratamientos > 0) {
+      tratamientosValid = values.tratamientos.every((tratamiento) => {
         return (
           tratamiento.dias_semana.length > 0 &&
           tratamiento.repeticiones.length > 0 &&
           tratamiento.fecha_inicio &&
           tratamiento.fecha_fin &&
+          new Date(tratamiento.fecha_fin) >
+            new Date(tratamiento.fecha_inicio) &&
           tratamiento.id_tratamiento
         );
       });
 
+      // if (tratamientosValid) {
+      //   setSubmitEnabled(true);
+      // } else {
+      //   setSubmitEnabled(false);
+      // }
+    }
+
+    if (medicamentos > 0 && tratamientos > 0) {
+      if (medicamentosValid && tratamientosValid) {
+        setSubmitEnabled(true);
+      }
+
+      if (!medicamentosValid || !tratamientosValid) {
+        setSubmitEnabled(false);
+      }
+
+      if (medicamentosValid && !tratamientosValid) {
+        setSubmitEnabled(false);
+      }
+
+      if (!medicamentosValid && tratamientosValid) {
+        setSubmitEnabled(false);
+      }
+
+      if (!medicamentosValid && !tratamientosValid) {
+        setSubmitEnabled(false);
+      }
+    }
+
+    if (medicamentos > 0 && tratamientos === 0) {
+      if (medicamentosValid) {
+        setSubmitEnabled(true);
+      } else {
+        setSubmitEnabled(false);
+      }
+    }
+
+    if (medicamentos === 0 && tratamientos > 0) {
       if (tratamientosValid) {
         setSubmitEnabled(true);
       } else {
@@ -144,6 +138,26 @@ export default function AssignMedicTreatment({ route }) {
 
     if (medicamentos === 0 && tratamientos === 0) {
       setSubmitEnabled(false);
+    }
+
+    if (medicamentosValid && tratamientos === 0) {
+      setSubmitEnabled(true);
+    }
+
+    if (tratamientosValid && medicamentos === 0) {
+      setSubmitEnabled(true);
+    }
+
+    if (medicamentos === 0 && tratamientosValid) {
+      setSubmitEnabled(true);
+    }
+
+    if (tratamientos === 0 && medicamentosValid) {
+      setSubmitEnabled(true);
+    }
+
+    if (medicamentosValid && tratamientosValid) {
+      setSubmitEnabled(true);
     }
   };
 
@@ -236,7 +250,13 @@ export default function AssignMedicTreatment({ route }) {
                 setMedicamentos((prev) => prev + 1);
               }}
             >
-              <Text style={styles.addbtn}>Añadir</Text>
+              {/* <Text style={styles.addbtn}>Añadir</Text> */}
+              <Icon
+                name="plus-thick"
+                size={24}
+                color={"white"}
+                style={styles.addbtn}
+              />
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -250,12 +270,18 @@ export default function AssignMedicTreatment({ route }) {
                 }
               }}
             >
-              <Text style={styles.removebtn}>Eliminar</Text>
+              {/* <Text style={styles.removebtn}>Eliminar</Text> */}
+              <Icon
+                name="minus-thick"
+                size={24}
+                color={"white"}
+                style={styles.removebtn}
+              />
             </TouchableOpacity>
           </View>
 
           <View style={styles.MainContainer}>
-            <ScrollView>
+            <ScrollView contentContainerStyle={{ padding: 10 }}>
               {[...Array(medicamentos)].map((_, index) => (
                 <Controller
                   key={index}
@@ -281,7 +307,13 @@ export default function AssignMedicTreatment({ route }) {
                 setTratamientos((prev) => prev + 1);
               }}
             >
-              <Text style={styles.addbtn}>Añadir</Text>
+              {/* <Text style={styles.addbtn}>Añadir</Text> */}
+              <Icon
+                name="plus-thick"
+                size={24}
+                color={"white"}
+                style={styles.addbtn}
+              />
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -295,12 +327,18 @@ export default function AssignMedicTreatment({ route }) {
                 }
               }}
             >
-              <Text style={styles.removebtn}>Eliminar</Text>
+              {/* <Text style={styles.removebtn}>Eliminar</Text> */}
+              <Icon
+                name="minus-thick"
+                size={24}
+                color={"white"}
+                style={styles.removebtn}
+              />
             </TouchableOpacity>
           </View>
 
           <View style={styles.MainContainer}>
-            <ScrollView>
+            <ScrollView contentContainerStyle={{ padding: 10 }}>
               {[...Array(tratamientos)].map((_, index) => (
                 <Controller
                   key={index}
@@ -323,7 +361,7 @@ export default function AssignMedicTreatment({ route }) {
           </View>
 
           <View style={styles.MainContainer}>
-            <ScrollView>
+            <ScrollView contentContainerStyle={{ padding: 10 }}>
               {watchingMeds?.length > 0 && (
                 <View
                   style={{
@@ -332,7 +370,7 @@ export default function AssignMedicTreatment({ route }) {
                     marginBottom: 15,
                   }}
                 >
-                  <Text>Medicamentos</Text>
+                  <Text style={{ fontWeight: "bold" }}>Medicamentos</Text>
                   {watchingMeds.map((medicamento, index) => (
                     <View key={index} style={styles.resume}>
                       <Text>Medicamento: {medicamento.no_medicamento}</Text>
@@ -357,7 +395,7 @@ export default function AssignMedicTreatment({ route }) {
 
               {watchingTreatments?.length > 0 && (
                 <View style={{ flexDirection: "column", gap: 15 }}>
-                  <Text>Tratamientos</Text>
+                  <Text style={{ fontWeight: "bold" }}>Tratamientos</Text>
                   {watchingTreatments.map((tratamiento, index) => (
                     <View key={index} style={styles.resume}>
                       <Text>Tratamiento: {tratamiento.no_tratamiento}</Text>
@@ -387,7 +425,7 @@ export default function AssignMedicTreatment({ route }) {
             disabled={!canSubmit}
           >
             <Text style={canSubmit ? styles.submitbtnEna : styles.submitbtnDis}>
-              completar
+              Completar
             </Text>
           </TouchableOpacity>
         </View>
@@ -455,18 +493,31 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   resume: {
-    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    backgroundColor: "#ade0c6",
     padding: 10,
     borderRadius: 10,
   },
   submitbtnEna: {
     fontSize: 30,
     fontWeight: "bold",
-    color: "#00826B",
+    color: "white",
+    backgroundColor: PrimaryColor,
+    borderColor: ThirdColor,
+    borderWidth: 3,
+    borderRadius: 20,
+    padding: 10,
+    textAlign: "center",
   },
   submitbtnDis: {
     fontSize: 30,
     fontWeight: "bold",
+    color: "white",
+    backgroundColor: GrayColor,
+    borderColor: DarkGrayColor,
+    borderWidth: 3,
+    borderRadius: 20,
+    padding: 10,
+    textAlign: "center",
   },
   submitctn: {
     zIndex: 9999,

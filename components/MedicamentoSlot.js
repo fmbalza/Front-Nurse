@@ -11,76 +11,32 @@ import {
 import { useState, useEffect } from "react";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import PickMedicamento from "./Modals/PickMedicamento";
-
-/* Example of the JSON to be send to the API
-{
-  "cedula_medico": "29633652",
-  "cedula_paciente": "50000000",
-  "id_consulta": "99",
-  "medicamentos": [
-    {
-      "dias_semana": [
-        "lunes",
-        "martes"
-      ],
-      "repeticiones": [
-        "12:00:00 PM",
-        "4:35:00 PM",
-        "8:10:00 PM"
-      ],
-      "fecha_inicio": "2024-06-16T00:00:00-04:00",
-      "fecha_fin": "2024-06-22T00:00:00-04:00",
-      "id_medicamento": "4"
-    },
-    {
-      "dias_semana": [
-        "miercoles",
-        "jueves"
-      ],
-      "repeticiones": [
-        "12:00:00 PM",
-        "4:35:00 PM",
-        "8:10:00 PM"
-      ],
-      "fecha_inicio": "2024-06-16T00:00:00-04:00",
-      "fecha_fin": "2024-06-22T00:00:00-04:00",
-      "id_medicamento": "5"
-    }
-  ],
-  "tratamientos": [
-    {
-      "dias_semana": [
-        "jueves",
-        "viernes"
-      ],
-      "repeticiones": [
-        "12:00:00 PM",
-        "8:10:00 PM"
-      ],
-      "fecha_inicio": "2024-06-24T00:00:00-04:00",
-      "fecha_fin": "2024-06-28T00:00:00-04:00",
-      "id_tratamiento": "2"
-    }
-  ]
-}
-*/
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import {
+  PrimaryColor,
+  SecondaryColor,
+  ThirdColor,
+  DarkGrayColor,
+  WhiteColor,
+  BlackColor,
+} from "../styles/globalStyles.js";
 
 const UniqueTimePicker = ({ onTimeChange }) => {
   const [time, setTime] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
 
-  const convertTo24Hour = (time) => {
-    let [mainTime, period] = time.split(/[\s]+|(?=[AP]M)/);
-    let [hours, minutes, seconds] = mainTime.split(":");
+  // const convertTo24Hour = (time) => {
+  //   let [mainTime, period] = time.split(/[\s]+|(?=[AP]M)/);
+  //   let [hours, minutes, seconds] = mainTime.split(":");
 
-    if (period === "PM" && hours !== "12") {
-      hours = parseInt(hours) + 12;
-    } else if (period === "AM" && hours === "12") {
-      hours = "00";
-    }
+  //   if (period === "PM" && hours !== "12") {
+  //     hours = parseInt(hours) + 12;
+  //   } else if (period === "AM" && hours === "12") {
+  //     hours = "00";
+  //   }
 
-    return `${hours}:${minutes}:${seconds}`;
-  };
+  //   return `${hours}:${minutes}:${seconds}`;
+  // };
 
   const onChange = (event, selectedTime) => {
     const currentTime = selectedTime || time;
@@ -108,11 +64,12 @@ const UniqueTimePicker = ({ onTimeChange }) => {
             onChange={onChange}
           />
         )}
-        <TextInput
+        {/* <TextInput
           style={styles.input}
           value={time.toLocaleTimeString()}
           editable={false}
-        />
+        /> */}
+        <Text style={styles.input}>{time.toLocaleTimeString()} </Text>
       </TouchableOpacity>
     </View>
   );
@@ -146,11 +103,12 @@ const UniqueDatePicker = ({ onDateChange }) => {
             dateFormat="year month day"
           />
         )}
-        <TextInput
+        <Text style={styles.input}>{date.toLocaleDateString()} </Text>
+        {/* <TextInput
           style={styles.input}
           value={date.toLocaleDateString()}
           editable={false}
-        />
+        /> */}
       </TouchableOpacity>
     </View>
   );
@@ -165,15 +123,23 @@ const NumberOfWeeks = ({ onDateChange }) => {
 
   return (
     <View style={styles.container}>
-      <View style={{ flexDirection: "row" }}>
-        <Text>Semanas: {weeks}</Text>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Text style={{ fontWeight: "bold" }}>
+          Semanas: <Text style={{ fontWeight: "100" }}>{weeks}</Text>
+        </Text>
         <TouchableOpacity
           Style={{}}
           onPress={() => {
             setWeeks((prev) => prev + 1);
           }}
         >
-          <Text style={styles.addbtn}>Incrementar</Text>
+          {/* <Text style={styles.addbtn}>Incrementar</Text> */}
+          <Icon
+            name="plus-thick"
+            size={14}
+            color={"white"}
+            style={styles.addbtn}
+          />
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -184,7 +150,13 @@ const NumberOfWeeks = ({ onDateChange }) => {
             }
           }}
         >
-          <Text style={styles.removebtn}>Reducir</Text>
+          {/* <Text style={styles.removebtn}>Reducir</Text> */}
+          <Icon
+            name="minus-thick"
+            size={14}
+            color={"white"}
+            style={styles.removebtn}
+          />
         </TouchableOpacity>
       </View>
     </View>
@@ -233,11 +205,11 @@ const WeekdayPicker = ({ onWeekdayChange }) => {
             <Text
               style={
                 selectedWeekdays.includes(weekday)
-                  ? { color: "white" }
-                  : { color: "black" }
+                  ? { color: "white", textAlign: "center" }
+                  : { color: "black", textAlign: "center" }
               }
             >
-              {weekday}
+              {weekday.split("")[0].toUpperCase()}
             </Text>
           </TouchableOpacity>
         ))}
@@ -252,7 +224,7 @@ const MedicamentoSlot = ({ onChange, value }) => {
   const [horas, setHoras] = useState([new Date().toLocaleTimeString()]);
   const [id_medicamento, setIdMedicamento] = useState();
   const [no_medicamento, setNoMedicamento] = useState(
-    "presiona aqui para seleccionar"
+    "Presiona aqui para seleccionar"
   );
   const [dias_semana, setDiasSemana] = useState([]);
   const [weeks, setWeeks] = useState(1);
@@ -300,18 +272,26 @@ const MedicamentoSlot = ({ onChange, value }) => {
     <View style={styles.container}>
       <View style={styles.slotItem}>
         <View style={styles.item}>
-          <TouchableOpacity
-            onPress={() => {
-              setShowMedModal(true);
-            }}
-          >
-            <Text>Medicamento: {no_medicamento}</Text>
-          </TouchableOpacity>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={{ fontWeight: "bold" }}>Medicamento: </Text>
+            <TouchableOpacity
+              onPress={() => {
+                setShowMedModal(true);
+              }}
+            >
+              <Text style={styles.input}>{no_medicamento}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.item}>
-          <View style={{ flexDirection: "row" }}>
-            <Text>Repeticiones</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ fontWeight: "bold" }}>Repeticiones</Text>
             <TouchableOpacity
               Style={{}}
               onPress={() => {
@@ -319,7 +299,13 @@ const MedicamentoSlot = ({ onChange, value }) => {
                 setHoras((prev) => [...prev, new Date().toLocaleTimeString()]);
               }}
             >
-              <Text style={styles.addbtn}>Añadir</Text>
+              {/* <Text style={styles.addbtn}>Añadir</Text> */}
+              <Icon
+                name="plus-thick"
+                size={14}
+                color={"white"}
+                style={styles.addbtn}
+              />
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -331,28 +317,38 @@ const MedicamentoSlot = ({ onChange, value }) => {
                 }
               }}
             >
-              <Text style={styles.removebtn}>Eliminar</Text>
+              {/* <Text style={styles.removebtn}>Eliminar</Text> */}
+              <Icon
+                name="minus-thick"
+                size={14}
+                color={"white"}
+                style={styles.removebtn}
+              />
             </TouchableOpacity>
           </View>
 
-          <View style={{ flexDirection: "column" }}>
+          <View
+            style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 5 }}
+          >
             {[...Array(repeticiones)].map((_, index) => (
-              <UniqueTimePicker
-                key={index}
-                onTimeChange={(hora) => {
-                  setHoras((prev) => {
-                    const newPrev = [...prev];
-                    newPrev[index] = hora;
-                    return newPrev;
-                  });
-                }}
-              />
+              <View key={index} style={{ marginRight: 5 }}>
+                <UniqueTimePicker
+                  // key={index}
+                  onTimeChange={(hora) => {
+                    setHoras((prev) => {
+                      const newPrev = [...prev];
+                      newPrev[index] = hora;
+                      return newPrev;
+                    });
+                  }}
+                />
+              </View>
             ))}
           </View>
         </View>
 
         <View style={styles.item}>
-          <Text>Dias de la Semana</Text>
+          <Text style={{ fontWeight: "bold" }}>Dias de la Semana</Text>
           <WeekdayPicker
             onWeekdayChange={(weekday) => {
               setDiasSemana(weekday);
@@ -360,23 +356,23 @@ const MedicamentoSlot = ({ onChange, value }) => {
           />
         </View>
 
-        <View style={styles.item}>
-          <Text>Fecha de Inicio</Text>
+        <View style={[styles.item, { flexDirection: "row" }]}>
+          <Text style={{ fontWeight: "bold" }}>Fecha de Inicio: </Text>
           <UniqueDatePicker
             onDateChange={(date) => {
               setFechaInicio(date);
             }}
           />
-        </View>
 
-        {/* <View style={styles.item}>
-          <Text>Fecha de Fin</Text>
-          <UniqueDatePicker
-            onDateChange={(date) => {
-              setFechaFin(date);
-            }}
-          />
-        </View> */}
+          <Text style={{ fontWeight: "bold", marginLeft: 5 }}>
+            Fecha de Fin:{" "}
+            <Text
+              style={{ fontWeight: "100", fontSize: 14, fontWeight: "100" }}
+            >
+              {fecha_fin.toLocaleDateString()}
+            </Text>
+          </Text>
+        </View>
 
         <View style={styles.item}>
           <NumberOfWeeks
@@ -384,7 +380,6 @@ const MedicamentoSlot = ({ onChange, value }) => {
               setWeeks(weeks);
             }}
           />
-          <Text>Fecha de Fin: {fecha_fin.toLocaleDateString()}</Text>
         </View>
       </View>
 
@@ -407,14 +402,18 @@ export default MedicamentoSlot;
 const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
-    alignItems: "center",
+    // alignItems: "center",
   },
   slotItem: {
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
     width: "100%",
-    backgroundColor: "#A4D4BB",
+    // backgroundColor: "#A4D4BB",
+    backgroundColor: "#ade0c6",
+    // backgroundColor: SecondaryColor,
+    borderColor: PrimaryColor,
+    borderWidth: 2,
     borderRadius: 15,
     marginBottom: 15,
   },
@@ -439,24 +438,32 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   input: {
-    fontSize: 17,
+    fontSize: 14,
     fontWeight: "bold",
+    color: ThirdColor,
   },
   weekdayPicker: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
+    gap: 10,
     alignItems: "center",
     width: "100%",
     marginTop: 10,
   },
   selectedWeekday: {
-    backgroundColor: "#00826B",
+    backgroundColor: PrimaryColor,
     padding: 5,
     borderRadius: 5,
+    borderWidth: 1,
+    borderColor: ThirdColor,
+    minWidth: 20,
   },
   unselectedWeekday: {
-    backgroundColor: "white",
+    backgroundColor: WhiteColor,
     padding: 5,
     borderRadius: 5,
+    borderWidth: 1,
+    borderColor: DarkGrayColor,
+    minWidth: 20,
   },
 });
