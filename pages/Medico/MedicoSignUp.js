@@ -260,7 +260,7 @@ const MedicoSignUp = () => {
                   />
                 )}
                 name="cedula_medico"
-                rules={{ required: true, minLength: 8, maxLength: 8 }}
+                rules={{ required: true, minLength: 8 }}
                 defaultValue={""}
               />
               <View>

@@ -7,6 +7,7 @@ import {
   Modal,
   Linking,
   Image,
+  Alert,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import userAccountFigure from "../../assets/user-account-figure.png";
@@ -14,16 +15,22 @@ import { MaskedText } from "react-native-mask-text";
 
 const ModalMedico = ({ visible, medico, onClose }) => {
   const handlePress = () => {
-    const url = `whatsapp://send?phone=${medico.medico.telefono}`;
-    Linking.canOpenURL(url)
-      .then((supported) => {
-        if (supported) {
-          return Linking.openURL(url);
-        } else {
-          console.log("No se pudo abrir la aplicación de WhatsApp");
-        }
-      })
-      .catch((error) => console.error(error));
+    // const url = `whatsapp://send?phone=${medico.medico.telefono}`;
+    const url = `https://wa.me/${medico.medico.telefono}`;
+
+    // Linking.canOpenURL(url)
+    //   .then((supported) => {
+    //     if (supported) {
+    //       return Linking.openURL(url);
+    //     } else {
+    //       console.log("No se pudo abrir la aplicación de WhatsApp");
+    //     }
+    //   })
+    //   .catch((error) => console.error(error));
+
+    Linking.openURL(url).catch((error) =>
+      Alert.alert("Error", "No se pudo abrir la aplicación de WhatsApp")
+    );
   };
 
   return (

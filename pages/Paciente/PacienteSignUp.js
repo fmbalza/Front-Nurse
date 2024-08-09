@@ -185,7 +185,7 @@ const PacienteSignUp = () => {
                   />
                 )}
                 name="cedula_paciente"
-                rules={{ required: true, minLength: 8, maxLength: 8 }}
+                rules={{ required: true, minLength: 8 }}
                 defaultValue={""}
               />
               <View>
@@ -216,7 +216,7 @@ const PacienteSignUp = () => {
                   />
                 )}
                 name="telefono"
-                rules={{ required: true, minLength: 11, maxLength: 11 }}
+                rules={{ required: true, minLength: 11 }}
                 defaultValue={""}
               />
               <View>
@@ -235,7 +235,7 @@ const PacienteSignUp = () => {
               <Controller
                 control={control}
                 render={({ field: { onChange, value } }) => (
-                  <View style={styles.componentt}>
+                  <View style={{ marginTop: 10 }}>
                     <GenderPicker onGenderChange={onChange} value={value} />
                   </View>
                 )}
@@ -254,8 +254,12 @@ const PacienteSignUp = () => {
               <Controller
                 control={control}
                 render={({ field: { onChange, value } }) => (
-                  <View style={styles.componentt}>
-                    <DatePicker onDateChange={onChange} value={value} />
+                  <View style={{ marginTop: 20 }}>
+                    <DatePicker
+                      onDateChange={onChange}
+                      value={value}
+                      title={"Fecha de Nacimiento"}
+                    />
                   </View>
                 )}
                 name="fecha_nacimiento"
