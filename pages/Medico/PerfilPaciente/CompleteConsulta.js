@@ -36,24 +36,19 @@ const CompleteConsulta = ({ route }) => {
 
   const handleConfirmSave = async (values) => {
     const examen = {
-      //   examen: `
-      //   Motivos de Consulta: ${formData.motivosConsulta}
-      //   Antecedentes Personales: ${formData.antecedentePersonales}
-      //   Examen Físico: ${formData.examenFisico}
-      //   Impresión Diagnóstica: ${formData.impresionDiagnostica}
-      //   Plan de Manejo: ${formData.planManejo}
-      // `,
-      examen: `
-      Motivos de Consulta: ${formData.motivosConsulta}
-      Examen Físico: ${formData.examenFisico}
-      Impresión Diagnóstica: ${formData.impresionDiagnostica}
-      Plan de Manejo: ${formData.planManejo}
-    `,
+      motivo: formData.motivosConsulta,
+      fisico: formData.examenFisico,
+      impresion: formData.impresionDiagnostica,
+      plan: formData.planManejo,
+    };
+
+    const content = {
+      examen: JSON.stringify(examen),
       estado: `1`,
       url: addedImages,
     };
     // console.log(examen);
-    await updateConsultaMutation.mutate({ idconsulta, data: examen });
+    await updateConsultaMutation.mutate({ idconsulta, data: content });
     setShowModal(false);
   };
 

@@ -20,10 +20,17 @@ const DetallesConsulta = ({ route }) => {
     useGetConsulta(id_consulta);
   const [horarios, setHorarios] = useState([]);
   const [adjuntos, setAdjuntos] = useState([]);
+  const [examen, setExamen] = useState();
+  const fields = [
+    "Motivos de consulta",
+    "Examen Físico",
+    "Impresión Diagnóstica",
+    "Plan de Tratamiento",
+  ];
 
   // useEffect(() => {
-  //   // console.log(data);
-  //   // console.log(id_consulta, paciente);
+  //   console.log(data[0]?.examen);
+  //   console.log(JSON.parse(data[0]?.examen).fisico);
   // }, [data]);
 
   if (isPending || isLoading || isFetching) {
@@ -69,17 +76,26 @@ const DetallesConsulta = ({ route }) => {
               </View>
               <Text style={styles.label}>Datos:</Text>
               <View style={[styles.infoContainer, { flexDirection: "column" }]}>
-                {consulta.examen
-                  .trim()
-                  .split("\n")
-                  .filter((item) => item.trim().split(":")[1] !== "")
-                  .map((item, index) => (
-                    <Text key={index} style={styles.value}>
-                      {item.trim().split(":")[0] +
-                        ": " +
-                        item.trim().split(":")[1]}
-                    </Text>
-                  ))}
+                {Object.keys(JSON.parse(consulta.examen)).map((key, index) => {
+                  return (
+                    <View
+                      key={index}
+                      style={{ flexDirection: "row", marginLeft: 5 }}
+                    >
+                      {JSON.parse(consulta.examen)[key] &&
+                        JSON.parse(consulta.examen)[key] !== "" && (
+                          <>
+                            <Text style={styles.label}>
+                              {fields[index]}:{"\n"}
+                              <Text style={styles.value}>
+                                {JSON.parse(consulta.examen)[key]}
+                              </Text>
+                            </Text>
+                          </>
+                        )}
+                    </View>
+                  );
+                })}
               </View>
 
               {consulta?.horariosAsignados?.length > 0 && (
@@ -250,6 +266,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     flex: 1,
     textAlign: "justify",
+    fontWeight: "100",
   },
 });
 

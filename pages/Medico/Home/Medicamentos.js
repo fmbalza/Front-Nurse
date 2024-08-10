@@ -106,7 +106,7 @@ const CreateMedicamento = ({ closeModal }) => {
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
-                  placeholder="Dosis en miligramos"
+                  placeholder="Dosis con su unidad de medida"
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}

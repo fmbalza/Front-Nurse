@@ -86,7 +86,7 @@ const MisDoctores = () => {
       >
         <View style={styles.photo}>
           <Image
-            source={{ uri: medico.foto } || userAccountFigure}
+            source={medico.foto ? { uri: medico.foto } : userAccountFigure}
             style={{
               width: 50,
               height: 50,
